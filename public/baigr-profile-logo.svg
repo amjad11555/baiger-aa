@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D6E06A"/>
+      <stop offset="50%" stop-color="#EDEAE6"/>
+      <stop offset="100%" stop-color="#726BD6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background: solid very light off-white -->
+  <rect width="1080" height="1080" fill="#FEFEFE"/>
+
+  <!-- Thin circular gradient border -->
+  <circle cx="540" cy="540" r="455" fill="none" stroke="url(#ring)" stroke-width="7"/>
+
+  <!-- Signal icon: 4 rounded arcs, flat lime yellow -->
+  <g transform="translate(-70, 0)" stroke="#D6E06A" stroke-width="34" stroke-linecap="round" fill="none">
+    <path d="M 436.4 518.6 A 238 238 0 0 1 786.1 398.2"/>
+    <path d="M 493.9 539.5 A 176.8 176.8 0 0 1 753.7 450.1"/>
+    <path d="M 551.4 560.5 A 115.6 115.6 0 0 1 721.3 502.0"/>
+    <path d="M 608.9 581.4 A 54.4 54.4 0 0 1 688.8 553.9"/>
+  </g>
+
+  <!-- Wordmark: BAIGR — geometric, uppercase, wide letter spacing, deep navy -->
+  <text x="565" y="740" text-anchor="middle"
+        font-family="'Plus Jakarta Sans','Century Gothic','Futura','Avenir Next',Arial,sans-serif"
+        font-size="118" font-weight="600" letter-spacing="52" fill="#1B1539">BAIGR</text>
+
+  <!-- Small lime divider -->
+  <rect x="516" y="778" width="48" height="8" rx="4" fill="#D6E06A"/>
+
+  <!-- Tagline: two lines, thin, spaced, soft purple -->
+  <text x="548" y="852" text-anchor="middle"
+        font-family="'Plus Jakarta Sans','Century Gothic','Futura','Avenir Next',Arial,sans-serif"
+        font-size="34" font-weight="400" letter-spacing="14" fill="#726BD6">CREATIVE STRATEGY</text>
+  <text x="548" y="906" text-anchor="middle"
+        font-family="'Plus Jakarta Sans','Century Gothic','Futura','Avenir Next',Arial,sans-serif"
+        font-size="34" font-weight="400" letter-spacing="14" fill="#726BD6">&amp; DIGITAL MARKETING</text>
+</svg>
