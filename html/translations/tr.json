@@ -8,13 +8,13 @@
     "cta": "Proje başlat"
   },
   "hero": {
-    "eyebrow": "BAIGR · Yapay Zekâ Büyüme Ajansı",
-    "titlePre": "İlgiyi ",
-    "titleAccent": "gelire",
-    "titlePost": " dönüştürüyoruz.",
-    "sub": "Yapay zekâ destekli kreatif, hassas reklamcılık ve otomasyon — sıradan olmayı reddeden markalar için büyüme inşa eden tek bir uzman ekip.",
-    "ctaPrimary": "Büyümeye başla",
-    "ctaSecondary": "İşlerimizi gör",
+    "eyebrow": "BAIGR · Kreatif Strateji ve Yapay Zekâ Büyümesi",
+    "titlePre": "Satan kreatif, ",
+    "titleAccent": "ölçülebilir",
+    "titlePost": " büyüme.",
+    "sub": "Biz BAIGR'ız — yapay zekâ temelli bir stüdyo. Cesur fikirleri kampanyalara, kampanyaları da yalnızca panoda değil banka hesabında görünen gelire dönüştürüyoruz.",
+    "ctaPrimary": "Markanı büyütelim",
+    "ctaSecondary": "Neler yaptığımıza bak",
     "scroll": "Kaydır",
     "ticker": [
       "Büyüme",
@@ -23,7 +23,7 @@
     ]
   },
   "trusted": {
-    "label": "Bizimle büyüyen markalar",
+    "label": "Büyümesini bize emanet eden markalar",
     "brands": [
       "NORA",
       "ATLAS",
@@ -37,60 +37,60 @@
   },
   "about": {
     "eyebrow": "Biz kimiz",
-    "title": "Tedarikçi değil, büyüme ortağı.",
-    "lead": "BAIGR, yapay zekâ çağı için kurulmuş bir büyüme ajansı — strateji, kreatif ve medya tek çatı altında.",
-    "body": "Bütçenize kendi bütçemiz gibi davranan küçük ve kıdemli bir ekibiz. Her kampanya bizim portfolyomuzdan değil, sizin rakamlarınızdan başlar. Ağır işi yapay zekâ yapar, kararı insan zevki verir — müşterilerimizin bizimle kalmasının sebebi bu.",
+    "title": "Kalabalığa karışmayı reddeden markaların arkasındaki ekip.",
+    "lead": "BAIGR, yapay zekâ çağı için kurulmuş bir kreatif büyüme stüdyosu — strateji, içerik ve medya tek bir motor gibi, tek çatı altında çalışıyor.",
+    "body": "Bütçenize sanki kendi paramız masadaymış gibi davranan, kıdemli kreatif ve pazarlamacılardan oluşan küçük bir ekibiz. Yayınladığımız her fikrin yanında bir rakam vardır. Yapay zekâ bize hız ve hacim verir; insan zevki ise onun gerçekten insanları harekete geçirmesini sağlar. Bu birleşim — makine ölçeği, insan zanaati — çalıştığımız markaların yıllarca bizimle kalmasının sebebidir.",
     "points": [
       {
-        "title": "Yapay zekâ altyapılı, insan liderliğinde",
-        "desc": "Üretimi katlayan yerde yapay zekâ, kararın önemli olduğu yerde insan."
+        "title": "Karşılığı olan fikirler",
+        "desc": "Her kreatif karar bir iş sonucuna bağlıdır. Satmayan güzel iş, yalnızca süstür."
       },
       {
-        "title": "Gösteriş değil, gelir",
-        "desc": "Beğeniler maaş ödemez. Satış, potansiyel müşteri ve yaşam boyu değer için optimize ederiz."
+        "title": "Makine hızı, insan ruhu",
+        "desc": "Yapay zekâyla on kat hızlı üretiriz — sonra gerçek bir kreatif direktör her karede son sözü söyler."
       },
       {
-        "title": "Üç pazar, tek ekip",
-        "desc": "Arapça, İngilizce ve Türkçe ana dilde — çeviri değil, her kültürde satan metin."
+        "title": "Üç pazara ana dilde hâkim",
+        "desc": "Arapça, İngilizce ve Türkçe ana dil gibi — her kültürde çevrilmiş değil, o kültürde doğmuş metinler."
       }
     ]
   },
   "services": {
     "eyebrow": "Ne yapıyoruz",
-    "title": "Büyümenin ihtiyacı olan her şey, tek çatı altında.",
-    "lead": "Birbirini besleyen beş disiplin: kreatif reklamı besler, reklam veri üretir, veri otomasyonu eğitir — döngü katlanarak büyür.",
+    "title": "Tüm büyüme yolculuğu için tek ekip.",
+    "lead": "Birbirini besleyen beş disiplin: kreatif reklamı ateşler, reklam veriyi üretir, veri otomasyonu keskinleştirir — ve tüm döngü her ay katlanarak büyür.",
     "groups": [
       {
         "name": "Üret",
         "items": [
           {
             "title": "Yapay Zekâ ile Görsel Üretimi",
-            "desc": "Kaydırmayı durduran ürün çekimleri ve marka görselleri — haftalar değil, günler içinde."
+            "desc": "Kaydırmayı durduran ürün çekimleri ve marka görselleri — stüdyosuz stüdyo kalitesi, haftalarca değil günler içinde."
           },
           {
-            "title": "Yapay Zekâ ile Video Prodüksiyon",
-            "desc": "Yapay zekâ destekli reklamlar, reels ve marka filmleri — maliyetin çok altında sinema hissi."
+            "title": "Yapay Zekâ ile Video Prodüksiyonu",
+            "desc": "Yapay zekâ hatlarıyla kurulan reklamlar, reels ve marka filmleri: hatırlanan sinematik bir his, alışılmış maliyetin çok altında."
           }
         ]
       },
       {
-        "name": "Reklam",
+        "name": "Reklam ver",
         "items": [
           {
-            "title": "Meta Reklamcılığı",
-            "desc": "Erişime değil ROAS'a göre kurgulanmış, tam huni Facebook ve Instagram kampanyaları."
+            "title": "Meta Reklamları",
+            "desc": "Reklam harcamasının getirisi etrafında kurulan Facebook ve Instagram hunileri — boş erişimi değil, satışı kovalarız."
           },
           {
-            "title": "Google Reklamcılığı",
-            "desc": "Arama, Alışveriş ve YouTube — talebi tam oluştuğu anda yakalarız."
+            "title": "Google Reklamları",
+            "desc": "Arama, Alışveriş ve YouTube — talebi tam satın almaya hazır olduğu saniyede yakalar."
           },
           {
-            "title": "TikTok Reklamcılığı",
-            "desc": "Algoritmayla savaşmak yerine onunla yükselen doğal görünümlü kreatifler ve spark reklamlar."
+            "title": "TikTok Reklamları",
+            "desc": "Algoritmayla savaşmak yerine onunla akan doğal kreatif — izleyicinin reklam olduğunu unuttuğu içerik."
           },
           {
-            "title": "Snapchat Reklamcılığı",
-            "desc": "Bölgenin en düşük maliyetli kanalı — onu sessiz bir büyüme motoruna çeviririz."
+            "title": "Snapchat Reklamları",
+            "desc": "Körfez'in en ucuz değerlenen dikkati. Onu sessiz, güvenilir bir büyüme motoruna çeviririz."
           }
         ]
       },
@@ -98,12 +98,12 @@
         "name": "İnşa et",
         "items": [
           {
-            "title": "Profesyonel Web Siteleri",
-            "desc": "Ziyaretçi tek kelime okumadan size güvensin — hızlı ve etkileyici siteler."
+            "title": "Dönüştüren web siteleri",
+            "desc": "Ziyaretçi ilk satırı bitirmeden güvenini kazanan, hızlı ve etkileyici siteler."
           },
           {
-            "title": "E-ticaret Geliştirme",
-            "desc": "Dönüşüm için mühendislik — tıklamayla değil, saniyeyle ölçülen ödeme akışları."
+            "title": "Satan e-ticaret",
+            "desc": "Satın alma butonu etrafında mühendisliği yapılmış mağazalar — tıklamayla değil, saniyeyle ölçülen ödeme."
           }
         ]
       },
@@ -112,11 +112,11 @@
         "items": [
           {
             "title": "Pazarlama Otomasyonu",
-            "desc": "Siz uyurken çalışan takipler, huniler ve raporlar."
+            "desc": "Senin dinlendiğin gecelerde ve tatillerde çalışmaya devam eden takipler, huniler ve raporlar."
           },
           {
             "title": "Yapay Zekâ Sohbet Botları",
-            "desc": "Markanızın sesiyle yanıtlayan, müşteri eleyip basit satışları 7/24 kapatan asistanlar."
+            "desc": "Markanın sesiyle yanıtlayan, her adayı eleyen ve kolay satışları 7/24 kapatan asistanlar."
           }
         ]
       },
@@ -124,8 +124,8 @@
         "name": "Danış",
         "items": [
           {
-            "title": "Pazarlama Danışmanlığı",
-            "desc": "Masanın sizin tarafınızda kıdemli bir akıl — denetim, strateji ve dürüst cevaplar."
+            "title": "Büyüme Danışmanlığı",
+            "desc": "Masanın senin tarafında kıdemli bir pazarlama aklı — keskin denetim, dürüst strateji, jargon yok."
           }
         ]
       }
@@ -133,8 +133,8 @@
   },
   "portfolio": {
     "eyebrow": "Seçilmiş işler",
-    "title": "Vaat değil, kanıt.",
-    "lead": "Büyümesine katkı verdiğimiz markalardan birkaçı. Detaylı vaka dosyaları talep üzerine paylaşılır.",
+    "title": "Anlatmaktansa göstermeyi tercih ederiz.",
+    "lead": "Büyümesine katkı verdiğimiz markalardan birkaçı. Ayrıntılı vaka sunumları tek mesaj uzaklıkta.",
     "projects": [
       {
         "name": "Ayla Beauty",
@@ -157,160 +157,160 @@
         "result": "Bir çeyrekte 18.000 potansiyel müşteri"
       }
     ],
-    "note": "Gerekli yerlerde müşteri adları gizlenmiştir."
+    "note": "Bazı isimler müşteri talebiyle değiştirildi. Rakamlar gerçek."
   },
   "cases": {
     "eyebrow": "Vaka çalışmaları",
-    "title": "Rakamlar nasıl hareket etti.",
-    "lead": "Üç oyun, üç pazar, tek yöntem: darboğazı bul, kaldır, işe yarayanı ölçekle.",
+    "title": "Rakamların döndüğü an.",
+    "lead": "Üç marka, üç pazar, tek yöntem: büyümeyi tutan şeyi bul, kaldır, sonra işe yarayana yakıt dök.",
     "items": [
       {
         "sector": "Cilt bakımı e-ticareti · Suudi Arabistan",
-        "challenge": "Harika ürün, duran satış — reklamlar dönüşmeyen trafiğe para ödüyordu.",
-        "play": "Mağazayı tek kahraman ürün etrafında yeniden kurduk, yapay zekâyla 40 kreatif varyant ürettik, kazananı Meta buldu.",
+        "challenge": "İnsanların sevdiği bir ürün, duran satışlar — reklamlar müşteriye dönüşmeyen tıklamalar satın alıyordu.",
+        "play": "Mağazayı tek bir kahraman ürün etrafında yeniden kurduk, bir gecede 40 yapay zekâ kreatif varyantı ürettik ve kazananı verinin taçlandırmasına bıraktık.",
         "metric": "+212%",
         "metricLabel": "6 ayda gelir artışı"
       },
       {
-        "sector": "Gayrimenkul geliştirici · Türkiye",
-        "challenge": "Potansiyel müşteri maliyeti çok yüksekti; satış ekibi niteliksiz aramalarla saat kaybediyordu.",
-        "play": "Yapay zekâ botu her adayı Arapça, Türkçe ve İngilizce eledi — telefon insana ancak ondan sonra düştü.",
+        "sector": "Gayrimenkul geliştiricisi · Türkiye",
+        "challenge": "Potansiyel müşteriler pahalıydı ve satış ekibi asla kapanmayacak aramalarda saatlerini yakıyordu.",
+        "play": "Bir yapay zekâ botu her adayı Arapça, Türkçe ve İngilizce eledi — böylece insan yalnızca satın almaya hazır kişilerle konuştu.",
         "metric": "−38%",
         "metricLabel": "nitelikli müşteri başına maliyet"
       },
       {
         "sector": "Restoran grubu · BAE",
-        "challenge": "Hafta sonu dolu salonlar, hafta içi boş masalar.",
-        "play": "Sakin saatlere bağlı otomatik tekliflerle TikTok + Snapchat konum kampanyaları.",
+        "challenge": "Hafta sonları doluydu, hafta içi masalar boştu ve indirimler kârı yiyordu.",
+        "play": "Sakin saatlerde otomatik devreye giren tekliflerle konum hedefli TikTok ve Snapchat kampanyaları.",
         "metric": "5.1×",
         "metricLabel": "reklam harcaması getirisi"
       }
     ],
     "labels": {
       "challenge": "Sorun",
-      "play": "Oyun planı",
+      "play": "Ne yaptık",
       "result": "Sonuç"
     }
   },
   "process": {
     "eyebrow": "Nasıl çalışıyoruz",
     "title": "Dört adım. Sıfır muamma.",
-    "lead": "Ne yaptığımızı, neden yaptığımızı ve ne getirdiğini her zaman bileceksiniz.",
+    "lead": "Ne yaptığımızı, neden yaptığımızı ve ne getirdiğini her zaman tam olarak bileceksin.",
     "steps": [
       {
         "title": "Dinle",
-        "desc": "Sunumla değil; rakamlarınız, pazarınız ve marjlarınızla başlarız. Bir hafta, net bir teşhis."
+        "desc": "Bir sunumla değil; rakamların, pazarın ve marjlarınla başlarız. Bir hafta içinde net ve dürüst bir teşhis alırsın."
       },
       {
-        "title": "Oyunu kur",
-        "desc": "Hesap sorabileceğiniz hedeflerle bir büyüme planı: kanallar, kreatif, bütçe, takvim."
+        "title": "Planı çiz",
+        "desc": "Bizi hesap sorabileceğin hedeflerle bir büyüme planı: kanallar, kreatif, bütçe ve takvim, tek sayfada."
       },
       {
         "title": "Yayına al",
-        "desc": "Kreatif, kampanya ve siteler hızla canlıya çıkar — sonra veriyi şahin gibi izleriz."
+        "desc": "Kreatif, kampanyalar ve siteler hızla canlıya çıkar — sonra veriyi masadaki kendi paramızmış gibi izleriz."
       },
       {
         "title": "Ölçekle",
-        "desc": "İşe yarayana yüklen, yaramayanı kapat, her hafta sade bir dille raporla."
+        "desc": "İşe yarayana yüklen, yaramayanı kes ve her hafta bir dostuna anlatır gibi rapor ver."
       }
     ]
   },
   "why": {
     "eyebrow": "Neden BAIGR",
-    "title": "Haksız avantajlar.",
-    "lead": "Bizimle çalıştığınızda gerçekte ne alırsınız.",
+    "title": "Markaların kalma sebepleri.",
+    "lead": "Ayrıcalık değil. Sonuçlarını gerçekten değiştiren şeyler.",
     "reasons": [
       {
-        "title": "İlk günden yapay zekâ altyapısı",
-        "desc": "Yapay zekâyı sonradan eklemiyoruz — tüm üretim hattımız onun üzerine kurulu. Aynı bütçeyle 10 kat kreatif."
+        "title": "Meraklı değil, yapay zekâ temelli",
+        "desc": "Tüm üretim hattımız yapay zekâ üzerine kuruludur — böylece aynı bütçeyle, kaliteden ödün vermeden on kat kreatif alırsın."
       },
       {
-        "title": "Sadece kıdemli eller",
-        "desc": "Sizin paranızla öğrenen stajyer yok. Sunumdaki insanlar, işi yapan insanlardır."
+        "title": "Yalnızca kıdemli eller",
+        "desc": "Hesabında pratik yapan stajyer yok. Sana sunum yapanlar, işi yapan kişilerdir."
       },
       {
         "title": "Alışkanlık hâline gelmiş hız",
-        "desc": "İlk kampanyalar günler içinde yayında. İvme bir stratejidir."
+        "desc": "İlk kampanyaların aylarca değil günler içinde yayında. İvme bir stratejidir ve biz onu öyle ele alırız."
       },
       {
-        "title": "Radikal şeffaflık",
-        "desc": "Canlı panolar, haftalık özetler ve rahatsız edici olsa bile gerçek."
+        "title": "Saklayacak bir şey yok",
+        "desc": "Canlı panolar, haftalık özetler ve rahatsız edici hâliyle bile gerçek."
       },
       {
-        "title": "Tek çatı, sıfır sürtünme",
-        "desc": "Kreatif, medya, web ve otomasyon tek ekipte — birbirini suçlayan ajanslar yok."
+        "title": "Tek çatı, parmakla gösterme yok",
+        "desc": "Kreatif, medya, web ve otomasyon tek ekipte — bütçen yanarken birbirini suçlayan ajanslar yok."
       },
       {
-        "title": "Siz kazanınca biz kazanırız",
-        "desc": "Performansa bağlı fiyatlandırma mümkün. Motivasyonumuz kelimenin tam anlamıyla sizin büyümeniz."
+        "title": "Sen kazanınca biz kazanırız",
+        "desc": "Performansa bağlı fiyatlandırma masada. Kazancımız tam anlamıyla senin büyümene bağlı."
       }
     ]
   },
   "testimonials": {
-    "eyebrow": "Müşteriler ne diyor",
-    "title": "Güven rakamlarla kazanılır.",
+    "eyebrow": "Kendi sözleriyle",
+    "title": "Güven, rakamlarla yazılır.",
     "quotes": [
       {
-        "quote": "Mağazamızı yeniden kurdular ve geliri bir çeyrekte ikiye katladılar. Benimle gösterim yerine marj konuşan ilk ajans.",
+        "quote": "Mağazamızı yeniden kurdular ve geliri tek çeyrekte ikiye katladılar. Benimle gösterim yerine marj konuşan ilk ajans.",
         "name": "Sara A.",
         "role": "Kurucu, cilt bakım markası"
       },
       {
-        "quote": "Sadece sohbet botu bile satış ekibime haftada on beş saat kazandırdı. Söz verdikleri her şey panoda göründü.",
+        "quote": "Yalnızca sohbet botu bile satış ekibime her hafta on beş saat kazandırdı. Söz verdikleri her şey panoda göründü.",
         "name": "Mehmet K.",
         "role": "Satış direktörü, gayrimenkul"
       },
       {
-        "quote": "Hızlı, dürüst ve gerçekten yaratıcı. TikTok'umuz yükten en iyi kanalımıza dönüştü.",
+        "quote": "Hızlı, dürüst ve gerçekten yaratıcı. TikTok'umuz görmezden geldiğimiz bir kanaldan en iyi performans gösteren kanalımıza dönüştü.",
         "name": "Omar R.",
         "role": "Pazarlama lideri, yeme-içme grubu"
       }
     ]
   },
   "faq": {
-    "eyebrow": "Sorular",
-    "title": "Sık soruluyor, dürüstçe yanıtlıyoruz.",
+    "eyebrow": "İyi sorular",
+    "title": "Herkesin ilk sorduğu şeyler.",
     "items": [
       {
-        "q": "Sonuçları ne kadar sürede görürüz?",
-        "a": "Reklam kampanyaları 2–4 hafta içinde sinyal üretir; gelirde anlamlı hareket genellikle ilk çeyrekte gelir. Web siteleri ve otomasyon ilk günden değer katar. İlk görüşmede gerçekçi bir takvim veririz — ve ona uyarız."
+        "q": "Sonuçları gerçekten ne zaman görürüm?",
+        "a": "Reklam kampanyaları 2–4 hafta içinde net sinyaller vermeye başlar ve anlamlı gelir genellikle ilk çeyrekte hareket eder. Web siteleri ve otomasyon ise ilk günden kazandırır. İlk görüşmemizde gerçekçi bir takvim veririz — ve sonra ona sadık kalırız."
       },
       {
-        "q": "Hangi bütçelerle çalışıyorsunuz?",
-        "a": "Müşterilerimizin çoğu reklam ve hizmetler genelinde aylık 2.000–50.000 dolar arası yatırım yapar. Büyüklükten önemlisi niyettir: büyümek istiyor ve harekete geçebiliyorsanız, size uyan bir plan kurarız."
+        "q": "Ne kadar bütçeye ihtiyacım var?",
+        "a": "Müşterilerimizin çoğu reklam ve hizmetler genelinde aylık 2.000–50.000 dolar yatırım yapar. Açıkçası niyet, büyüklükten önemlidir: büyümek konusunda ciddiysen ve harekete geçmeye hazırsan, bulunduğun yere uyan bir plan kurarız."
       },
       {
         "q": "Hangi pazarları kapsıyorsunuz?",
-        "a": "Arapça, İngilizce ve Türkçede ana dil seviyesinde çalışıyoruz — Körfez, Levant, Türkiye, Avrupa ve Kuzey Amerika. Tek ekip, üç kültür, çeviri katmanı yok."
+        "a": "Arapça, İngilizce ve Türkçede ana dil seviyesinde çalışıyoruz — Körfez, Levant, Türkiye, Avrupa ve Kuzey Amerika'da. Tek ekip, üç kültür, aralarında çeviri katmanı yok."
       },
       {
-        "q": "BAIGR'ı diğer ajanslardan ayıran ne?",
-        "a": "Üç şey: yapay zekâ tabanlı üretim (aynı bütçeyle 10 kat kreatif), yalnızca kıdemli kadro ve erişime değil gelire bağlı raporlama. Üçünü de bir pilot ayda kanıtlamaktan mutluluk duyarız."
+        "q": "BAIGR'ı gerçekten farklı kılan ne?",
+        "a": "Üç şey: yapay zekâ temelli üretim (aynı harcamayla on kat kreatif), yalnızca kıdemli bir ekip ve erişime değil gelire bağlı raporlama. Üçünü de tek bir pilot ayda kanıtlamaktan mutluluk duyarız."
       },
       {
         "q": "Nasıl başlıyoruz?",
-        "a": "Tek bir WhatsApp mesajı. Ücretsiz 30 dakikalık bir görüşme ayarlarız, elinizdekini inceleriz ve bir hafta içinde rakamlı bir plan göndeririz. Onu görmeden hiçbir taahhüt yok."
+        "a": "WhatsApp'tan tek bir mesaj. Ücretsiz 30 dakikalık bir görüşme ayarlar, elindekine bakar ve bir hafta içinde gerçek rakamlarla bir plan göndeririz. Görene kadar hiçbir taahhüt yok."
       },
       {
-        "q": "İletişim nasıl ilerleyecek?",
-        "a": "Size özel bir WhatsApp grubu, canlı sonuç panosu ve her hafta sade bir dille özet. Güncelleme için asla peşimizden koşmazsınız."
+        "q": "İletişimi nasıl sürdüreceğiz?",
+        "a": "Sana özel bir WhatsApp grubu, canlı bir sonuç panosu ve sade bir dille yazılmış haftalık özet. Güncelleme için asla peşimizden koşmak zorunda kalmazsın."
       }
     ]
   },
   "contact": {
-    "eyebrow": "Sonraki adım",
-    "titlePre": "Bilinçli büyümeye ",
-    "titleAccent": "hazır mısınız?",
-    "sub": "Nerede olduğunuzu ve nereye varmak istediğinizi anlatın; haritayı biz getirelim. İlk görüşme ücretsiz, koşulsuz.",
-    "cta": "WhatsApp'tan yazın",
+    "eyebrow": "Sıra sende",
+    "titlePre": "Konuşulmaya değer bir şey ",
+    "titleAccent": "inşa edelim",
+    "sub": "Markanın bugün nerede olduğunu ve nereye varmak istediğini anlat. Haritayı, ekibi ve ilk fikirleri biz getirelim — üstelik ilk görüşme tamamen ücretsiz.",
+    "cta": "WhatsApp'tan yaz",
     "or": "veya",
-    "emailLabel": "E-posta gönderin"
+    "emailLabel": "e-posta gönder"
   },
   "footer": {
-    "tagline": "Yapay zekâ ile mühendisliği yapılmış büyüme.",
+    "tagline": "Yapay zekâ destekli kreatif strateji ve dijital büyüme.",
     "nav": "Keşfet",
-    "talk": "Bize ulaşın",
+    "talk": "Bize ulaş",
     "rights": "Tüm hakları saklıdır."
   },
-  "whatsapp": "BAIGR ile WhatsApp'ta konuşun"
+  "whatsapp": "BAIGR ile WhatsApp'ta konuş"
 }

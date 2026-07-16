@@ -68,13 +68,13 @@ export function Cursor() {
       <div
         ref={dotRef}
         aria-hidden
-        className="pointer-events-none fixed start-0 top-0 z-90 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember opacity-0"
+        className="pointer-events-none fixed start-0 top-0 z-90 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime opacity-0"
         style={{ insetInlineStart: 0 }}
       />
       <div
         ref={ringRef}
         aria-hidden
-        className="pointer-events-none fixed start-0 top-0 z-90 size-9 -translate-x-1/2 -translate-y-1/2 rounded-full border border-halo/60 opacity-0"
+        className="pointer-events-none fixed start-0 top-0 z-90 size-9 -translate-x-1/2 -translate-y-1/2 rounded-full border border-iris/60 opacity-0"
         style={{ insetInlineStart: 0 }}
       />
     </>

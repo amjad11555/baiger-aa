@@ -25,19 +25,19 @@ export function Testimonials() {
         <div className="mt-14 grid gap-5 lg:grid-cols-3">
           {dict.testimonials.quotes.map((item, i) => (
             <Reveal key={item.name} delay={i * 0.1}>
-              <figure className="glass flex h-full flex-col rounded-2xl p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-ember/40">
+              <figure className="glass flex h-full flex-col rounded-2xl p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-iris/40">
                 <span
                   aria-hidden
-                  className="font-display text-5xl leading-none text-ember"
+                  className="font-display text-5xl leading-none text-iris"
                 >
                   &ldquo;
                 </span>
-                <blockquote className="mt-4 flex-1 leading-relaxed text-bone/90">
+                <blockquote className="mt-4 flex-1 leading-relaxed text-ink">
                   {item.quote}
                 </blockquote>
                 <figcaption className="mt-8 border-t hairline pt-5">
                   <p className="font-display font-bold">{item.name}</p>
-                  <p className="mt-0.5 text-sm text-umber">{item.role}</p>
+                  <p className="mt-0.5 text-sm text-mist">{item.role}</p>
                 </figcaption>
               </figure>
             </Reveal>

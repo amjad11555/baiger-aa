@@ -34,7 +34,7 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "group flex flex-1 items-center justify-between gap-6 py-6 text-start transition-colors outline-none hover:text-halo focus-visible:text-halo [&[data-state=open]>svg]:rotate-45",
+          "group flex flex-1 items-center justify-between gap-6 py-6 text-start transition-colors outline-none hover:text-iris focus-visible:text-iris [&[data-state=open]>svg]:rotate-45",
           className
         )}
         {...props}
@@ -43,7 +43,7 @@ function AccordionTrigger({
         <svg
           aria-hidden
           viewBox="0 0 16 16"
-          className="size-4 shrink-0 text-ember transition-transform duration-300"
+          className="size-4 shrink-0 text-iris transition-transform duration-300"
           fill="none"
           stroke="currentColor"
           strokeWidth="1.6"
@@ -67,7 +67,7 @@ function AccordionContent({
       className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
       {...props}
     >
-      <div className={cn("pb-6 leading-relaxed text-umber", className)}>
+      <div className={cn("pb-6 leading-relaxed text-mist", className)}>
         {children}
       </div>
     </AccordionPrimitive.Content>

@@ -66,8 +66,8 @@ export function Navbar() {
           className={cn(
             "min-h-6 min-w-9 rounded-full px-3 py-1.5 transition-colors",
             locale === l
-              ? "bg-ember text-obsidian"
-              : "text-umber hover:text-bone"
+              ? "bg-iris-deep text-white"
+              : "text-mist hover:text-ink"
           )}
         >
           {langLabels[l]}
@@ -86,10 +86,10 @@ export function Navbar() {
       <nav className="mx-auto flex h-[72px] w-full max-w-6xl items-center justify-between px-5 md:px-8">
         <a
           href="#top"
-          className="font-display text-xl font-extrabold tracking-wide text-bone"
+          className="font-display text-xl font-extrabold tracking-wide text-ink"
           aria-label="BAIGR — home"
         >
-          BAIGR<span className="text-ember">.</span>
+          BAIGR<span className="text-iris">.</span>
         </a>
 
         <ul className="hidden items-center gap-8 lg:flex">
@@ -97,7 +97,7 @@ export function Navbar() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="inline-block px-1 py-2.5 text-sm text-umber transition-colors hover:text-bone"
+                className="inline-block px-1 py-2.5 text-sm text-mist transition-colors hover:text-ink"
               >
                 {l.label}
               </a>
@@ -111,7 +111,7 @@ export function Navbar() {
             href={site.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center rounded-full bg-ember px-5 py-2.5 text-sm font-semibold text-obsidian transition-all duration-300 hover:bg-halo lg:inline-flex"
+            className="hidden items-center rounded-full bg-lime px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 hover:bg-iris-deep hover:text-white lg:inline-flex"
           >
             {dict.nav.cta}
           </a>
@@ -123,13 +123,13 @@ export function Navbar() {
           >
             <span
               className={cn(
-                "h-px w-6 bg-bone transition-transform duration-300",
+                "h-px w-6 bg-ink transition-transform duration-300",
                 open && "translate-y-[3.5px] rotate-45"
               )}
             />
             <span
               className={cn(
-                "h-px w-6 bg-bone transition-transform duration-300",
+                "h-px w-6 bg-ink transition-transform duration-300",
                 open && "-translate-y-[3.5px] -rotate-45"
               )}
             />
@@ -141,7 +141,7 @@ export function Navbar() {
       <div
         ref={overlayRef}
         className={cn(
-          "fixed inset-0 top-[72px] z-60 flex-col justify-between bg-obsidian/97 px-6 pb-10 pt-12 backdrop-blur-xl lg:hidden",
+          "fixed inset-0 top-[72px] z-60 flex-col justify-between bg-paper/95 px-6 pb-10 pt-12 backdrop-blur-xl lg:hidden",
           open ? "flex" : "hidden"
         )}
       >
@@ -152,9 +152,9 @@ export function Navbar() {
                 data-menu-item
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="font-display block py-2 text-4xl font-bold text-bone transition-colors hover:text-halo"
+                className="font-display block py-2 text-4xl font-bold text-ink transition-colors hover:text-iris"
               >
-                <span className="me-4 font-mono text-sm text-ember">
+                <span className="me-4 font-mono text-sm text-iris">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 {l.label}
@@ -169,7 +169,7 @@ export function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
-            className="rounded-full bg-ember px-6 py-3 text-sm font-semibold text-obsidian"
+            className="rounded-full bg-lime px-6 py-3 text-sm font-semibold text-ink"
           >
             {dict.nav.cta}
           </a>

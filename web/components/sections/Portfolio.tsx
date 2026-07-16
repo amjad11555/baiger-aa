@@ -12,13 +12,13 @@ import { gsap, prefersReducedMotion } from "@/lib/gsap";
  */
 const coverRecipes = [
   // Radiant arc — e-commerce
-  "radial-gradient(120% 90% at 85% 100%, rgba(255,122,41,0.55), transparent 55%), radial-gradient(60% 50% at 20% 15%, rgba(255,200,118,0.16), transparent 60%), linear-gradient(160deg, #1a130d, #0c0a08)",
+  "radial-gradient(120% 90% at 85% 100%, rgba(214,224,106,0.9), transparent 55%), radial-gradient(70% 60% at 15% 10%, rgba(114,107,214,0.5), transparent 60%), linear-gradient(160deg, #fbfbf3, #eeecfa)",
   // Twin beams — brand campaign
-  "conic-gradient(from 210deg at 30% 40%, rgba(255,122,41,0.4), transparent 25%, transparent 75%, rgba(255,200,118,0.25)), linear-gradient(200deg, #17110c, #0c0a08)",
+  "conic-gradient(from 210deg at 32% 38%, rgba(114,107,214,0.55), transparent 28%, transparent 72%, rgba(214,224,106,0.7)), linear-gradient(200deg, #f3f1fb, #fdfdf6)",
   // Horizon — web build
-  "linear-gradient(to top, rgba(255,122,41,0.35), transparent 45%), radial-gradient(80% 45% at 50% 100%, rgba(255,200,118,0.3), transparent 65%), linear-gradient(180deg, #120e0a, #0c0a08)",
+  "linear-gradient(to top, rgba(114,107,214,0.5), transparent 48%), radial-gradient(80% 48% at 50% 100%, rgba(214,224,106,0.75), transparent 66%), linear-gradient(180deg, #fbfbf4, #efedfb)",
   // Pulse rings — leads engine
-  "repeating-radial-gradient(circle at 75% 30%, rgba(255,122,41,0.18) 0 2px, transparent 2px 56px), radial-gradient(70% 70% at 75% 30%, rgba(255,122,41,0.3), transparent 60%), linear-gradient(150deg, #16100b, #0c0a08)",
+  "repeating-radial-gradient(circle at 74% 30%, rgba(114,107,214,0.16) 0 2px, transparent 2px 54px), radial-gradient(72% 70% at 74% 30%, rgba(214,224,106,0.8), transparent 62%), linear-gradient(150deg, #f4f2fb, #fbfbf4)",
 ];
 
 export function Portfolio() {
@@ -70,7 +70,7 @@ export function Portfolio() {
             />
           </div>
           <Reveal>
-            <p className="max-w-sm leading-relaxed text-umber">
+            <p className="max-w-sm leading-relaxed text-mist">
               {dict.portfolio.lead}
             </p>
           </Reveal>
@@ -88,7 +88,7 @@ export function Portfolio() {
                   {/* Oversized initial as the cover's typographic mark */}
                   <span
                     aria-hidden
-                    className="font-display absolute -bottom-8 -end-2 text-[10rem] font-extrabold leading-none text-bone/8 transition-transform duration-700 ease-out group-hover:-translate-y-4"
+                    className="font-display absolute -bottom-8 -end-2 text-[10rem] font-extrabold leading-none text-ink/10 transition-transform duration-700 ease-out group-hover:-translate-y-4"
                   >
                     {project.name.charAt(0)}
                   </span>
@@ -98,7 +98,7 @@ export function Portfolio() {
                   >
                     <svg
                       viewBox="0 0 16 16"
-                      className="size-4 text-halo rtl:-scale-x-100"
+                      className="size-4 text-iris rtl:-scale-x-100"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="1.5"
@@ -108,14 +108,14 @@ export function Portfolio() {
                   </span>
                 </div>
                 <div className="mt-5 flex flex-wrap items-baseline justify-between gap-2">
-                  <h3 className="font-display text-2xl font-bold transition-colors duration-300 group-hover:text-halo">
+                  <h3 className="font-display text-2xl font-bold transition-colors duration-300 group-hover:text-iris">
                     {project.name}
                   </h3>
-                  <p className="font-mono text-xs tracking-wider text-umber">
+                  <p className="font-mono text-xs tracking-wider text-mist">
                     {project.tag}
                   </p>
                 </div>
-                <p className="mt-1.5 font-mono text-sm text-ember">
+                <p className="mt-1.5 font-mono text-sm text-iris">
                   {project.result}
                 </p>
               </article>
@@ -124,7 +124,7 @@ export function Portfolio() {
         </div>
 
         <Reveal>
-          <p className="mt-10 font-mono text-xs text-umber">
+          <p className="mt-10 font-mono text-xs text-mist">
             {dict.portfolio.note}
           </p>
         </Reveal>

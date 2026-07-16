@@ -10,7 +10,7 @@ export function TrustedBy() {
   return (
     <section id="trusted" className="relative border-y hairline py-12">
       <Reveal>
-        <p className="mb-8 text-center font-mono text-xs tracking-[0.22em] uppercase text-umber">
+        <p className="mb-8 text-center font-mono text-xs tracking-[0.22em] uppercase text-mist">
           {dict.trusted.label}
         </p>
         <div
@@ -26,7 +26,7 @@ export function TrustedBy() {
               <span
                 key={`${brand}-${i}`}
                 aria-hidden={i >= dict.trusted.brands.length}
-                className="font-display text-2xl font-bold tracking-widest text-bone/25 transition-colors duration-300 hover:text-bone/60"
+                className="font-display text-2xl font-bold tracking-widest text-ink/25 transition-colors duration-300 hover:text-mist"
               >
                 {brand}
               </span>

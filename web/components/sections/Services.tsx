@@ -23,7 +23,7 @@ export function Services() {
             className="font-display text-4xl font-bold leading-[1.12] md:text-5xl"
           />
           <Reveal delay={0.1}>
-            <p className="mt-6 leading-relaxed text-umber md:text-lg">
+            <p className="mt-6 leading-relaxed text-mist md:text-lg">
               {dict.services.lead}
             </p>
           </Reveal>
@@ -33,7 +33,7 @@ export function Services() {
           {dict.services.groups.map((group) => (
             <div key={group.name} className="grid gap-4 md:grid-cols-[180px_1fr] md:gap-10">
               <Reveal>
-                <h3 className="font-mono text-xs tracking-[0.22em] uppercase text-ember md:sticky md:top-28">
+                <h3 className="font-mono text-xs tracking-[0.22em] uppercase text-iris md:sticky md:top-28">
                   {group.name}
                 </h3>
               </Reveal>
@@ -49,19 +49,19 @@ export function Services() {
                       className="group hairline relative border-t last:border-b"
                     >
                         <div className="flex flex-col gap-2 py-6 transition-transform duration-500 ease-out group-hover:translate-x-2 md:flex-row md:items-baseline md:gap-10 rtl:group-hover:-translate-x-2">
-                          <span className="font-mono text-xs text-umber">
+                          <span className="font-mono text-xs text-mist">
                             {index}
                           </span>
-                          <h4 className="font-display min-w-[240px] text-xl font-bold transition-colors duration-300 group-hover:text-halo md:text-2xl">
+                          <h4 className="font-display min-w-[240px] text-xl font-bold transition-colors duration-300 group-hover:text-iris md:text-2xl">
                             {item.title}
                           </h4>
-                          <p className="max-w-md text-sm leading-relaxed text-umber md:ms-auto md:text-end rtl:md:text-start">
+                          <p className="max-w-md text-sm leading-relaxed text-mist md:ms-auto md:text-end rtl:md:text-start">
                             {item.desc}
                           </p>
                         </div>
                         <span
                           aria-hidden
-                          className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-gradient-to-r from-ember to-halo transition-transform duration-500 group-hover:scale-x-100 rtl:origin-right"
+                          className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-gradient-to-r from-lime to-iris transition-transform duration-500 group-hover:scale-x-100 rtl:origin-right"
                         />
                     </Reveal>
                   );

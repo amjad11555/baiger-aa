@@ -53,8 +53,9 @@ const VERTEX = /* glsl */ `
 `;
 
 const FRAGMENT = /* glsl */ `
-  uniform vec3 uColorA; // ember
-  uniform vec3 uColorB; // halo
+  uniform vec3 uColorA;    // lime
+  uniform vec3 uColorB;    // iris
+  uniform vec3 uColorGlow; // navy — cursor concentration
   varying float varT;
   varying float varGlow;
 
@@ -64,12 +65,14 @@ const FRAGMENT = /* glsl */ `
     float disc = smoothstep(0.5, 0.08, dist);
     if (disc < 0.01) discard;
 
-    // Warm up along the curve; flare near the cursor.
-    vec3 color = mix(uColorA, uColorB, varT * 0.85 + varGlow * 0.4);
+    // Ramp lime -> iris along the growth curve; deepen to navy near the cursor.
+    vec3 color = mix(uColorA, uColorB, clamp(varT * 0.9, 0.0, 1.0));
+    color = mix(color, uColorGlow, varGlow * 0.7);
 
     // Fade in at birth, out at the top of the arc.
     float life = smoothstep(0.0, 0.08, varT) * (1.0 - smoothstep(0.82, 1.0, varT));
-    float alpha = disc * life * (0.5 + varGlow * 0.5);
+    // Normal blending over a light page: keep enough alpha to read on paper.
+    float alpha = disc * life * (0.62 + varGlow * 0.38);
 
     gl_FragColor = vec4(color, alpha);
   }
@@ -136,8 +139,9 @@ export function HeroField({ className }: { className?: string }) {
       uTime: { value: 0 },
       uPointer: { value: new THREE.Vector2(0, 0.6) },
       uPixelRatio: { value: dpr },
-      uColorA: { value: new THREE.Color("#ff7a29") },
-      uColorB: { value: new THREE.Color("#ffc876") },
+      uColorA: { value: new THREE.Color("#d6e06a") }, // lime
+      uColorB: { value: new THREE.Color("#726bd6") }, // iris
+      uColorGlow: { value: new THREE.Color("#1b1539") }, // navy
     };
 
     const material = new THREE.ShaderMaterial({
@@ -146,7 +150,7 @@ export function HeroField({ className }: { className?: string }) {
       uniforms,
       transparent: true,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending, // additive is invisible on a light page
     });
 
     const points = new THREE.Points(geometry, material);
@@ -155,10 +159,10 @@ export function HeroField({ className }: { className?: string }) {
     // --- Floating wireframe polyhedron: the quiet geometric anchor ---
     const icoGeo = new THREE.IcosahedronGeometry(2.1, 1);
     const icoMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color("#ff7a29"),
+      color: new THREE.Color("#726bd6"),
       wireframe: true,
       transparent: true,
-      opacity: 0.07,
+      opacity: 0.16,
     });
     const ico = new THREE.Mesh(icoGeo, icoMat);
     ico.position.set(isMobile ? 0 : 3.4, 1.1, -2.5);

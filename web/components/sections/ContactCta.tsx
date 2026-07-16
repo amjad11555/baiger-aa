@@ -17,7 +17,7 @@ export function ContactCta() {
         className="absolute inset-x-0 bottom-0 -z-10 h-[420px]"
         style={{
           background:
-            "radial-gradient(60% 90% at 50% 100%, rgba(255,122,41,0.22), transparent 70%)",
+            "radial-gradient(50% 80% at 50% 100%, rgba(214,224,106,0.32), transparent 70%), radial-gradient(40% 70% at 70% 100%, rgba(114,107,214,0.2), transparent 72%)",
         }}
       />
       <Container className="flex flex-col items-center py-10 text-center md:py-20">
@@ -34,7 +34,7 @@ export function ContactCta() {
           <span className="text-gradient-ember">{dict.contact.titleAccent}</span>
         </h2>
         <Reveal delay={0.15}>
-          <p className="mt-7 max-w-xl leading-relaxed text-umber md:text-lg">
+          <p className="mt-7 max-w-xl leading-relaxed text-mist md:text-lg">
             {dict.contact.sub}
           </p>
         </Reveal>
@@ -45,17 +45,17 @@ export function ContactCta() {
                 href={site.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glow-ember inline-flex h-16 items-center gap-3 rounded-full bg-ember px-11 text-lg font-semibold text-obsidian transition-all duration-300 hover:bg-halo"
+                className="glow-ember inline-flex h-16 items-center gap-3 rounded-full bg-lime px-11 text-lg font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:bg-iris-deep hover:text-white"
               >
                 <WhatsAppIcon className="size-5" />
                 {dict.contact.cta}
               </a>
             </Magnetic>
-            <p className="text-sm text-umber">
+            <p className="text-sm text-mist">
               {dict.contact.or}{" "}
               <a
                 href={`mailto:${site.email}`}
-                className="text-bone underline decoration-ember/60 underline-offset-4 transition-colors hover:text-halo"
+                className="text-ink underline decoration-iris/50 underline-offset-4 transition-colors hover:text-iris"
               >
                 {dict.contact.emailLabel}
               </a>

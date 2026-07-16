@@ -53,7 +53,7 @@ export function Process() {
             className="font-display text-4xl font-bold leading-[1.12] md:text-5xl"
           />
           <Reveal delay={0.1}>
-            <p className="mt-6 leading-relaxed text-umber md:text-lg">
+            <p className="mt-6 leading-relaxed text-mist md:text-lg">
               {dict.process.lead}
             </p>
           </Reveal>
@@ -62,12 +62,12 @@ export function Process() {
         <div className="relative mt-16">
           <div
             aria-hidden
-            className="absolute inset-x-0 top-[5px] hidden h-px bg-bone/10 lg:block"
+            className="absolute inset-x-0 top-[5px] hidden h-px bg-ink/10 lg:block"
           />
           <div
             ref={lineRef}
             aria-hidden
-            className="absolute inset-x-0 top-[5px] hidden h-px origin-left bg-gradient-to-r from-ember to-halo lg:block rtl:origin-right"
+            className="absolute inset-x-0 top-[5px] hidden h-px origin-left bg-gradient-to-r from-lime to-iris lg:block rtl:origin-right"
           />
           <ol className="grid gap-12 lg:grid-cols-4 lg:gap-8">
             {dict.process.steps.map((step, i) => (
@@ -75,15 +75,15 @@ export function Process() {
                 <div className="relative">
                   <span
                     aria-hidden
-                    className="glow-ember mb-6 hidden size-[11px] rounded-full bg-ember lg:block"
+                    className="glow-ember mb-6 hidden size-[11px] rounded-full bg-lime lg:block"
                   />
-                  <p className="font-mono text-xs tracking-[0.2em] text-ember">
+                  <p className="font-mono text-xs tracking-[0.2em] text-iris">
                     {String(i + 1).padStart(2, "0")}
                   </p>
                   <h3 className="font-display mt-3 text-2xl font-bold">
                     {step.title}
                   </h3>
-                  <p className="mt-3 leading-relaxed text-umber">{step.desc}</p>
+                  <p className="mt-3 leading-relaxed text-mist">{step.desc}</p>
                 </div>
               </Reveal>
             ))}

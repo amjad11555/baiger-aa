@@ -43,7 +43,7 @@ function GrowthTicker({ words }: { words: string[] }) {
 
   return (
     <span className="inline-flex h-5 items-center overflow-hidden">
-      <span ref={ref} className="font-mono text-xs tracking-[0.2em] text-halo">
+      <span ref={ref} className="font-mono text-xs tracking-[0.2em] text-iris">
         {words[index]}
       </span>
     </span>
@@ -112,17 +112,17 @@ export function Hero() {
       <div aria-hidden className="aurora absolute inset-0 -z-20" />
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-obsidian to-transparent"
+        className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-paper to-transparent"
       />
 
       <div className="mx-auto w-full max-w-6xl px-5 pt-28 pb-24 md:px-8">
         <p
           data-hero-fade
-          className="mb-6 flex items-center gap-3 font-mono text-xs tracking-[0.22em] uppercase text-ember opacity-0"
+          className="mb-6 flex items-center gap-3 font-mono text-xs tracking-[0.22em] uppercase text-iris opacity-0"
         >
           <span className="relative flex size-2">
-            <span className="absolute inline-flex size-full animate-pulse-ring rounded-full bg-ember" />
-            <span className="relative inline-flex size-2 rounded-full bg-ember" />
+            <span className="absolute inline-flex size-full animate-pulse-ring rounded-full bg-lime" />
+            <span className="relative inline-flex size-2 rounded-full bg-lime" />
           </span>
           {dict.hero.eyebrow}
         </p>
@@ -144,7 +144,7 @@ export function Hero() {
 
         <p
           data-hero-fade
-          className="mt-7 max-w-xl text-base leading-relaxed text-umber opacity-0 md:text-lg"
+          className="mt-7 max-w-xl text-base leading-relaxed text-mist opacity-0 md:text-lg"
         >
           {dict.hero.sub}
         </p>
@@ -155,7 +155,7 @@ export function Hero() {
               href={site.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-14 items-center rounded-full bg-ember px-9 text-base font-semibold text-obsidian transition-all duration-300 hover:bg-halo hover:shadow-[0_0_48px_rgba(255,122,41,0.45)]"
+              className="inline-flex h-14 items-center rounded-full bg-lime px-9 text-base font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:bg-iris-deep hover:text-white hover:shadow-[0_16px_38px_rgba(114,107,214,0.4)]"
             >
               {dict.hero.ctaPrimary}
             </a>
@@ -163,7 +163,7 @@ export function Hero() {
           <Magnetic strength={0.25}>
             <a
               href="#work"
-              className="glass inline-flex h-14 items-center rounded-full px-9 text-base font-medium text-bone transition-colors duration-300 hover:border-ember/50 hover:text-halo"
+              className="glass inline-flex h-14 items-center rounded-full px-9 text-base font-medium text-ink transition-colors duration-300 hover:border-iris/50 hover:text-iris"
             >
               {dict.hero.ctaSecondary}
             </a>
@@ -177,11 +177,11 @@ export function Hero() {
           <GrowthTicker words={dict.hero.ticker} />
           <a
             href="#trusted"
-            className="group flex items-center gap-3 font-mono text-xs tracking-[0.2em] uppercase text-umber transition-colors hover:text-bone"
+            className="group flex items-center gap-3 font-mono text-xs tracking-[0.2em] uppercase text-mist transition-colors hover:text-ink"
           >
             {dict.hero.scroll}
-            <span className="relative h-10 w-px overflow-hidden bg-bone/20">
-              <span className="absolute inset-x-0 top-0 h-1/2 animate-[scroll-line_1.8s_ease-in-out_infinite] bg-ember" />
+            <span className="relative h-10 w-px overflow-hidden bg-ink/15">
+              <span className="absolute inset-x-0 top-0 h-1/2 animate-[scroll-line_1.8s_ease-in-out_infinite] bg-lime" />
             </span>
           </a>
         </div>

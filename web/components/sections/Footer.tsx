@@ -22,14 +22,14 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr]">
           <div>
             <p className="font-display text-3xl font-extrabold">
-              BAIGR<span className="text-ember">.</span>
+              BAIGR<span className="text-iris">.</span>
             </p>
-            <p className="mt-3 max-w-xs leading-relaxed text-umber">
+            <p className="mt-3 max-w-xs leading-relaxed text-mist">
               {dict.footer.tagline}
             </p>
           </div>
           <nav aria-label={dict.footer.nav}>
-            <h3 className="mb-4 font-mono text-xs tracking-[0.2em] uppercase text-umber">
+            <h3 className="mb-4 font-mono text-xs tracking-[0.2em] uppercase text-mist">
               {dict.footer.nav}
             </h3>
             <ul className="space-y-2.5">
@@ -37,7 +37,7 @@ export function Footer() {
                 <li key={l.href}>
                   <a
                     href={l.href}
-                    className="text-sm text-bone/80 transition-colors hover:text-halo"
+                    className="text-sm text-mist transition-colors hover:text-iris"
                   >
                     {l.label}
                   </a>
@@ -46,7 +46,7 @@ export function Footer() {
             </ul>
           </nav>
           <div>
-            <h3 className="mb-4 font-mono text-xs tracking-[0.2em] uppercase text-umber">
+            <h3 className="mb-4 font-mono text-xs tracking-[0.2em] uppercase text-mist">
               {dict.footer.talk}
             </h3>
             <ul className="space-y-2.5 text-sm">
@@ -55,7 +55,7 @@ export function Footer() {
                   href={site.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-bone/80 transition-colors hover:text-halo"
+                  className="text-mist transition-colors hover:text-iris"
                 >
                   WhatsApp
                 </a>
@@ -63,7 +63,7 @@ export function Footer() {
               <li>
                 <a
                   href={`mailto:${site.email}`}
-                  className="text-bone/80 transition-colors hover:text-halo"
+                  className="text-mist transition-colors hover:text-iris"
                 >
                   {site.email}
                 </a>
@@ -73,7 +73,7 @@ export function Footer() {
                   href={site.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-bone/80 transition-colors hover:text-halo"
+                  className="text-mist transition-colors hover:text-iris"
                 >
                   Instagram
                 </a>
@@ -82,10 +82,10 @@ export function Footer() {
           </div>
         </div>
         <div className="hairline mt-14 flex flex-wrap items-center justify-between gap-3 border-t pt-7">
-          <p className="font-mono text-xs text-umber">
+          <p className="font-mono text-xs text-mist">
             © {year} BAIGR — {dict.footer.rights}
           </p>
-          <p className="font-mono text-xs text-umber">AR · EN · TR</p>
+          <p className="font-mono text-xs text-mist">AR · EN · TR</p>
         </div>
       </Container>
     </footer>

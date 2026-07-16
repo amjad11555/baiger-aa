@@ -21,7 +21,7 @@ export function WhyBaigr() {
             className="font-display text-4xl font-bold leading-[1.12] md:text-5xl"
           />
           <Reveal delay={0.1}>
-            <p className="mt-6 leading-relaxed text-umber md:text-lg">
+            <p className="mt-6 leading-relaxed text-mist md:text-lg">
               {dict.why.lead}
             </p>
           </Reveal>
@@ -30,13 +30,13 @@ export function WhyBaigr() {
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {dict.why.reasons.map((reason, i) => (
             <Reveal key={reason.title} delay={(i % 3) * 0.08}>
-              <article className="glass group h-full rounded-2xl p-7 transition-all duration-500 hover:-translate-y-1.5 hover:border-ember/40">
+              <article className="glass group h-full rounded-2xl p-7 transition-all duration-500 hover:-translate-y-1.5 hover:border-iris/40">
                 <span
                   aria-hidden
-                  className="mb-6 block size-2.5 rounded-full bg-ember transition-shadow duration-500 group-hover:shadow-[0_0_18px_rgba(255,122,41,0.8)]"
+                  className="mb-6 block size-2.5 rounded-full bg-gradient-to-br from-lime to-iris transition-shadow duration-500 group-hover:shadow-[0_0_18px_rgba(114,107,214,0.6)]"
                 />
                 <h3 className="font-display text-lg font-bold">{reason.title}</h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-umber">
+                <p className="mt-2.5 text-sm leading-relaxed text-mist">
                   {reason.desc}
                 </p>
               </article>

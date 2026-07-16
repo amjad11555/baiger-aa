@@ -1,45 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Manrope, Alexandria, IBM_Plex_Mono } from "next/font/google";
+import { Cairo } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
 import { site } from "@/lib/site";
 
-const syne = Syne({
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  variable: "--font-syne",
-  display: "swap",
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-manrope",
-  display: "swap",
-});
-
-const alexandria = Alexandria({
-  subsets: ["arabic", "latin"],
-  weight: ["300", "400", "500", "700", "800"],
-  variable: "--font-alexandria",
-  display: "swap",
-});
-
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-plex-mono",
+// One typeface across every language — Arabic, Latin and Turkish.
+const cairo = Cairo({
+  subsets: ["arabic", "latin", "latin-ext"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-cairo",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "BAIGR — AI Growth Agency",
+    default: "BAIGR — Creative Strategy & AI Growth",
     template: "%s — BAIGR",
   },
   description:
-    "BAIGR blends AI creative, precision advertising and automation to turn attention into revenue. Meta, Google, TikTok & Snapchat ads, AI content, websites, e-commerce and chatbots.",
+    "BAIGR is an AI-native creative growth studio. We turn bold ideas into campaigns and campaigns into revenue — Meta, Google, TikTok & Snapchat ads, AI content, websites, e-commerce and automation.",
   keywords: [
     "AI growth agency",
     "digital marketing",
@@ -56,22 +36,22 @@ export const metadata: Metadata = {
     type: "website",
     url: site.url,
     siteName: "BAIGR",
-    title: "BAIGR — AI Growth Agency",
+    title: "BAIGR — Creative Strategy & AI Growth",
     description:
-      "We turn attention into revenue. AI creative, precision ads and automation for brands that refuse to be ordinary.",
+      "Creative that sells. Growth you can measure. An AI-native studio for brands that refuse to blend in.",
     locale: "en_US",
     alternateLocale: ["ar_SA", "tr_TR"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BAIGR — AI Growth Agency",
-    description: "We turn attention into revenue.",
+    title: "BAIGR — Creative Strategy & AI Growth",
+    description: "Creative that sells. Growth you can measure.",
   },
   robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0c0a08",
+  themeColor: "#fefefe",
   width: "device-width",
   initialScale: 1,
 };
@@ -88,7 +68,7 @@ export default function RootLayout({
       lang="en"
       dir="ltr"
       suppressHydrationWarning
-      className={`${syne.variable} ${manrope.variable} ${alexandria.variable} ${plexMono.variable}`}
+      className={cairo.variable}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: langBoot }} />

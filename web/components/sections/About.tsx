@@ -22,7 +22,7 @@ export function About() {
               className="font-display text-4xl font-bold leading-[1.12] md:text-5xl"
             />
             <Reveal delay={0.15}>
-              <p className="mt-6 text-lg leading-relaxed text-halo/90">
+              <p className="mt-6 text-lg leading-relaxed text-iris">
                 {dict.about.lead}
               </p>
             </Reveal>
@@ -30,7 +30,7 @@ export function About() {
 
           <div>
             <Reveal>
-              <p className="text-base leading-loose text-umber md:text-lg">
+              <p className="text-base leading-loose text-mist md:text-lg">
                 {dict.about.body}
               </p>
             </Reveal>
@@ -40,13 +40,13 @@ export function About() {
                   <div className="hairline flex gap-5 border-t py-6">
                     <span
                       aria-hidden
-                      className="mt-2 size-2 shrink-0 rounded-full bg-ember"
+                      className="mt-2 size-2 shrink-0 rounded-full bg-lime"
                     />
                     <div>
                       <h3 className="font-display text-lg font-bold">
                         {point.title}
                       </h3>
-                      <p className="mt-1.5 leading-relaxed text-umber">
+                      <p className="mt-1.5 leading-relaxed text-mist">
                         {point.desc}
                       </p>
                     </div>
