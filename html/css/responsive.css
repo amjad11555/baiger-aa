@@ -1,0 +1,62 @@
+/* ============================================================
+   BAIGR — responsive layout (mobile-first upgrades).
+   Base styles are single-column; these queries add structure.
+   ============================================================ */
+
+/* ---------- ≥ 640px (sm) ---------- */
+@media (min-width: 640px) {
+  .lang-switch { display: flex; }
+
+  .why__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---------- ≥ 768px (md) ---------- */
+@media (min-width: 768px) {
+  .container { padding-inline: 2rem; }
+
+  .section { padding-block: 9rem; }
+
+  .hero__sub { font-size: 1.125rem; }
+
+  .services__groups { margin-top: 5rem; }
+  .services__group {
+    grid-template-columns: 180px 1fr;
+    gap: 2.5rem;
+  }
+  .services__group-label { position: sticky; top: 7rem; align-self: start; }
+  .services__row {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 2.5rem;
+  }
+  .services__row h4 { font-size: 1.5rem; }
+  .services__row p { margin-inline-start: auto; text-align: end; }
+  html[dir="rtl"] .services__row p { text-align: start; }
+
+  .portfolio__grid { grid-template-columns: repeat(2, 1fr); }
+
+  .case { grid-template-columns: minmax(220px, 1fr) 2fr; padding: 3rem; }
+  .case__metric { font-size: 4.5rem; }
+
+  .footer__grid { grid-template-columns: 2fr 1fr 1fr; }
+}
+
+/* ---------- ≥ 1024px (lg) ---------- */
+@media (min-width: 1024px) {
+  .navbar__links { display: flex; }
+  .navbar__cta { display: inline-flex; }
+  .burger { display: none; }
+  .menu-overlay { display: none !important; }
+
+  .about__grid { grid-template-columns: 1fr 1fr; gap: 5rem; }
+  .about__intro { position: sticky; top: 7rem; align-self: start; }
+
+  .process__line-bg, .process__line { display: block; }
+  .step__node { display: block; }
+  .process__steps { grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+
+  .why__grid { grid-template-columns: repeat(3, 1fr); }
+  .testimonials__grid { grid-template-columns: repeat(3, 1fr); }
+
+  .contact__inner { padding-block: 5rem; }
+}

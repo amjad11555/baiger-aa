@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0c0a08" />
+  <title>BAIGR — AI Growth Agency</title>
+  <meta name="description" content="BAIGR blends AI creative, precision advertising and automation to turn attention into revenue. Meta, Google, TikTok & Snapchat ads, AI content, websites, e-commerce and chatbots." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="BAIGR" />
+  <meta property="og:title" content="BAIGR — AI Growth Agency" />
+  <meta property="og:description" content="We turn attention into revenue. AI creative, precision ads and automation for brands that refuse to be ordinary." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BAIGR — AI Growth Agency" />
+  <meta name="twitter:description" content="We turn attention into revenue." />
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Organization","name":"BAIGR","url":"https://baigr.agency","email":"baigr.agency@gmail.com","description":"AI growth agency: AI creative, precision advertising and automation.","knowsLanguage":["ar","en","tr"]}
+  </script>
+
+  <!-- Language boot: restore saved / detect browser language before paint (no RTL flash) -->
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem("baigr-lang");
+        var l = s || ((navigator.languages && navigator.languages[0]) || navigator.language || "en").slice(0, 2);
+        if (["ar", "en", "tr"].indexOf(l) < 0) l = "en";
+        var d = document.documentElement;
+        d.lang = l;
+        d.dir = l === "ar" ? "rtl" : "ltr";
+        d.classList.add("js");
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Favicon (inline — no extra request) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c0a08'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23ff7a29'/%3E%3C/svg%3E" />
+
+  <!-- Typography (self-hosted — works offline and from file://) -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/files/syne-latin-800-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/files/syne-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/files/manrope-latin-400-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/files/ibm-plex-mono-latin-400-normal.woff2" />
+  <link rel="stylesheet" href="fonts/fonts.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- Libraries (vendored — no build step, no CDN dependency) -->
+  <script defer src="assets/vendor/gsap.min.js"></script>
+  <script defer src="assets/vendor/ScrollTrigger.min.js"></script>
+  <script defer src="assets/vendor/SplitText.min.js"></script>
+  <script defer src="assets/vendor/lenis.min.js"></script>
+  <script type="importmap">
+    { "imports": { "three": "./assets/vendor/three.module.js" } }
+  </script>
+
+  <!-- App -->
+  <script defer src="js/language.js"></script>
+  <script defer src="js/smooth-scroll.js"></script>
+  <script defer src="js/parallax.js"></script>
+  <script defer src="js/animations.js"></script>
+  <script defer src="js/app.js"></script>
+  <script type="module" src="js/three-scene.js"></script>
+</head>
+
+<body class="grain" id="top">
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="navbar" id="navbar">
+    <nav class="navbar__inner container">
+      <a href="#top" class="navbar__logo font-display" aria-label="BAIGR — home">BAIGR<span class="dot">.</span></a>
+
+      <ul class="navbar__links">
+        <li><a href="#about"    data-i18n="nav.about">About</a></li>
+        <li><a href="#services" data-i18n="nav.services">Services</a></li>
+        <li><a href="#work"     data-i18n="nav.work">Work</a></li>
+        <li><a href="#process"  data-i18n="nav.process">Process</a></li>
+        <li><a href="#faq"      data-i18n="nav.faq">FAQ</a></li>
+      </ul>
+
+      <div class="navbar__actions">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button data-lang="en" aria-pressed="true">EN</button>
+          <button data-lang="ar" aria-pressed="false">ع</button>
+          <button data-lang="tr" aria-pressed="false">TR</button>
+        </div>
+        <a class="btn btn--solid navbar__cta" href="https://wa.me/905000000000" target="_blank" rel="noopener noreferrer" data-i18n="nav.cta">Start a project</a>
+        <button class="burger" id="burger" aria-expanded="false" aria-label="Open menu">
+          <span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile overlay menu -->
+    <div class="menu-overlay" id="menu-overlay" hidden>
+      <ul class="menu-overlay__links">
+        <li><a href="#about"    data-menu-item><span class="num font-mono">01</span><span data-i18n="nav.about">About</span></a></li>
+        <li><a href="#services" data-menu-item><span class="num font-mono">02</span><span data-i18n="nav.services">Services</span></a></li>
+        <li><a href="#work"     data-menu-item><span class="num font-mono">03</span><span data-i18n="nav.work">Work</span></a></li>
+        <li><a href="#process"  data-menu-item><span class="num font-mono">04</span><span data-i18n="nav.process">Process</span></a></li>
+        <li><a href="#faq"      data-menu-item><span class="num font-mono">05</span><span data-i18n="nav.faq">FAQ</span></a></li>
+      </ul>
+      <div class="menu-overlay__foot" data-menu-item>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button data-lang="en" aria-pressed="true">EN</button>
+          <button data-lang="ar" aria-pressed="false">ع</button>
+          <button data-lang="tr" aria-pressed="false">TR</button>
+        </div>
+        <a class="btn btn--solid" href="https://wa.me/905000000000" target="_blank" rel="noopener noreferrer" data-i18n="nav.cta">Start a project</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" id="hero">
+      <div class="hero__field" id="hero-field" aria-hidden="true"></div>
+      <div class="hero__aurora" aria-hidden="true"></div>
+      <div class="hero__floor" aria-hidden="true"></div>
+
+      <div class="container hero__content">
+        <p class="eyebrow hero__eyebrow" data-hero-fade>
+          <span class="pulse-dot" aria-hidden="true"><span></span><span></span></span>
+          <span data-i18n="hero.eyebrow">BAIGR · AI Growth Agency</span>
+        </p>
+
+        <h1 class="hero__title font-display hero-display">
+          <span class="wr" data-wr="load" data-i18n="hero.titlePre" aria-hidden="true">We turn attention into&nbsp;</span><span class="text-gradient-ember" data-hero-fade data-i18n="hero.titleAccent" aria-hidden="true">revenue</span><span data-hero-fade data-i18n="hero.titlePost" aria-hidden="true">.</span>
+          <span class="sr-only" data-i18n-compose="hero.titlePre hero.titleAccent hero.titlePost">We turn attention into revenue.</span>
+        </h1>
+
+        <p class="hero__sub" data-hero-fade data-i18n="hero.sub">AI creative, precision advertising and automation — one senior team building growth for brands that refuse to be ordinary.</p>
+
+        <div class="hero__ctas" data-hero-fade>
+          <span class="magnetic"><a class="btn btn--solid btn--lg" href="https://wa.me/905000000000" target="_blank" rel="noopener noreferrer" data-i18n="hero.ctaPrimary">Start your growth</a></span>
+          <span class="magnetic" data-strength="0.25"><a class="btn btn--glass btn--lg" href="#work" data-i18n="hero.ctaSecondary">See the work</a></span>
+        </div>
+
+        <div class="hero__foot" data-hero-fade>
+          <span class="ticker" aria-hidden="true"><span class="font-mono" id="growth-ticker">Growth</span></span>
+          <a href="#trusted" class="scroll-hint font-mono">
+            <span data-i18n="hero.scroll">Scroll</span>
+            <span class="scroll-hint__track" aria-hidden="true"><span></span></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRUSTED BY ===================== -->
+    <section class="trusted" id="trusted">
+      <div class="reveal">
+        <p class="trusted__label font-mono" data-i18n="trusted.label">Brands growing with us</p>
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee__row" id="marquee-row">
+            <span class="font-display">NORA</span><span class="font-display">ATLAS</span><span class="font-display">VELA</span><span class="font-display">KAYRA</span><span class="font-display">ORBIT</span><span class="font-display">MIRA</span><span class="font-display">LUNE</span><span class="font-display">ASYA</span>
+            <span class="font-display">NORA</span><span class="font-display">ATLAS</span><span class="font-display">VELA</span><span class="font-display">KAYRA</span><span class="font-display">ORBIT</span><span class="font-display">MIRA</span><span class="font-display">LUNE</span><span class="font-display">ASYA</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section class="section about aurora" id="about">
+      <div class="container about__grid">
+        <div class="about__intro">
+          <p class="eyebrow reveal"><span class="eyebrow__line" aria-hidden="true"></span><span data-i18n="about.eyebrow">Who we are</span></p>
+          <h2 class="h2 font-display wr" data-wr="scroll" data-i18n="about.title">A growth partner, not a vendor.</h2>
+          <p class="about__lead reveal" data-delay="0.15" data-i18n="about.lead">BAIGR is a growth agency built for the AI era — strategy, creative and media under one roof.</p>
+        </div>
+        <div class="about__body">
+          <p class="reveal" data-i18n="about.body">We are a small senior team that treats your budget like our own. Every campaign starts with your numbers, not our portfolio. AI does the heavy lifting; human taste makes the call. That mix is why our clients stay.</p>
+          <ul class="about__points">
+            <li class="reveal"><div class="point"><span class="point__dot" aria-hidden="true"></span><div><h3 class="font-display" data-i18n="about.points.0.title">AI-native, human-led</h3><p data-i18n="about.points.0.desc">We use AI where it multiplies output — and people where judgement matters.</p></div></div></li>
+            <li class="reveal" data-delay="0.08"><div class="point"><span class="point__dot" aria-hidden="true"></span><div><h3 class="font-display" data-i18n="about.points.1.title">Revenue over vanity</h3><p data-i18n="about.points.1.desc">Likes don't pay salaries. We optimise for sales, leads and lifetime value.</p></div></div></li>
+            <li class="reveal" data-delay="0.16"><div class="point"><span class="point__dot" aria-hidden="true"></span><div><h3 class="font-display" data-i18n="about.points.2.title">Three markets, one team</h3><p data-i18n="about.points.2.desc">Arabic, English and Turkish natively — copy that sells in each culture, not translations.</p></div></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SERVICES ===================== -->
+    <section class="section services" id="services">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow reveal"><span class="eyebrow__line" aria-hidden="true"></span><span data-i18n="services.eyebrow">What we do</span></p>
+          <h2 class="h2 font-display wr" data-wr="scroll" data-i18n="services.title">Everything growth needs, under one roof.</h2>
+          <p class="section__lead reveal" data-delay="0.1" data-i18n="services.lead">Five disciplines that feed each other. Creative fuels ads, ads feed data, data trains automation — the loop compounds.</p>
+        </div>
+
+        <div class="services__groups">
+          <div class="services__group">
+            <h3 class="services__group-label font-mono reveal" data-i18n="services.groups.0.name">Create</h3>
+            <ul>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">01</span><h4 class="font-display" data-i18n="services.groups.0.items.0.title">AI Image Creation</h4><p data-i18n="services.groups.0.items.0.desc">Scroll-stopping product shots and brand visuals, generated and art-directed in days, not weeks.</p></li>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">02</span><h4 class="font-display" data-i18n="services.groups.0.items.1.title">AI Video Production</h4><p data-i18n="services.groups.0.items.1.desc">Ads, reels and brand films powered by AI pipelines — cinema feel at a fraction of the cost.</p></li>
+            </ul>
+          </div>
+          <div class="services__group">
+            <h3 class="services__group-label font-mono reveal" data-i18n="services.groups.1.name">Advertise</h3>
+            <ul>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">03</span><h4 class="font-display" data-i18n="services.groups.1.items.0.title">Meta Advertising</h4><p data-i18n="services.groups.1.items.0.desc">Full-funnel Facebook &amp; Instagram campaigns engineered around ROAS, not reach.</p></li>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">04</span><h4 class="font-display" data-i18n="services.groups.1.items.1.title">Google Advertising</h4><p data-i18n="services.groups.1.items.1.desc">Search, Shopping and YouTube — capturing demand at the exact moment it exists.</p></li>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">05</span><h4 class="font-display" data-i18n="services.groups.1.items.2.title">TikTok Advertising</h4><p data-i18n="services.groups.1.items.2.desc">Native-feeling creative and spark ads that ride the algorithm instead of fighting it.</p></li>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">06</span><h4 class="font-display" data-i18n="services.groups.1.items.3.title">Snapchat Advertising</h4><p data-i18n="services.groups.1.items.3.desc">The under-priced channel in MENA — we make it a quiet growth engine.</p></li>
+            </ul>
+          </div>
+          <div class="services__group">
+            <h3 class="services__group-label font-mono reveal" data-i18n="services.groups.2.name">Build</h3>
+            <ul>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">07</span><h4 class="font-display" data-i18n="services.groups.2.items.0.title">Professional Websites</h4><p data-i18n="services.groups.2.items.0.desc">Fast, beautiful sites that make visitors trust you before they've read a word.</p></li>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">08</span><h4 class="font-display" data-i18n="services.groups.2.items.1.title">E-commerce Development</h4><p data-i18n="services.groups.2.items.1.desc">Stores engineered for conversion — checkout flows measured in seconds, not clicks.</p></li>
+            </ul>
+          </div>
+          <div class="services__group">
+            <h3 class="services__group-label font-mono reveal" data-i18n="services.groups.3.name">Automate</h3>
+            <ul>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">09</span><h4 class="font-display" data-i18n="services.groups.3.items.0.title">Marketing Automation</h4><p data-i18n="services.groups.3.items.0.desc">Follow-ups, funnels and reporting that run while you sleep.</p></li>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">10</span><h4 class="font-display" data-i18n="services.groups.3.items.1.title">AI Chatbots</h4><p data-i18n="services.groups.3.items.1.desc">Assistants that answer in your voice, qualify leads and close simple sales 24/7.</p></li>
+            </ul>
+          </div>
+          <div class="services__group">
+            <h3 class="services__group-label font-mono reveal" data-i18n="services.groups.4.name">Advise</h3>
+            <ul>
+              <li class="services__row reveal" data-cursor><span class="num font-mono">11</span><h4 class="font-display" data-i18n="services.groups.4.items.0.title">Marketing Consulting</h4><p data-i18n="services.groups.4.items.0.desc">A senior brain on your side of the table — audits, strategy and honest answers.</p></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PORTFOLIO ===================== -->
+    <section class="section portfolio" id="work">
+      <div class="container">
+        <div class="portfolio__head">
+          <div>
+            <p class="eyebrow reveal"><span class="eyebrow__line" aria-hidden="true"></span><span data-i18n="portfolio.eyebrow">Selected work</span></p>
+            <h2 class="h2 font-display wr" data-wr="scroll" data-i18n="portfolio.title">Proof, not promises.</h2>
+          </div>
+          <p class="portfolio__lead reveal" data-i18n="portfolio.lead">A few of the brands we've helped grow. Full case decks available on request.</p>
+        </div>
+
+        <div class="portfolio__grid">
+          <article class="project reveal" data-cursor>
+            <div class="project__cover cover--1" data-cover><span class="project__initial font-display" aria-hidden="true">A</span><span class="project__arrow glass" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13L13 3M6 3h7v7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="project__meta"><h3 class="font-display" data-i18n="portfolio.projects.0.name">Ayla Beauty</h3><p class="font-mono" data-i18n="portfolio.projects.0.tag">E-commerce · Skincare</p></div>
+            <p class="project__result font-mono" data-i18n="portfolio.projects.0.result">+212% revenue in 6 months</p>
+          </article>
+          <article class="project reveal" data-delay="0.1" data-cursor>
+            <div class="project__cover cover--2" data-cover><span class="project__initial font-display" aria-hidden="true">N</span><span class="project__arrow glass" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13L13 3M6 3h7v7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="project__meta"><h3 class="font-display" data-i18n="portfolio.projects.1.name">Nomad Coffee</h3><p class="font-mono" data-i18n="portfolio.projects.1.tag">Brand · Meta Ads</p></div>
+            <p class="project__result font-mono" data-i18n="portfolio.projects.1.result">3.4× return on ad spend</p>
+          </article>
+          <article class="project reveal" data-cursor>
+            <div class="project__cover cover--3" data-cover><span class="project__initial font-display" aria-hidden="true">K</span><span class="project__arrow glass" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13L13 3M6 3h7v7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="project__meta"><h3 class="font-display" data-i18n="portfolio.projects.2.name">Kavra Home</h3><p class="font-mono" data-i18n="portfolio.projects.2.tag">Website · Google Ads</p></div>
+            <p class="project__result font-mono" data-i18n="portfolio.projects.2.result">2.1× conversion rate</p>
+          </article>
+          <article class="project reveal" data-delay="0.1" data-cursor>
+            <div class="project__cover cover--4" data-cover><span class="project__initial font-display" aria-hidden="true">P</span><span class="project__arrow glass" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13L13 3M6 3h7v7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div class="project__meta"><h3 class="font-display" data-i18n="portfolio.projects.3.name">Pulse Fitness</h3><p class="font-mono" data-i18n="portfolio.projects.3.tag">TikTok · Automation</p></div>
+            <p class="project__result font-mono" data-i18n="portfolio.projects.3.result">18,000 leads in one quarter</p>
+          </article>
+        </div>
+
+        <p class="portfolio__note font-mono reveal" data-i18n="portfolio.note">Client names anonymised where required.</p>
+      </div>
+    </section>
+
+    <!-- ===================== CASE STUDIES ===================== -->
+    <section class="section cases aurora" id="cases">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow reveal"><span class="eyebrow__line" aria-hidden="true"></span><span data-i18n="cases.eyebrow">Case studies</span></p>
+          <h2 class="h2 font-display wr" data-wr="scroll" data-i18n="cases.title">How the numbers moved.</h2>
+          <p class="section__lead reveal" data-delay="0.1" data-i18n="cases.lead">Three plays, three markets, one method: find the constraint, remove it, scale what works.</p>
+        </div>
+
+        <div class="cases__list">
+          <article class="case glass reveal">
+            <div class="case__metric-wrap">
+              <p class="case__sector font-mono" data-i18n="cases.items.0.sector">Skincare e-commerce · KSA</p>
+              <p class="case__metric font-display text-gradient-ember" data-i18n="cases.items.0.metric">+212%</p>
+              <p class="case__metric-label font-mono" data-i18n="cases.items.0.metricLabel">revenue in 6 months</p>
+            </div>
+            <dl class="case__story">
+              <div><dt class="font-mono" data-i18n="cases.labels.challenge">The problem</dt><dd data-i18n="cases.items.0.challenge">Great product, flat sales — ads were paying for traffic that never converted.</dd></div>
+              <div><dt class="font-mono" data-i18n="cases.labels.play">The play</dt><dd class="bright" data-i18n="cases.items.0.play">Rebuilt the store around one hero product, AI-generated 40 creative variants, let Meta find the winners.</dd></div>
+            </dl>
+          </article>
+          <article class="case glass reveal" data-delay="0.05">
+            <div class="case__metric-wrap">
+              <p class="case__sector font-mono" data-i18n="cases.items.1.sector">Real estate developer · Türkiye</p>
+              <p class="case__metric font-display text-gradient-ember" data-i18n="cases.items.1.metric">−38%</p>
+              <p class="case__metric-label font-mono" data-i18n="cases.items.1.metricLabel">cost per qualified lead</p>
+            </div>
+            <dl class="case__story">
+              <div><dt class="font-mono" data-i18n="cases.labels.challenge">The problem</dt><dd data-i18n="cases.items.1.challenge">Leads cost a fortune and sales wasted hours on unqualified calls.</dd></div>
+              <div><dt class="font-mono" data-i18n="cases.labels.play">The play</dt><dd class="bright" data-i18n="cases.items.1.play">AI chatbot qualified every lead in Arabic, Turkish and English before a human ever picked up the phone.</dd></div>
+            </dl>
+          </article>
+          <article class="case glass reveal" data-delay="0.1">
+            <div class="case__metric-wrap">
+              <p class="case__sector font-mono" data-i18n="cases.items.2.sector">Restaurant group · UAE</p>
+              <p class="case__metric font-display text-gradient-ember" data-i18n="cases.items.2.metric">5.1×</p>
+              <p class="case__metric-label font-mono" data-i18n="cases.items.2.metricLabel">return on ad spend</p>
+            </div>
+            <dl class="case__story">
+              <div><dt class="font-mono" data-i18n="cases.labels.challenge">The problem</dt><dd data-i18n="cases.items.2.challenge">Full dining rooms on weekends, empty ones midweek.</dd></div>
+              <div><dt class="font-mono" data-i18n="cases.labels.play">The play</dt><dd class="bright" data-i18n="cases.items.2.play">TikTok + Snapchat geo-campaigns with offer automation tied to the quiet hours.</dd></div>
+            </dl>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROCESS ===================== -->
+    <section class="section process" id="process">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow reveal"><span class="eyebrow__line" aria-hidden="true"></span><span data-i18n="process.eyebrow">How we work</span></p>
+          <h2 class="h2 font-display wr" data-wr="scroll" data-i18n="process.title">Four steps. No mystery.</h2>
+          <p class="section__lead reveal" data-delay="0.1" data-i18n="process.lead">You'll always know what we're doing, why, and what it returned.</p>
+        </div>
+
+        <div class="process__track">
+          <div class="process__line-bg" aria-hidden="true"></div>
+          <div class="process__line" id="process-line" aria-hidden="true"></div>
+          <ol class="process__steps">
+            <li class="reveal"><div class="step"><span class="step__node glow-ember" aria-hidden="true"></span><p class="step__num font-mono">01</p><h3 class="font-display" data-i18n="process.steps.0.title">Listen</h3><p data-i18n="process.steps.0.desc">We start with your numbers, market and margins — not a pitch deck. One week, one clear diagnosis.</p></div></li>
+            <li class="reveal" data-delay="0.12"><div class="step"><span class="step__node glow-ember" aria-hidden="true"></span><p class="step__num font-mono">02</p><h3 class="font-display" data-i18n="process.steps.1.title">Design the play</h3><p data-i18n="process.steps.1.desc">A growth plan with targets you can hold us to: channels, creative, budget, timeline.</p></div></li>
+            <li class="reveal" data-delay="0.24"><div class="step"><span class="step__node glow-ember" aria-hidden="true"></span><p class="step__num font-mono">03</p><h3 class="font-display" data-i18n="process.steps.2.title">Launch</h3><p data-i18n="process.steps.2.desc">Creative, campaigns and builds go live fast — then we watch the data like hawks.</p></div></li>
+            <li class="reveal" data-delay="0.36"><div class="step"><span class="step__node glow-ember" aria-hidden="true"></span><p class="step__num font-mono">04</p><h3 class="font-display" data-i18n="process.steps.3.title">Scale</h3><p data-i18n="process.steps.3.desc">Double down on what works, kill what doesn't, report weekly in plain language.</p></div></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== WHY BAIGR ===================== -->
+    <section class="section why" id="why">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow reveal"><span class="eyebrow__line" aria-hidden="true"></span><span data-i18n="why.eyebrow">Why BAIGR</span></p>
+          <h2 class="h2 font-display wr" data-wr="scroll" data-i18n="why.title">The unfair advantages.</h2>
+          <p class="section__lead reveal" data-delay="0.1" data-i18n="why.lead">What you actually get when you work with us.</p>
+        </div>
+
+        <div class="why__grid">
+          <article class="why-card glass reveal"><span class="why-card__dot" aria-hidden="true"></span><h3 class="font-display" data-i18n="why.reasons.0.title">AI-native from day one</h3><p data-i18n="why.reasons.0.desc">We don't bolt AI on — our whole pipeline is built around it. You get 10× the creative output at the same budget.</p></article>
+          <article class="why-card glass reveal" data-delay="0.08"><span class="why-card__dot" aria-hidden="true"></span><h3 class="font-display" data-i18n="why.reasons.1.title">Senior hands only</h3><p data-i18n="why.reasons.1.desc">No juniors learning on your money. The people in the pitch are the people doing the work.</p></article>
+          <article class="why-card glass reveal" data-delay="0.16"><span class="why-card__dot" aria-hidden="true"></span><h3 class="font-display" data-i18n="why.reasons.2.title">Speed as a habit</h3><p data-i18n="why.reasons.2.desc">First campaigns live within days. Momentum is a strategy.</p></article>
+          <article class="why-card glass reveal"><span class="why-card__dot" aria-hidden="true"></span><h3 class="font-display" data-i18n="why.reasons.3.title">Radical transparency</h3><p data-i18n="why.reasons.3.desc">Live dashboards, weekly summaries, and the truth even when it's uncomfortable.</p></article>
+          <article class="why-card glass reveal" data-delay="0.08"><span class="why-card__dot" aria-hidden="true"></span><h3 class="font-display" data-i18n="why.reasons.4.title">One roof, zero friction</h3><p data-i18n="why.reasons.4.desc">Creative, media, web and automation in one team — no agencies blaming each other.</p></article>
+          <article class="why-card glass reveal" data-delay="0.16"><span class="why-card__dot" aria-hidden="true"></span><h3 class="font-display" data-i18n="why.reasons.5.title">We win when you win</h3><p data-i18n="why.reasons.5.desc">Performance-linked pricing available. Our incentive is your growth, literally.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TESTIMONIALS ===================== -->
+    <section class="section testimonials aurora" id="testimonials">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow reveal"><span class="eyebrow__line" aria-hidden="true"></span><span data-i18n="testimonials.eyebrow">What clients say</span></p>
+          <h2 class="h2 font-display wr" data-wr="scroll" data-i18n="testimonials.title">Trust is earned in the numbers.</h2>
+        </div>
+
+        <div class="testimonials__grid">
+          <figure class="quote glass reveal">
+            <span class="quote__mark font-display" aria-hidden="true">&ldquo;</span>
+            <blockquote data-i18n="testimonials.quotes.0.quote">They rebuilt our store and doubled revenue in a quarter. First agency that talked margins with me instead of impressions.</blockquote>
+            <figcaption><p class="font-display" data-i18n="testimonials.quotes.0.name">Sara A.</p><p data-i18n="testimonials.quotes.0.role">Founder, skincare brand</p></figcaption>
+          </figure>
+          <figure class="quote glass reveal" data-delay="0.1">
+            <span class="quote__mark font-display" aria-hidden="true">&ldquo;</span>
+            <blockquote data-i18n="testimonials.quotes.1.quote">The chatbot alone saved my sales team fifteen hours a week. Everything they promised showed up in the dashboard.</blockquote>
+            <figcaption><p class="font-display" data-i18n="testimonials.quotes.1.name">Mehmet K.</p><p data-i18n="testimonials.quotes.1.role">Sales director, real estate</p></figcaption>
+          </figure>
+          <figure class="quote glass reveal" data-delay="0.2">
+            <span class="quote__mark font-display" aria-hidden="true">&ldquo;</span>
+            <blockquote data-i18n="testimonials.quotes.2.quote">Fast, honest, and genuinely creative. Our TikTok went from dead weight to our best channel.</blockquote>
+            <figcaption><p class="font-display" data-i18n="testimonials.quotes.2.name">Omar R.</p><p data-i18n="testimonials.quotes.2.role">Marketing lead, F&amp;B group</p></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FAQ ===================== -->
+    <section class="section faq" id="faq">
+      <div class="container container--narrow">
+        <p class="eyebrow reveal"><span class="eyebrow__line" aria-hidden="true"></span><span data-i18n="faq.eyebrow">Questions</span></p>
+        <h2 class="h2 font-display wr" data-wr="scroll" data-i18n="faq.title">Asked often, answered honestly.</h2>
+
+        <div class="accordion reveal" data-delay="0.15" id="accordion">
+          <div class="accordion__item">
+            <h3><button class="accordion__trigger" aria-expanded="false"><span class="font-display" data-i18n="faq.items.0.q">How fast will we see results?</span><svg class="accordion__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 2v12M2 8h12"/></svg></button></h3>
+            <div class="accordion__content"><div class="accordion__body" data-i18n="faq.items.0.a">Ad campaigns produce signal within 2–4 weeks; meaningful revenue movement typically lands within the first quarter. Websites and automation deliver value from day one. We'll give you a realistic timeline in the first call — and hold ourselves to it.</div></div>
+          </div>
+          <div class="accordion__item">
+            <h3><button class="accordion__trigger" aria-expanded="false"><span class="font-display" data-i18n="faq.items.1.q">What budgets do you work with?</span><svg class="accordion__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 2v12M2 8h12"/></svg></button></h3>
+            <div class="accordion__content"><div class="accordion__body" data-i18n="faq.items.1.a">Most of our clients invest between $2,000 and $50,000 monthly across ads and services. What matters more than size is intent: if you want growth and can act on it, we can build a plan that fits.</div></div>
+          </div>
+          <div class="accordion__item">
+            <h3><button class="accordion__trigger" aria-expanded="false"><span class="font-display" data-i18n="faq.items.2.q">Which markets do you cover?</span><svg class="accordion__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 2v12M2 8h12"/></svg></button></h3>
+            <div class="accordion__content"><div class="accordion__body" data-i18n="faq.items.2.a">We operate natively in Arabic, English and Turkish — Gulf, Levant, Türkiye, Europe and North America. Same team, three cultures, no translation layer.</div></div>
+          </div>
+          <div class="accordion__item">
+            <h3><button class="accordion__trigger" aria-expanded="false"><span class="font-display" data-i18n="faq.items.3.q">What makes BAIGR different from other agencies?</span><svg class="accordion__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 2v12M2 8h12"/></svg></button></h3>
+            <div class="accordion__content"><div class="accordion__body" data-i18n="faq.items.3.a">Three things: AI-native production (10× the creative for the same budget), senior-only staffing, and reporting tied to revenue rather than reach. We're happy to prove all three in a pilot month.</div></div>
+          </div>
+          <div class="accordion__item">
+            <h3><button class="accordion__trigger" aria-expanded="false"><span class="font-display" data-i18n="faq.items.4.q">How do we start?</span><svg class="accordion__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 2v12M2 8h12"/></svg></button></h3>
+            <div class="accordion__content"><div class="accordion__body" data-i18n="faq.items.4.a">One WhatsApp message. We'll book a free 30-minute call, audit what you have, and send a plan with numbers within a week. No commitment until you see it.</div></div>
+          </div>
+          <div class="accordion__item">
+            <h3><button class="accordion__trigger" aria-expanded="false"><span class="font-display" data-i18n="faq.items.5.q">How will we communicate?</span><svg class="accordion__icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 2v12M2 8h12"/></svg></button></h3>
+            <div class="accordion__content"><div class="accordion__body" data-i18n="faq.items.5.a">A dedicated WhatsApp group, a live results dashboard, and a weekly summary in plain language. You'll never chase us for an update.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CONTACT CTA ===================== -->
+    <section class="section contact" id="contact">
+      <div class="contact__horizon" aria-hidden="true"></div>
+      <div class="container contact__inner">
+        <p class="eyebrow eyebrow--center reveal"><span class="eyebrow__line" aria-hidden="true"></span><span data-i18n="contact.eyebrow">Next step</span></p>
+        <h2 class="contact__title font-display">
+          <span class="wr" data-wr="scroll" data-i18n="contact.titlePre" aria-hidden="true">Ready to grow&nbsp;</span><span class="text-gradient-ember" data-i18n="contact.titleAccent" aria-hidden="true">on purpose?</span>
+          <span class="sr-only" data-i18n-compose="contact.titlePre contact.titleAccent">Ready to grow on purpose?</span>
+        </h2>
+        <p class="contact__sub reveal" data-delay="0.15" data-i18n="contact.sub">Tell us where you are and where you want to be. We'll bring the map — first call is free, no strings.</p>
+        <div class="contact__actions reveal" data-delay="0.25">
+          <span class="magnetic" data-strength="0.4">
+            <a class="btn btn--solid btn--xl glow-ember" href="https://wa.me/905000000000" target="_blank" rel="noopener noreferrer">
+              <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.14-1.26-.46-2.4-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.66-1.6-.91-2.19-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.11.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.07-.13-.27-.2-.57-.35zM12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.44 4.43-9.87 9.89-9.87a9.82 9.82 0 0 1 6.98 2.9 9.82 9.82 0 0 1 2.89 6.99c0 5.44-4.43 9.87-9.87 9.87zm8.4-18.28A11.8 11.8 0 0 0 12.04 0C5.46 0 .1 5.35.1 11.93c0 2.1.55 4.15 1.6 5.96L0 24l6.25-1.64a11.93 11.93 0 0 0 5.8 1.48c6.58 0 11.94-5.36 11.94-11.94 0-3.19-1.24-6.19-3.54-8.39z"/></svg>
+              <span data-i18n="contact.cta">Chat on WhatsApp</span>
+            </a>
+          </span>
+          <p class="contact__alt"><span data-i18n="contact.or">or</span> <a href="mailto:baigr.agency@gmail.com" data-i18n="contact.emailLabel">Email us</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <p class="footer__logo font-display">BAIGR<span class="dot">.</span></p>
+          <p class="footer__tagline" data-i18n="footer.tagline">Growth, engineered with AI.</p>
+        </div>
+        <nav aria-label="Explore">
+          <h3 class="font-mono" data-i18n="footer.nav">Explore</h3>
+          <ul>
+            <li><a href="#about"    data-i18n="nav.about">About</a></li>
+            <li><a href="#services" data-i18n="nav.services">Services</a></li>
+            <li><a href="#work"     data-i18n="nav.work">Work</a></li>
+            <li><a href="#process"  data-i18n="nav.process">Process</a></li>
+            <li><a href="#faq"      data-i18n="nav.faq">FAQ</a></li>
+          </ul>
+        </nav>
+        <div>
+          <h3 class="font-mono" data-i18n="footer.talk">Talk to us</h3>
+          <ul>
+            <li><a href="https://wa.me/905000000000" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+            <li><a href="mailto:baigr.agency@gmail.com">baigr.agency@gmail.com</a></li>
+            <li><a href="https://instagram.com/baigr.agency" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p class="font-mono">© <span id="year">2026</span> BAIGR — <span data-i18n="footer.rights">All rights reserved.</span></p>
+        <p class="font-mono">AR · EN · TR</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <a class="wa-float glass" href="https://wa.me/905000000000" target="_blank" rel="noopener noreferrer" aria-label="Chat with BAIGR on WhatsApp" data-i18n-attr="aria-label:whatsapp,title:whatsapp">
+    <span class="wa-float__ring" aria-hidden="true"></span>
+    <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.14-1.26-.46-2.4-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.66-1.6-.91-2.19-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.11.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.07-.13-.27-.2-.57-.35zM12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.44 4.43-9.87 9.89-9.87a9.82 9.82 0 0 1 6.98 2.9 9.82 9.82 0 0 1 2.89 6.99c0 5.44-4.43 9.87-9.87 9.87zm8.4-18.28A11.8 11.8 0 0 0 12.04 0C5.46 0 .1 5.35.1 11.93c0 2.1.55 4.15 1.6 5.96L0 24l6.25-1.64a11.93 11.93 0 0 0 5.8 1.48c6.58 0 11.94-5.36 11.94-11.94 0-3.19-1.24-6.19-3.54-8.39z"/></svg>
+  </a>
+
+  <!-- Custom cursor -->
+  <div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursor-ring" aria-hidden="true"></div>
+
+</body>
+</html>

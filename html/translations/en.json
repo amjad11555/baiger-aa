@@ -1,0 +1,316 @@
+{
+  "nav": {
+    "about": "About",
+    "services": "Services",
+    "work": "Work",
+    "process": "Process",
+    "faq": "FAQ",
+    "cta": "Start a project"
+  },
+  "hero": {
+    "eyebrow": "BAIGR · AI Growth Agency",
+    "titlePre": "We turn attention into ",
+    "titleAccent": "revenue",
+    "titlePost": ".",
+    "sub": "AI creative, precision advertising and automation — one senior team building growth for brands that refuse to be ordinary.",
+    "ctaPrimary": "Start your growth",
+    "ctaSecondary": "See the work",
+    "scroll": "Scroll",
+    "ticker": [
+      "Growth",
+      "نمو",
+      "Büyüme"
+    ]
+  },
+  "trusted": {
+    "label": "Brands growing with us",
+    "brands": [
+      "NORA",
+      "ATLAS",
+      "VELA",
+      "KAYRA",
+      "ORBIT",
+      "MIRA",
+      "LUNE",
+      "ASYA"
+    ]
+  },
+  "about": {
+    "eyebrow": "Who we are",
+    "title": "A growth partner, not a vendor.",
+    "lead": "BAIGR is a growth agency built for the AI era — strategy, creative and media under one roof.",
+    "body": "We are a small senior team that treats your budget like our own. Every campaign starts with your numbers, not our portfolio. AI does the heavy lifting; human taste makes the call. That mix is why our clients stay.",
+    "points": [
+      {
+        "title": "AI-native, human-led",
+        "desc": "We use AI where it multiplies output — and people where judgement matters."
+      },
+      {
+        "title": "Revenue over vanity",
+        "desc": "Likes don't pay salaries. We optimise for sales, leads and lifetime value."
+      },
+      {
+        "title": "Three markets, one team",
+        "desc": "Arabic, English and Turkish natively — copy that sells in each culture, not translations."
+      }
+    ]
+  },
+  "services": {
+    "eyebrow": "What we do",
+    "title": "Everything growth needs, under one roof.",
+    "lead": "Five disciplines that feed each other. Creative fuels ads, ads feed data, data trains automation — the loop compounds.",
+    "groups": [
+      {
+        "name": "Create",
+        "items": [
+          {
+            "title": "AI Image Creation",
+            "desc": "Scroll-stopping product shots and brand visuals, generated and art-directed in days, not weeks."
+          },
+          {
+            "title": "AI Video Production",
+            "desc": "Ads, reels and brand films powered by AI pipelines — cinema feel at a fraction of the cost."
+          }
+        ]
+      },
+      {
+        "name": "Advertise",
+        "items": [
+          {
+            "title": "Meta Advertising",
+            "desc": "Full-funnel Facebook & Instagram campaigns engineered around ROAS, not reach."
+          },
+          {
+            "title": "Google Advertising",
+            "desc": "Search, Shopping and YouTube — capturing demand at the exact moment it exists."
+          },
+          {
+            "title": "TikTok Advertising",
+            "desc": "Native-feeling creative and spark ads that ride the algorithm instead of fighting it."
+          },
+          {
+            "title": "Snapchat Advertising",
+            "desc": "The under-priced channel in MENA — we make it a quiet growth engine."
+          }
+        ]
+      },
+      {
+        "name": "Build",
+        "items": [
+          {
+            "title": "Professional Websites",
+            "desc": "Fast, beautiful sites that make visitors trust you before they've read a word."
+          },
+          {
+            "title": "E-commerce Development",
+            "desc": "Stores engineered for conversion — checkout flows measured in seconds, not clicks."
+          }
+        ]
+      },
+      {
+        "name": "Automate",
+        "items": [
+          {
+            "title": "Marketing Automation",
+            "desc": "Follow-ups, funnels and reporting that run while you sleep."
+          },
+          {
+            "title": "AI Chatbots",
+            "desc": "Assistants that answer in your voice, qualify leads and close simple sales 24/7."
+          }
+        ]
+      },
+      {
+        "name": "Advise",
+        "items": [
+          {
+            "title": "Marketing Consulting",
+            "desc": "A senior brain on your side of the table — audits, strategy and honest answers."
+          }
+        ]
+      }
+    ]
+  },
+  "portfolio": {
+    "eyebrow": "Selected work",
+    "title": "Proof, not promises.",
+    "lead": "A few of the brands we've helped grow. Full case decks available on request.",
+    "projects": [
+      {
+        "name": "Ayla Beauty",
+        "tag": "E-commerce · Skincare",
+        "result": "+212% revenue in 6 months"
+      },
+      {
+        "name": "Nomad Coffee",
+        "tag": "Brand · Meta Ads",
+        "result": "3.4× return on ad spend"
+      },
+      {
+        "name": "Kavra Home",
+        "tag": "Website · Google Ads",
+        "result": "2.1× conversion rate"
+      },
+      {
+        "name": "Pulse Fitness",
+        "tag": "TikTok · Automation",
+        "result": "18,000 leads in one quarter"
+      }
+    ],
+    "note": "Client names anonymised where required."
+  },
+  "cases": {
+    "eyebrow": "Case studies",
+    "title": "How the numbers moved.",
+    "lead": "Three plays, three markets, one method: find the constraint, remove it, scale what works.",
+    "items": [
+      {
+        "sector": "Skincare e-commerce · KSA",
+        "challenge": "Great product, flat sales — ads were paying for traffic that never converted.",
+        "play": "Rebuilt the store around one hero product, AI-generated 40 creative variants, let Meta find the winners.",
+        "metric": "+212%",
+        "metricLabel": "revenue in 6 months"
+      },
+      {
+        "sector": "Real estate developer · Türkiye",
+        "challenge": "Leads cost a fortune and sales wasted hours on unqualified calls.",
+        "play": "AI chatbot qualified every lead in Arabic, Turkish and English before a human ever picked up the phone.",
+        "metric": "−38%",
+        "metricLabel": "cost per qualified lead"
+      },
+      {
+        "sector": "Restaurant group · UAE",
+        "challenge": "Full dining rooms on weekends, empty ones midweek.",
+        "play": "TikTok + Snapchat geo-campaigns with offer automation tied to the quiet hours.",
+        "metric": "5.1×",
+        "metricLabel": "return on ad spend"
+      }
+    ],
+    "labels": {
+      "challenge": "The problem",
+      "play": "The play",
+      "result": "The result"
+    }
+  },
+  "process": {
+    "eyebrow": "How we work",
+    "title": "Four steps. No mystery.",
+    "lead": "You'll always know what we're doing, why, and what it returned.",
+    "steps": [
+      {
+        "title": "Listen",
+        "desc": "We start with your numbers, market and margins — not a pitch deck. One week, one clear diagnosis."
+      },
+      {
+        "title": "Design the play",
+        "desc": "A growth plan with targets you can hold us to: channels, creative, budget, timeline."
+      },
+      {
+        "title": "Launch",
+        "desc": "Creative, campaigns and builds go live fast — then we watch the data like hawks."
+      },
+      {
+        "title": "Scale",
+        "desc": "Double down on what works, kill what doesn't, report weekly in plain language."
+      }
+    ]
+  },
+  "why": {
+    "eyebrow": "Why BAIGR",
+    "title": "The unfair advantages.",
+    "lead": "What you actually get when you work with us.",
+    "reasons": [
+      {
+        "title": "AI-native from day one",
+        "desc": "We don't bolt AI on — our whole pipeline is built around it. You get 10× the creative output at the same budget."
+      },
+      {
+        "title": "Senior hands only",
+        "desc": "No juniors learning on your money. The people in the pitch are the people doing the work."
+      },
+      {
+        "title": "Speed as a habit",
+        "desc": "First campaigns live within days. Momentum is a strategy."
+      },
+      {
+        "title": "Radical transparency",
+        "desc": "Live dashboards, weekly summaries, and the truth even when it's uncomfortable."
+      },
+      {
+        "title": "One roof, zero friction",
+        "desc": "Creative, media, web and automation in one team — no agencies blaming each other."
+      },
+      {
+        "title": "We win when you win",
+        "desc": "Performance-linked pricing available. Our incentive is your growth, literally."
+      }
+    ]
+  },
+  "testimonials": {
+    "eyebrow": "What clients say",
+    "title": "Trust is earned in the numbers.",
+    "quotes": [
+      {
+        "quote": "They rebuilt our store and doubled revenue in a quarter. First agency that talked margins with me instead of impressions.",
+        "name": "Sara A.",
+        "role": "Founder, skincare brand"
+      },
+      {
+        "quote": "The chatbot alone saved my sales team fifteen hours a week. Everything they promised showed up in the dashboard.",
+        "name": "Mehmet K.",
+        "role": "Sales director, real estate"
+      },
+      {
+        "quote": "Fast, honest, and genuinely creative. Our TikTok went from dead weight to our best channel.",
+        "name": "Omar R.",
+        "role": "Marketing lead, F&B group"
+      }
+    ]
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "title": "Asked often, answered honestly.",
+    "items": [
+      {
+        "q": "How fast will we see results?",
+        "a": "Ad campaigns produce signal within 2–4 weeks; meaningful revenue movement typically lands within the first quarter. Websites and automation deliver value from day one. We'll give you a realistic timeline in the first call — and hold ourselves to it."
+      },
+      {
+        "q": "What budgets do you work with?",
+        "a": "Most of our clients invest between $2,000 and $50,000 monthly across ads and services. What matters more than size is intent: if you want growth and can act on it, we can build a plan that fits."
+      },
+      {
+        "q": "Which markets do you cover?",
+        "a": "We operate natively in Arabic, English and Turkish — Gulf, Levant, Türkiye, Europe and North America. Same team, three cultures, no translation layer."
+      },
+      {
+        "q": "What makes BAIGR different from other agencies?",
+        "a": "Three things: AI-native production (10× the creative for the same budget), senior-only staffing, and reporting tied to revenue rather than reach. We're happy to prove all three in a pilot month."
+      },
+      {
+        "q": "How do we start?",
+        "a": "One WhatsApp message. We'll book a free 30-minute call, audit what you have, and send a plan with numbers within a week. No commitment until you see it."
+      },
+      {
+        "q": "How will we communicate?",
+        "a": "A dedicated WhatsApp group, a live results dashboard, and a weekly summary in plain language. You'll never chase us for an update."
+      }
+    ]
+  },
+  "contact": {
+    "eyebrow": "Next step",
+    "titlePre": "Ready to grow ",
+    "titleAccent": "on purpose?",
+    "sub": "Tell us where you are and where you want to be. We'll bring the map — first call is free, no strings.",
+    "cta": "Chat on WhatsApp",
+    "or": "or",
+    "emailLabel": "Email us"
+  },
+  "footer": {
+    "tagline": "Growth, engineered with AI.",
+    "nav": "Explore",
+    "talk": "Talk to us",
+    "rights": "All rights reserved."
+  },
+  "whatsapp": "Chat with BAIGR on WhatsApp"
+}
