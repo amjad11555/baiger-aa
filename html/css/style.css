@@ -525,7 +525,6 @@ html[lang="ar"] .services__group-label { text-transform: none; }
 .services__group ul li:last-child { border-bottom: 1px solid var(--line); }
 .services__row .num { font-size: 0.75rem; color: var(--iris); font-weight: 700; }
 .services__row h4 {
-  min-width: 240px;
   font-size: 1.25rem;
   font-weight: 800;
   color: var(--ink);

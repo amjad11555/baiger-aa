@@ -31,9 +31,9 @@ export function Services() {
 
         <div className="mt-16 space-y-14 md:mt-20">
           {dict.services.groups.map((group) => (
-            <div key={group.name} className="grid gap-4 md:grid-cols-[180px_1fr] md:gap-10">
+            <div key={group.name} className="grid gap-4 lg:grid-cols-[160px_1fr] lg:gap-10">
               <Reveal>
-                <h3 className="font-mono text-xs tracking-[0.22em] uppercase text-iris md:sticky md:top-28">
+                <h3 className="font-mono text-xs tracking-[0.22em] uppercase text-iris lg:sticky lg:top-28">
                   {group.name}
                 </h3>
               </Reveal>
@@ -48,14 +48,14 @@ export function Services() {
                       data-cursor
                       className="group hairline relative border-t last:border-b"
                     >
-                        <div className="flex flex-col gap-2 py-6 transition-transform duration-500 ease-out group-hover:translate-x-2 md:flex-row md:items-baseline md:gap-10 rtl:group-hover:-translate-x-2">
+                        <div className="flex flex-col gap-2 py-6 transition-transform duration-500 ease-out group-hover:translate-x-2 lg:grid lg:grid-cols-[2rem_minmax(0,1fr)_minmax(260px,26rem)] lg:items-baseline lg:gap-10 rtl:group-hover:-translate-x-2">
                           <span className="font-mono text-xs text-mist">
                             {index}
                           </span>
-                          <h4 className="font-display min-w-[240px] text-xl font-bold transition-colors duration-300 group-hover:text-iris md:text-2xl">
+                          <h4 className="font-display text-xl font-bold transition-colors duration-300 group-hover:text-iris lg:text-2xl">
                             {item.title}
                           </h4>
-                          <p className="max-w-md text-sm leading-relaxed text-mist md:ms-auto md:text-end rtl:md:text-start">
+                          <p className="text-sm leading-relaxed text-mist lg:text-end rtl:lg:text-start">
                             {item.desc}
                           </p>
                         </div>

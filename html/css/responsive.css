@@ -19,19 +19,7 @@
   .hero__sub { font-size: 1.125rem; }
 
   .services__groups { margin-top: 5rem; }
-  .services__group {
-    grid-template-columns: 180px 1fr;
-    gap: 2.5rem;
-  }
-  .services__group-label { position: sticky; top: 7rem; align-self: start; }
-  .services__row {
-    flex-direction: row;
-    align-items: baseline;
-    gap: 2.5rem;
-  }
-  .services__row h4 { font-size: 1.5rem; }
-  .services__row p { margin-inline-start: auto; text-align: end; }
-  html[dir="rtl"] .services__row p { text-align: start; }
+  .services__row h4 { font-size: 1.4rem; }
 
   .portfolio__grid { grid-template-columns: repeat(2, 1fr); }
 
@@ -50,6 +38,22 @@
 
   .about__grid { grid-template-columns: 1fr 1fr; gap: 5rem; }
   .about__intro { position: sticky; top: 7rem; align-self: start; }
+
+  /* Services: horizontal only when there's real room. A grid with a
+     min-width description column means the text never collapses. */
+  .services__group {
+    grid-template-columns: 160px 1fr;
+    gap: 2.5rem;
+  }
+  .services__group-label { position: sticky; top: 7rem; align-self: start; }
+  .services__row {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) minmax(260px, 26rem);
+    align-items: baseline;
+    gap: 2.5rem;
+  }
+  .services__row p { text-align: end; }
+  html[dir="rtl"] .services__row p { text-align: start; }
 
   .process__line-bg, .process__line { display: block; }
   .step__node { display: block; }
