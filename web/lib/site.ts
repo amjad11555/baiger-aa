@@ -1,9 +1,10 @@
 // Central place for contact details — update these once, they apply everywhere.
 export const site = {
   name: "BAIGR",
-  url: "https://baigr.agency",
+  url: "https://baigr.com",
   email: "baigr.agency@gmail.com",
-  // TODO: replace with the agency's real WhatsApp number (international format, digits only)
-  whatsapp: "https://wa.me/905000000000",
-  instagram: "https://instagram.com/baigr.agency",
+  phone: "+905378573181",
+  whatsapp: "https://wa.me/905378573181",
+  instagram: "https://www.instagram.com/baigr.agency/",
+  blog: "https://baigr.com/blog/",
 } as const;

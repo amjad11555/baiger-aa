@@ -154,17 +154,41 @@ function init(THREE, mount) {
 
   scene.add(new THREE.Points(geometry, material));
 
-  /* ---------- Floating wireframe polyhedron ---------- */
+  /* ---------- Floating wireframe polyhedra (layered 3D anchor) ---------- */
   const icoGeo = new THREE.IcosahedronGeometry(2.1, 1);
   const icoMat = new THREE.MeshBasicMaterial({
     color: new THREE.Color("#726bd6"),
     wireframe: true,
     transparent: true,
-    opacity: 0.16,
+    opacity: 0.2,
   });
   const ico = new THREE.Mesh(icoGeo, icoMat);
   ico.position.set(isMobile ? 0 : 3.4, 1.1, -2.5);
   scene.add(ico);
+
+  // A larger, fainter dodecahedron rotating the other way — adds depth.
+  const dodGeo = new THREE.DodecahedronGeometry(3.4, 0);
+  const dodMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color("#aeb93f"),
+    wireframe: true,
+    transparent: true,
+    opacity: 0.1,
+  });
+  const dod = new THREE.Mesh(dodGeo, dodMat);
+  dod.position.copy(ico.position);
+  scene.add(dod);
+
+  // Halo ring — a thin torus catching the eye behind the marks.
+  const ringGeo = new THREE.TorusGeometry(2.85, 0.02, 12, 90);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color("#726bd6"),
+    transparent: true,
+    opacity: 0.22,
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.copy(ico.position);
+  ring.rotation.x = 1.1;
+  scene.add(ring);
 
   /* ---------- Pointer parallax + interactive light ---------- */
   const target = { x: 0, y: 0 };
@@ -221,6 +245,13 @@ function init(THREE, mount) {
     ico.rotation.x += dt * 0.08;
     ico.rotation.y += dt * 0.11;
     ico.position.y = 1.1 + Math.sin(elapsed * 0.5) * 0.25;
+
+    dod.rotation.x -= dt * 0.05;
+    dod.rotation.y -= dt * 0.07;
+    dod.position.y = ico.position.y;
+
+    ring.rotation.z += dt * 0.12;
+    ring.position.y = ico.position.y;
 
     renderer.render(scene, camera);
   };

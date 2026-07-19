@@ -5,8 +5,8 @@
     "work": "Work",
     "process": "Process",
     "faq": "FAQ",
-    "cta": "Start a project",
-    "blog": "Blog"
+    "blog": "Blog",
+    "cta": "Start a project"
   },
   "hero": {
     "eyebrow": "BAIGR · Creative Strategy & AI Growth",
@@ -21,6 +21,42 @@
       "Growth",
       "نمو",
       "Büyüme"
+    ],
+    "badges": [
+      "AI-native studio",
+      "3.4× avg. ROAS",
+      "Live in days"
+    ],
+    "marquee": "Meta Ads · Google Ads · TikTok · Snapchat · AI Video · AI Images · Websites · E-commerce · Automation · Chatbots · Consulting · "
+  },
+  "welcome": {
+    "title": "Welcome to BAIGR 👋",
+    "text": "Ready to grow your brand? Browse our work — or message us right away."
+  },
+  "assistant": {
+    "open": "Open BAIGR assistant",
+    "title": "BAIGR Assistant",
+    "subtitle": "Instant answers, real humans one tap away.",
+    "greeting": "Hi! I'm the BAIGR assistant. Pick a question and I'll answer right away 👇",
+    "hint": "Choose a question",
+    "human": "Talk to our team on WhatsApp",
+    "qa": [
+      {
+        "q": "What services do you offer?",
+        "a": "Five connected disciplines: AI creative (images & video), performance ads on Meta, Google, TikTok and Snapchat, websites and e-commerce, marketing automation with AI chatbots, and growth consulting — one team for the whole journey."
+      },
+      {
+        "q": "How much budget do I need?",
+        "a": "Most of our clients invest between $2,000 and $50,000 a month across ads and services. Intent matters more than size — if you're serious about growing, we'll shape a plan that fits where you are."
+      },
+      {
+        "q": "How fast will I see results?",
+        "a": "Ad campaigns give clear signals within 2–4 weeks, and meaningful revenue usually moves inside the first quarter. Websites and automation pay off from day one."
+      },
+      {
+        "q": "How do we start?",
+        "a": "One message on WhatsApp. We'll set up a free 30-minute call, review what you have, and send back a plan with real numbers within a week — no commitment until you've seen it."
+      }
     ]
   },
   "trusted": {

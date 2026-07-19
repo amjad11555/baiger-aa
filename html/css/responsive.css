@@ -63,4 +63,6 @@
   .testimonials__grid { grid-template-columns: repeat(3, 1fr); }
 
   .contact__inner { padding-block: 5rem; }
+
+  .hero__chips { display: block; }
 }

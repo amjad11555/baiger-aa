@@ -27,6 +27,21 @@ export interface Dictionary {
     ctaSecondary: string;
     scroll: string;
     ticker: string[];
+    badges: string[];
+    marquee: string;
+  };
+  welcome: {
+    title: string;
+    text: string;
+  };
+  assistant: {
+    open: string;
+    title: string;
+    subtitle: string;
+    greeting: string;
+    hint: string;
+    human: string;
+    qa: { q: string; a: string }[];
   };
   trusted: {
     label: string;
@@ -125,6 +140,39 @@ const en: Dictionary = {
     ctaSecondary: "See what we've built",
     scroll: "Scroll",
     ticker: ["Growth", "نمو", "Büyüme"],
+    badges: ["AI-native studio", "3.4× avg. ROAS", "Live in days"],
+    marquee:
+      "Meta Ads · Google Ads · TikTok · Snapchat · AI Video · AI Images · Websites · E-commerce · Automation · Chatbots · Consulting · ",
+  },
+  welcome: {
+    title: "Welcome to BAIGR 👋",
+    text: "Ready to grow your brand? Browse our work — or message us right away.",
+  },
+  assistant: {
+    open: "Open BAIGR assistant",
+    title: "BAIGR Assistant",
+    subtitle: "Instant answers, real humans one tap away.",
+    greeting: "Hi! I'm the BAIGR assistant. Pick a question and I'll answer right away 👇",
+    hint: "Choose a question",
+    human: "Talk to our team on WhatsApp",
+    qa: [
+      {
+        q: "What services do you offer?",
+        a: "Five connected disciplines: AI creative (images & video), performance ads on Meta, Google, TikTok and Snapchat, websites and e-commerce, marketing automation with AI chatbots, and growth consulting — one team for the whole journey.",
+      },
+      {
+        q: "How much budget do I need?",
+        a: "Most of our clients invest between $2,000 and $50,000 a month across ads and services. Intent matters more than size — if you're serious about growing, we'll shape a plan that fits where you are.",
+      },
+      {
+        q: "How fast will I see results?",
+        a: "Ad campaigns give clear signals within 2–4 weeks, and meaningful revenue usually moves inside the first quarter. Websites and automation pay off from day one.",
+      },
+      {
+        q: "How do we start?",
+        a: "One message on WhatsApp. We'll set up a free 30-minute call, review what you have, and send back a plan with real numbers within a week — no commitment until you've seen it.",
+      },
+    ],
   },
   trusted: {
     label: "Brands that trusted us with their growth",
@@ -404,7 +452,7 @@ const ar: Dictionary = {
     cta: "ابدأ مشروعك",
   },
   hero: {
-    eyebrow: "BAIGR · إستراتيجية إبداعية ونمو بالذكاء الاصطناعي",
+    eyebrow: "BAIGR · استراتيجية إبداعية ونمو بالذكاء الاصطناعي",
     titlePre: "إبداعٌ يبيع، ونموٌّ ",
     titleAccent: "تقيسه",
     titlePost: ".",
@@ -413,6 +461,39 @@ const ar: Dictionary = {
     ctaSecondary: "شاهد ما صنعناه",
     scroll: "مرّر للأسفل",
     ticker: ["نمو", "Growth", "Büyüme"],
+    badges: ["ذكاء اصطناعي في الصميم", "عائد إعلاني 3.4×", "إطلاق خلال أيام"],
+    marquee:
+      "إعلانات ميتا · إعلانات جوجل · تيك توك · سناب شات · فيديو بالذكاء الاصطناعي · صور بالذكاء الاصطناعي · مواقع · متاجر إلكترونية · أتمتة · روبوتات محادثة · استشارات · ",
+  },
+  welcome: {
+    title: "أهلاً بك في BAIGR 👋",
+    text: "جاهز ننمّي علامتك؟ تصفّح أعمالنا، أو راسلنا مباشرةً الآن.",
+  },
+  assistant: {
+    open: "افتح مساعد BAIGR",
+    title: "مساعد BAIGR",
+    subtitle: "إجابات فورية، وفريق حقيقي على بُعد نقرة.",
+    greeting: "أهلاً! أنا مساعد BAIGR. اختر سؤالاً وسأجيبك فوراً 👇",
+    hint: "اختر سؤالاً",
+    human: "كلّم فريقنا على واتساب",
+    qa: [
+      {
+        q: "ما الخدمات التي تقدّمونها؟",
+        a: "خمسة تخصصات مترابطة: إبداع بالذكاء الاصطناعي (صور وفيديو)، إعلانات أداء على ميتا وجوجل وتيك توك وسناب شات، مواقع ومتاجر إلكترونية، أتمتة تسويق مع روبوتات محادثة ذكية، واستشارات نمو — فريق واحد للرحلة كاملة.",
+      },
+      {
+        q: "كم أحتاج من ميزانية؟",
+        a: "معظم عملائنا يستثمرون بين 2,000 و50,000 دولار شهرياً بين الإعلانات والخدمات. الجدية أهم من الحجم — إن كنت جاداً في النمو، نفصّل خطة تناسب موقعك.",
+      },
+      {
+        q: "متى أرى النتائج؟",
+        a: "الحملات تعطي إشارات واضحة خلال 2–4 أسابيع، وتحرّك الإيرادات الملموس يأتي عادةً خلال الربع الأول. المواقع والأتمتة تؤتي ثمارها من اليوم الأول.",
+      },
+      {
+        q: "كيف نبدأ؟",
+        a: "رسالة واحدة على واتساب. نحجز مكالمة مجانية لثلاثين دقيقة، نراجع ما لديك، ونرسل خطة بأرقام حقيقية خلال أسبوع — بلا أي التزام حتى تراها.",
+      },
+    ],
   },
   trusted: {
     label: "علاماتٌ ائتمنتنا على نموّها",
@@ -421,7 +502,7 @@ const ar: Dictionary = {
   about: {
     eyebrow: "من نحن",
     title: "الفريق الذي يقف خلف العلامات التي ترفض أن تكون كالبقية.",
-    lead: "BAIGR استوديو نموٍّ إبداعي وُلد لعصر الذكاء الاصطناعي — الإستراتيجية والمحتوى والإعلانات تعمل كمحرّك واحد، تحت سقفٍ واحد.",
+    lead: "BAIGR استوديو نموٍّ إبداعي وُلد لعصر الذكاء الاصطناعي — الاستراتيجية والمحتوى والإعلانات تعمل كمحرّك واحد، تحت سقفٍ واحد.",
     body: "نحن فريقٌ صغير من كبار المبدعين والمسوّقين، نتعامل مع ميزانيتك وكأنها أموالنا نحن على المحك. كل فكرة نطلقها يرافقها رقم. الذكاء الاصطناعي يمنحنا السرعة والكمّ، والذوق البشري يضمن أنها تحرّك الناس فعلاً. هذا المزيج — قوة الآلة وحِرفة الإنسان — هو سبب بقاء عملائنا معنا سنوات.",
     points: [
       {
@@ -508,7 +589,7 @@ const ar: Dictionary = {
         items: [
           {
             title: "استشارات النمو",
-            desc: "عقلٌ تسويقي خبير في صفّك — تدقيقٌ حاد، إستراتيجية صادقة، بلا مصطلحات معقّدة.",
+            desc: "عقلٌ تسويقي خبير في صفّك — تدقيقٌ حاد، استراتيجية صادقة، بلا مصطلحات معقّدة.",
           },
         ],
       },
@@ -593,7 +674,7 @@ const ar: Dictionary = {
       },
       {
         title: "السرعة عادة",
-        desc: "أول حملاتك تنطلق خلال أيام، لا أشهر. الزخم إستراتيجية، ونعامله على هذا الأساس.",
+        desc: "أول حملاتك تنطلق خلال أيام، لا أشهر. الزخم استراتيجية، ونعامله على هذا الأساس.",
       },
       {
         title: "لا شيء نخفيه",
@@ -673,7 +754,7 @@ const ar: Dictionary = {
     emailLabel: "أرسل بريداً",
   },
   footer: {
-    tagline: "إستراتيجية إبداعية ونموٌّ رقمي، مدعومٌ بالذكاء الاصطناعي.",
+    tagline: "استراتيجية إبداعية ونموٌّ رقمي، مدعومٌ بالذكاء الاصطناعي.",
     nav: "استكشف",
     talk: "تواصل معنا",
     rights: "جميع الحقوق محفوظة.",
@@ -701,6 +782,39 @@ const tr: Dictionary = {
     ctaSecondary: "Neler yaptığımıza bak",
     scroll: "Kaydır",
     ticker: ["Büyüme", "Growth", "نمو"],
+    badges: ["Yapay zekâ temelli", "Ort. 3.4× ROAS", "Günler içinde yayında"],
+    marquee:
+      "Meta Reklam · Google Reklam · TikTok · Snapchat · Yapay Zekâ Video · Yapay Zekâ Görsel · Web Siteleri · E-ticaret · Otomasyon · Sohbet Botları · Danışmanlık · ",
+  },
+  welcome: {
+    title: "BAIGR'a hoş geldin 👋",
+    text: "Markanı büyütmeye hazır mısın? İşlerimize göz at ya da hemen bize yaz.",
+  },
+  assistant: {
+    open: "BAIGR asistanını aç",
+    title: "BAIGR Asistanı",
+    subtitle: "Anında yanıtlar, gerçek ekip tek dokunuş uzağında.",
+    greeting: "Merhaba! Ben BAIGR asistanı. Bir soru seç, hemen yanıtlayayım 👇",
+    hint: "Bir soru seç",
+    human: "WhatsApp'tan ekibimizle konuş",
+    qa: [
+      {
+        q: "Hangi hizmetleri sunuyorsunuz?",
+        a: "Birbirine bağlı beş disiplin: yapay zekâ kreatif (görsel ve video), Meta, Google, TikTok ve Snapchat'te performans reklamları, web siteleri ve e-ticaret, yapay zekâ sohbet botlarıyla pazarlama otomasyonu ve büyüme danışmanlığı — tüm yolculuk için tek ekip.",
+      },
+      {
+        q: "Ne kadar bütçe gerekli?",
+        a: "Müşterilerimizin çoğu reklam ve hizmetler genelinde aylık 2.000–50.000 dolar yatırım yapar. Niyet, büyüklükten önemlidir — büyümek konusunda ciddiysen sana uyan bir plan kurarız.",
+      },
+      {
+        q: "Sonuçları ne zaman görürüm?",
+        a: "Kampanyalar 2–4 hafta içinde net sinyaller verir; gelirde anlamlı hareket genellikle ilk çeyrekte gelir. Web siteleri ve otomasyon ilk günden kazandırır.",
+      },
+      {
+        q: "Nasıl başlıyoruz?",
+        a: "WhatsApp'tan tek mesaj. Ücretsiz 30 dakikalık bir görüşme ayarlar, elindekini inceler ve bir hafta içinde gerçek rakamlarla bir plan göndeririz — görmeden hiçbir taahhüt yok.",
+      },
+    ],
   },
   trusted: {
     label: "Büyümesini bize emanet eden markalar",

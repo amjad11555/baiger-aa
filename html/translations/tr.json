@@ -5,8 +5,8 @@
     "work": "İşlerimiz",
     "process": "Süreç",
     "faq": "SSS",
-    "cta": "Proje başlat",
-    "blog": "Blog"
+    "blog": "Blog",
+    "cta": "Proje başlat"
   },
   "hero": {
     "eyebrow": "BAIGR · Kreatif Strateji ve Yapay Zekâ Büyümesi",
@@ -21,6 +21,42 @@
       "Büyüme",
       "Growth",
       "نمو"
+    ],
+    "badges": [
+      "Yapay zekâ temelli",
+      "Ort. 3.4× ROAS",
+      "Günler içinde yayında"
+    ],
+    "marquee": "Meta Reklam · Google Reklam · TikTok · Snapchat · Yapay Zekâ Video · Yapay Zekâ Görsel · Web Siteleri · E-ticaret · Otomasyon · Sohbet Botları · Danışmanlık · "
+  },
+  "welcome": {
+    "title": "BAIGR'a hoş geldin 👋",
+    "text": "Markanı büyütmeye hazır mısın? İşlerimize göz at ya da hemen bize yaz."
+  },
+  "assistant": {
+    "open": "BAIGR asistanını aç",
+    "title": "BAIGR Asistanı",
+    "subtitle": "Anında yanıtlar, gerçek ekip tek dokunuş uzağında.",
+    "greeting": "Merhaba! Ben BAIGR asistanı. Bir soru seç, hemen yanıtlayayım 👇",
+    "hint": "Bir soru seç",
+    "human": "WhatsApp'tan ekibimizle konuş",
+    "qa": [
+      {
+        "q": "Hangi hizmetleri sunuyorsunuz?",
+        "a": "Birbirine bağlı beş disiplin: yapay zekâ kreatif (görsel ve video), Meta, Google, TikTok ve Snapchat'te performans reklamları, web siteleri ve e-ticaret, yapay zekâ sohbet botlarıyla pazarlama otomasyonu ve büyüme danışmanlığı — tüm yolculuk için tek ekip."
+      },
+      {
+        "q": "Ne kadar bütçe gerekli?",
+        "a": "Müşterilerimizin çoğu reklam ve hizmetler genelinde aylık 2.000–50.000 dolar yatırım yapar. Niyet, büyüklükten önemlidir — büyümek konusunda ciddiysen sana uyan bir plan kurarız."
+      },
+      {
+        "q": "Sonuçları ne zaman görürüm?",
+        "a": "Kampanyalar 2–4 hafta içinde net sinyaller verir; gelirde anlamlı hareket genellikle ilk çeyrekte gelir. Web siteleri ve otomasyon ilk günden kazandırır."
+      },
+      {
+        "q": "Nasıl başlıyoruz?",
+        "a": "WhatsApp'tan tek mesaj. Ücretsiz 30 dakikalık bir görüşme ayarlar, elindekini inceler ve bir hafta içinde gerçek rakamlarla bir plan göndeririz — görmeden hiçbir taahhüt yok."
+      }
     ]
   },
   "trusted": {
