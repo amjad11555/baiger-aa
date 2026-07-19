@@ -3,6 +3,7 @@
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { site } from "@/lib/site";
 import { Container } from "./Section";
+import { LogoMark } from "@/components/ui/LogoMark";
 
 export function Footer() {
   const { dict } = useLanguage();
@@ -21,9 +22,12 @@ export function Footer() {
       <Container>
         <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr]">
           <div>
-            <p className="font-display text-3xl font-extrabold">
-              BAIGR<span className="text-iris">.</span>
-            </p>
+            <div className="flex items-center gap-2.5">
+              <LogoMark className="h-10 w-auto" />
+              <span className="font-display text-3xl font-black tracking-[0.08em]">
+                BAIGR
+              </span>
+            </div>
             <p className="mt-3 max-w-xs leading-relaxed text-mist">
               {dict.footer.tagline}
             </p>

@@ -158,6 +158,87 @@
     );
   }
 
+  // Top scroll-progress bar — a thin lime→iris line that fills as you descend.
+  function initScrollProgress() {
+    var bar = document.getElementById("scroll-progress");
+    if (!bar) return;
+    gsap.fromTo(
+      bar,
+      { scaleX: 0 },
+      {
+        scaleX: 1,
+        ease: "none",
+        scrollTrigger: { start: 0, end: "max", scrub: 0.3 },
+      }
+    );
+  }
+
+  // Numbers that count up as they enter view — the "prosperity" beat.
+  var counterState = [];
+  function killCounters() {
+    counterState.forEach(function (s) {
+      if (s.st) s.st.kill();
+      if (s.tween) s.tween.kill();
+    });
+    counterState = [];
+  }
+  function initCounters() {
+    document.querySelectorAll("[data-count]").forEach(function (el) {
+      var raw = el.getAttribute("data-count-target") || el.textContent.trim();
+      el.setAttribute("data-count-target", raw); // remember across language switches
+      var m = raw.match(/^(\D*)(\d[\d,]*(?:\.\d+)?)(.*)$/s);
+      if (!m) return;
+      var prefix = m[1],
+        numStr = m[2].replace(/,/g, ""),
+        suffix = m[3],
+        decimals = (numStr.split(".")[1] || "").length,
+        target = parseFloat(numStr),
+        obj = { v: 0 };
+      el.textContent = prefix + (0).toFixed(decimals) + suffix;
+      var tween = gsap.to(obj, {
+        v: target,
+        duration: 1.6,
+        ease: "power2.out",
+        onUpdate: function () {
+          el.textContent =
+            prefix +
+            obj.v.toLocaleString("en-US", {
+              minimumFractionDigits: decimals,
+              maximumFractionDigits: decimals,
+            }) +
+            suffix;
+        },
+        paused: true,
+      });
+      var st = ScrollTrigger.create({
+        trigger: el,
+        start: "top 85%",
+        once: true,
+        onEnter: function () {
+          tween.play();
+        },
+      });
+      counterState.push({ tween: tween, st: st });
+    });
+  }
+
+  // Cinematic hero: content drifts up and softens as you scroll away.
+  function initHeroParallax() {
+    var content = document.querySelector(".hero__content");
+    if (!content) return;
+    gsap.to(content, {
+      yPercent: -16,
+      autoAlpha: 0.25,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: 0.4,
+      },
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     if (typeof gsap === "undefined") return;
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -166,10 +247,14 @@
       // animations.css already forces everything visible.
       var line = document.getElementById("process-line");
       if (line) line.style.transform = "scaleX(1)";
+      var bar = document.getElementById("scroll-progress");
+      if (bar) bar.style.transform = "scaleX(1)";
       return;
     }
 
+    initScrollProgress();
     initHeroEntrance();
+    initHeroParallax();
     initWordReveals();
 
     // Below-the-fold triggers build lazily in idle slices — first paint
@@ -177,6 +262,7 @@
     initReveals(function () {
       initCovers();
       initProcessLine();
+      initCounters();
     });
 
     // Language switch: SplitText.revert() restores the pre-switch words,
@@ -190,6 +276,8 @@
       });
       initWordReveals();
       initHeroEntrance();
+      killCounters();
+      initCounters();
       ScrollTrigger.refresh();
     });
   });

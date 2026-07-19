@@ -6,6 +6,7 @@ import { locales, type Locale } from "@/lib/i18n/dictionaries";
 import { site } from "@/lib/site";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
+import { LogoMark } from "@/components/ui/LogoMark";
 
 const langLabels: Record<Locale, string> = { en: "EN", ar: "ع", tr: "TR" };
 
@@ -86,10 +87,13 @@ export function Navbar() {
       <nav className="mx-auto flex h-[72px] w-full max-w-6xl items-center justify-between px-5 md:px-8">
         <a
           href="#top"
-          className="font-display text-xl font-extrabold tracking-wide text-ink"
+          className="inline-flex items-center gap-2 text-ink"
           aria-label="BAIGR — home"
         >
-          BAIGR<span className="text-iris">.</span>
+          <LogoMark className="h-[30px] w-auto" />
+          <span className="font-display text-[1.35rem] font-black tracking-[0.08em]">
+            BAIGR
+          </span>
         </a>
 
         <ul className="hidden items-center gap-8 lg:flex">
@@ -103,6 +107,14 @@ export function Navbar() {
               </a>
             </li>
           ))}
+          <li>
+            <a
+              href="https://baigr.com/blog/"
+              className="inline-block rounded-full border hairline px-4 py-1.5 text-sm font-bold text-iris-deep transition-colors hover:border-iris hover:bg-iris/10"
+            >
+              {dict.nav.blog}
+            </a>
+          </li>
         </ul>
 
         <div className="flex items-center gap-3">
@@ -161,6 +173,19 @@ export function Navbar() {
               </a>
             </li>
           ))}
+          <li className="overflow-hidden">
+            <a
+              data-menu-item
+              href="https://baigr.com/blog/"
+              onClick={() => setOpen(false)}
+              className="font-display block py-2 text-4xl font-bold text-ink transition-colors hover:text-iris"
+            >
+              <span className="me-4 font-mono text-sm text-iris">
+                {String(links.length + 1).padStart(2, "0")}
+              </span>
+              {dict.nav.blog}
+            </a>
+          </li>
         </ul>
         <div data-menu-item className="flex items-center justify-between">
           <LangSwitcher />

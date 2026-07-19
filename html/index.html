@@ -32,8 +32,8 @@
     })();
   </script>
 
-  <!-- Favicon (inline — no extra request): navy circle, lime dot -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b1539'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23d6e06a'/%3E%3C/svg%3E" />
+  <!-- Favicon (inline — no extra request): navy square, lime signal arcs -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b1539'/%3E%3Cg stroke='%23d6e06a' stroke-width='2.4' stroke-linecap='round' fill='none'%3E%3Cpath d='M11 22 A5 5 0 0 1 21 22'/%3E%3Cpath d='M8 22 A8 8 0 0 1 24 22'/%3E%3Cpath d='M5 22 A11 11 0 0 1 27 22'/%3E%3C/g%3E%3C/svg%3E" />
 
   <!-- Typography — Cairo, self-hosted (works offline and from file://) -->
   <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/files/cairo-latin-900-normal.woff2" />
@@ -66,10 +66,24 @@
 
 <body class="grain" id="top">
 
+  <!-- Scroll progress bar -->
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
   <!-- ===================== NAVBAR ===================== -->
   <header class="navbar" id="navbar">
     <nav class="navbar__inner container">
-      <a href="#top" class="navbar__logo font-display" aria-label="BAIGR — home">BAIGR<span class="dot">.</span></a>
+      <a href="#top" class="navbar__logo" aria-label="BAIGR — home">
+        <svg class="logo-mark" viewBox="0 0 128 74" fill="none" aria-hidden="true">
+          <g stroke="#d6e06a" stroke-width="8" stroke-linecap="round">
+            <path d="M56 68 A12 12 0 0 1 80 68" />
+            <path d="M46 68 A22 22 0 0 1 90 68" />
+            <path d="M36 68 A32 32 0 0 1 100 68" />
+            <path d="M26 68 A42 42 0 0 1 110 68" />
+            <path d="M16 68 A52 52 0 0 1 120 68" />
+          </g>
+        </svg>
+        <span class="logo-word font-display">BAIGR</span>
+      </a>
 
       <ul class="navbar__links">
         <li><a href="#about"    data-i18n="nav.about">About</a></li>
@@ -77,6 +91,7 @@
         <li><a href="#work"     data-i18n="nav.work">Work</a></li>
         <li><a href="#process"  data-i18n="nav.process">Process</a></li>
         <li><a href="#faq"      data-i18n="nav.faq">FAQ</a></li>
+        <li><a class="navbar__blog" href="https://baigr.com/blog/" data-i18n="nav.blog">Blog</a></li>
       </ul>
 
       <div class="navbar__actions">
@@ -100,6 +115,7 @@
         <li><a href="#work"     data-menu-item><span class="num font-mono">03</span><span data-i18n="nav.work">Work</span></a></li>
         <li><a href="#process"  data-menu-item><span class="num font-mono">04</span><span data-i18n="nav.process">Process</span></a></li>
         <li><a href="#faq"      data-menu-item><span class="num font-mono">05</span><span data-i18n="nav.faq">FAQ</span></a></li>
+        <li><a href="https://baigr.com/blog/" data-menu-item><span class="num font-mono">06</span><span data-i18n="nav.blog">Blog</span></a></li>
       </ul>
       <div class="menu-overlay__foot" data-menu-item>
         <div class="lang-switch" role="group" aria-label="Language">
@@ -280,7 +296,7 @@
           <article class="case glass reveal">
             <div class="case__metric-wrap">
               <p class="case__sector font-mono" data-i18n="cases.items.0.sector">Skincare e-commerce · Saudi Arabia</p>
-              <p class="case__metric font-display text-gradient-ember" data-i18n="cases.items.0.metric">+212%</p>
+              <p class="case__metric font-display text-gradient-ember" data-count data-i18n="cases.items.0.metric">+212%</p>
               <p class="case__metric-label font-mono" data-i18n="cases.items.0.metricLabel">revenue in 6 months</p>
             </div>
             <dl class="case__story">
@@ -291,7 +307,7 @@
           <article class="case glass reveal" data-delay="0.05">
             <div class="case__metric-wrap">
               <p class="case__sector font-mono" data-i18n="cases.items.1.sector">Real estate developer · Türkiye</p>
-              <p class="case__metric font-display text-gradient-ember" data-i18n="cases.items.1.metric">−38%</p>
+              <p class="case__metric font-display text-gradient-ember" data-count data-i18n="cases.items.1.metric">−38%</p>
               <p class="case__metric-label font-mono" data-i18n="cases.items.1.metricLabel">cost per qualified lead</p>
             </div>
             <dl class="case__story">
@@ -302,7 +318,7 @@
           <article class="case glass reveal" data-delay="0.1">
             <div class="case__metric-wrap">
               <p class="case__sector font-mono" data-i18n="cases.items.2.sector">Restaurant group · UAE</p>
-              <p class="case__metric font-display text-gradient-ember" data-i18n="cases.items.2.metric">5.1×</p>
+              <p class="case__metric font-display text-gradient-ember" data-count data-i18n="cases.items.2.metric">5.1×</p>
               <p class="case__metric-label font-mono" data-i18n="cases.items.2.metricLabel">return on ad spend</p>
             </div>
             <dl class="case__story">
@@ -447,7 +463,18 @@
     <div class="container">
       <div class="footer__grid">
         <div>
-          <p class="footer__logo font-display">BAIGR<span class="dot">.</span></p>
+          <div class="footer__logo">
+            <svg class="logo-mark logo-mark--lg" viewBox="0 0 128 74" fill="none" aria-hidden="true">
+              <g stroke="#d6e06a" stroke-width="8" stroke-linecap="round">
+                <path d="M56 68 A12 12 0 0 1 80 68" />
+                <path d="M46 68 A22 22 0 0 1 90 68" />
+                <path d="M36 68 A32 32 0 0 1 100 68" />
+                <path d="M26 68 A42 42 0 0 1 110 68" />
+                <path d="M16 68 A52 52 0 0 1 120 68" />
+              </g>
+            </svg>
+            <span class="footer__word font-display">BAIGR</span>
+          </div>
           <p class="footer__tagline" data-i18n="footer.tagline">Creative strategy and digital growth, powered by AI.</p>
         </div>
         <nav aria-label="Explore">

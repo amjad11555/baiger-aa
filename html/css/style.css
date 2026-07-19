@@ -240,10 +240,37 @@ html[lang="ar"] .eyebrow { text-transform: none; }
   height: var(--nav-h);
 }
 
-.navbar__logo { font-size: 1.3rem; font-weight: 900; letter-spacing: 0.04em; color: var(--ink); }
+.navbar__logo { display: inline-flex; align-items: center; gap: 0.55rem; color: var(--ink); }
+.logo-mark { height: 30px; width: auto; display: block; }
+.logo-mark path { transition: stroke 0.3s ease; }
+.logo-word { font-size: 1.35rem; font-weight: 900; letter-spacing: 0.08em; color: var(--ink); }
 .dot { color: var(--lime-deep); }
 
 .navbar__links { display: none; align-items: center; gap: 2rem; }
+
+/* Blog nav item — a subtle outlined pill so it reads as an action */
+.navbar__blog {
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  padding: 0.45rem 1rem !important;
+  color: var(--iris-deep) !important;
+  font-weight: 700 !important;
+}
+.navbar__blog:hover { border-color: var(--iris); background: color-mix(in srgb, var(--iris) 8%, transparent); color: var(--iris-deep) !important; }
+
+/* Scroll progress bar */
+.scroll-progress {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 75;
+  height: 3px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--lime), var(--iris));
+  will-change: transform;
+}
+html[dir="rtl"] .scroll-progress { transform-origin: right; }
 .navbar__links a {
   display: inline-block;
   padding: 0.625rem 0.25rem;
@@ -780,7 +807,9 @@ html[dir="rtl"] .process__line { transform-origin: right; }
 /* ---------- Footer ---------- */
 .footer { border-top: 1px solid var(--line); padding-block: 4rem; background: var(--cloud); }
 .footer__grid { display: grid; gap: 3rem; }
-.footer__logo { font-size: 1.9rem; font-weight: 900; color: var(--ink); }
+.footer__logo { display: inline-flex; align-items: center; gap: 0.6rem; }
+.logo-mark--lg { height: 40px; }
+.footer__word { font-size: 1.9rem; font-weight: 900; letter-spacing: 0.08em; color: var(--ink); }
 .footer__tagline { margin-top: 0.75rem; max-width: 20rem; color: var(--mist); line-height: 1.65; }
 .footer h3 {
   margin-bottom: 1rem;

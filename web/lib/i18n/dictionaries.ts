@@ -14,6 +14,7 @@ export interface Dictionary {
     work: string;
     process: string;
     faq: string;
+    blog: string;
     cta: string;
   };
   hero: {
@@ -111,6 +112,7 @@ const en: Dictionary = {
     work: "Work",
     process: "Process",
     faq: "FAQ",
+    blog: "Blog",
     cta: "Start a project",
   },
   hero: {
@@ -398,6 +400,7 @@ const ar: Dictionary = {
     work: "أعمالنا",
     process: "منهجيتنا",
     faq: "أسئلتكم",
+    blog: "المدوّنة",
     cta: "ابدأ مشروعك",
   },
   hero: {
@@ -685,6 +688,7 @@ const tr: Dictionary = {
     work: "İşlerimiz",
     process: "Süreç",
     faq: "SSS",
+    blog: "Blog",
     cta: "Proje başlat",
   },
   hero: {
