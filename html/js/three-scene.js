@@ -1,8 +1,10 @@
 /* ============================================================
-   BAIGR — the signature "growth field".
-   Thousands of warm ember motes rise along a compounding curve —
-   growth drawn in light. Reacts to the cursor (parallax + local
-   glow) and to device tilt on mobile.
+   BAIGR — the signature "growth rise".
+   Motes drift steadily upward, fanning out gently as they climb —
+   compounding growth drawn in light, no swirl. Behind them,
+   concentric arcs pulse outward in sequence, echoing the BAIGR
+   mark. Reacts to the cursor (parallax + local glow) and to
+   device tilt on mobile.
 
    ES module: Three.js is resolved through the import map in
    index.html and loaded during idle time so first paint stays fast.
@@ -18,21 +20,19 @@ const VERTEX = /* glsl */ `
   varying float varGlow;
 
   void main() {
-    float speed = 0.016 + aSeed * 0.022;
+    float speed = 0.05 + aSeed * 0.06;
     float t = fract(aOffset + uTime * speed);
 
-    // The growth curve: slow start, compounding rise.
-    float x = mix(-7.5, 7.5, t);
-    float y = pow(t, 1.55) * 5.2 - 2.4;
+    // Calm rise: motes climb straight up, fanning out gently — no swirl.
+    float lane = (aSeed - 0.5) * 2.0;              // -1..1 horizontal lane
+    float spread = 1.4 + t * 2.6;                  // widen as they climb (growth)
+    float x = lane * spread;
+    float y = t * 7.4 - 3.4;
+    float z = (fract(aSeed * 7.31) - 0.5) * 2.6;   // fixed depth per mote
 
-    // Helical drift around the path so the stream feels alive.
-    float angle = t * 12.0 + aSeed * 6.28318 + uTime * (0.15 + aSeed * 0.2);
-    float radius = 0.35 + aSeed * 1.15;
-    y += sin(angle) * radius * 0.45;
-    float z = cos(angle) * radius - aSeed * 1.5;
-
-    // Gentle breathing across the whole field.
-    x += sin(uTime * 0.22 + aSeed * 9.0) * 0.18;
+    // Gentle sway so the field breathes (no rotation).
+    x += sin(uTime * 0.3 + aSeed * 9.0) * 0.18;
+    y += sin(uTime * 0.5 + aSeed * 4.0) * 0.08;
 
     vec3 pos = vec3(x, y, z);
 
@@ -62,12 +62,12 @@ const FRAGMENT = /* glsl */ `
     float disc = smoothstep(0.5, 0.08, dist);
     if (disc < 0.01) discard;
 
-    // Ramp lime -> iris along the growth curve; deepen to navy near the cursor.
-    vec3 color = mix(uColorA, uColorB, clamp(varT * 0.9, 0.0, 1.0));
+    // Ramp lime -> iris as the bloom rises; deepen to navy near the cursor.
+    vec3 color = mix(uColorA, uColorB, clamp(varT * 0.95, 0.0, 1.0));
     color = mix(color, uColorGlow, varGlow * 0.7);
 
-    // Fade in at birth, out at the top of the arc.
-    float life = smoothstep(0.0, 0.08, varT) * (1.0 - smoothstep(0.82, 1.0, varT));
+    // Fade in at the seed, out at the crown of the bloom.
+    float life = smoothstep(0.0, 0.09, varT) * (1.0 - smoothstep(0.80, 1.0, varT));
     // Normal blending over a light page: keep enough alpha to read on paper.
     float alpha = disc * life * (0.62 + varGlow * 0.38);
 
@@ -118,7 +118,7 @@ function init(THREE, mount) {
   mount.appendChild(renderer.domElement);
   mount.classList.add("is-ready");
 
-  /* ---------- Growth stream particles ---------- */
+  /* ---------- Growth bloom particles ---------- */
   const count = softwareGL ? 700 : isMobile ? 1300 : 2600;
   const frameInterval = softwareGL ? 1000 / 24 : 0;
   const seeds = new Float32Array(count);
@@ -154,41 +154,48 @@ function init(THREE, mount) {
 
   scene.add(new THREE.Points(geometry, material));
 
-  /* ---------- Floating wireframe polyhedra (layered 3D anchor) ---------- */
-  const icoGeo = new THREE.IcosahedronGeometry(2.1, 1);
-  const icoMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#726bd6"),
-    wireframe: true,
-    transparent: true,
-    opacity: 0.2,
-  });
-  const ico = new THREE.Mesh(icoGeo, icoMat);
-  ico.position.set(isMobile ? 0 : 3.4, 1.1, -2.5);
-  scene.add(ico);
+  /* ---------- Concentric arc system — the BAIGR mark, alive ----------
+     Half-ring arcs stacked like the logo's fingerprint, pulsing
+     outward in sequence. Small nodes orbit the outer arc. */
+  const markGroup = new THREE.Group();
+  markGroup.position.set(isMobile ? 0 : 3.3, 1.0, -2.2);
+  markGroup.rotation.x = 0.42;
+  markGroup.rotation.z = -0.32; // matches the mark's -18° tilt, felt in 3D
+  scene.add(markGroup);
 
-  // A larger, fainter dodecahedron rotating the other way — adds depth.
-  const dodGeo = new THREE.DodecahedronGeometry(3.4, 0);
-  const dodMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#aeb93f"),
-    wireframe: true,
-    transparent: true,
-    opacity: 0.1,
-  });
-  const dod = new THREE.Mesh(dodGeo, dodMat);
-  dod.position.copy(ico.position);
-  scene.add(dod);
+  const arcColors = ["#d6e06a", "#aeb93f", "#726bd6", "#4d43b8"];
+  const arcs = [];
+  for (let i = 0; i < 4; i++) {
+    const r = 0.7 + i * 0.72;
+    const arcGeo = new THREE.TorusGeometry(r, 0.028, 10, 80, Math.PI);
+    const arcMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(arcColors[i]),
+      transparent: true,
+      opacity: 0.5 - i * 0.07,
+    });
+    const arc = new THREE.Mesh(arcGeo, arcMat);
+    markGroup.add(arc);
+    arcs.push({ mesh: arc, base: 0.5 - i * 0.07, phase: i * 0.7 });
+  }
 
-  // Halo ring — a thin torus catching the eye behind the marks.
-  const ringGeo = new THREE.TorusGeometry(2.85, 0.02, 12, 90);
-  const ringMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#726bd6"),
-    transparent: true,
-    opacity: 0.22,
-  });
-  const ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.position.copy(ico.position);
-  ring.rotation.x = 1.1;
-  scene.add(ring);
+  // Orbiting nodes — glints of momentum riding the arcs.
+  const nodes = [];
+  const nodeGeo = new THREE.SphereGeometry(0.058, 12, 12);
+  for (let i = 0; i < 3; i++) {
+    const nodeMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(i % 2 ? "#726bd6" : "#d6e06a"),
+      transparent: true,
+      opacity: 0.9,
+    });
+    const node = new THREE.Mesh(nodeGeo, nodeMat);
+    markGroup.add(node);
+    nodes.push({
+      mesh: node,
+      r: 1.5 + i * 0.7,
+      phase: i * 2.1,
+      speed: 0.45 + i * 0.18,
+    });
+  }
 
   /* ---------- Pointer parallax + interactive light ---------- */
   const target = { x: 0, y: 0 };
@@ -242,16 +249,25 @@ function init(THREE, mount) {
     camera.position.y += (0.4 + target.y * 0.45 - camera.position.y) * 0.045;
     camera.lookAt(0, 0.3, 0);
 
-    ico.rotation.x += dt * 0.08;
-    ico.rotation.y += dt * 0.11;
-    ico.position.y = 1.1 + Math.sin(elapsed * 0.5) * 0.25;
+    // The mark drifts and wobbles in depth; each arc pulses in sequence
+    // like a ripple radiating from the centre.
+    markGroup.position.y = 1.0 + Math.sin(elapsed * 0.5) * 0.22;
+    markGroup.rotation.y = Math.sin(elapsed * 0.35) * 0.35;
+    arcs.forEach((a) => {
+      a.mesh.rotation.z += dt * 0.14;
+      a.mesh.material.opacity =
+        a.base * (0.55 + 0.45 * Math.sin(elapsed * 1.3 - a.phase));
+    });
 
-    dod.rotation.x -= dt * 0.05;
-    dod.rotation.y -= dt * 0.07;
-    dod.position.y = ico.position.y;
-
-    ring.rotation.z += dt * 0.12;
-    ring.position.y = ico.position.y;
+    // Nodes ride circular paths across the mark's face.
+    nodes.forEach((n) => {
+      const ang = elapsed * n.speed + n.phase;
+      n.mesh.position.set(
+        Math.cos(ang) * n.r,
+        Math.abs(Math.sin(ang)) * n.r * 0.6,
+        Math.sin(ang * 0.7) * 0.3
+      );
+    });
 
     renderer.render(scene, camera);
   };
