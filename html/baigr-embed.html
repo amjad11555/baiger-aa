@@ -42,7 +42,7 @@
   </script>
 
   <!-- Favicon (inline — no extra request): navy square, lime signal arcs -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffffff'/%3E%3Cg stroke='%23d6e06a' stroke-width='2.6' stroke-linecap='round' fill='none' transform='rotate(-18 16 22)'%3E%3Cpath d='M12.5 22 A3.5 3.5 0 0 1 19.5 22'/%3E%3Cpath d='M8.5 22 A7.5 7.5 0 0 1 23.5 22'/%3E%3Cpath d='M4.5 22 A11.5 11.5 0 0 1 27.5 22'/%3E%3C/g%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffffff'/%3E%3Cg stroke='%23ECE64C' stroke-width='3' stroke-linecap='round' fill='none' transform='rotate(-9 16 18)'%3E%3Cpath d='M13.5 18 A2.5 2.5 0 0 1 18.5 18'/%3E%3Cpath d='M10 18 A6 6 0 0 1 22 18'/%3E%3Cpath d='M6.5 18 A9.5 9.5 0 0 1 25.5 18'/%3E%3Cpath d='M3 18 A13 13 0 0 1 29 18'/%3E%3C/g%3E%3C/svg%3E" />
 
   <!-- Typography — Cairo, self-hosted (works offline and from file://) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -414,7 +414,9 @@ html[dir="rtl"] .scroll-progress { transform-origin: right; }
 .hero {
   position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
   min-height: 100svh;
   overflow: hidden;
 }
@@ -944,35 +946,144 @@ html[lang="ar"] .footer h3 { text-transform: none; }
 .logo-mark { height: 34px; }
 .logo-mark--lg { height: 46px; }
 
-.hero__chips {
+/* ---------- Hero 3D growth scene (pure CSS/SVG, no WebGL) ----------
+   Mobile-first: the scene sits below the copy, scaled to fit.
+   From lg up (responsive.css) it becomes an absolute right-side panel. */
+.hero-3d {
+  position: relative;
+  width: 100%;
+  height: 15rem;
+  margin-top: 0.5rem;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-3d__stage {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 21rem;
+  height: 19rem;
+  transform: translate(-50%, -50%) scale(0.66);
+  transform-style: preserve-3d;
+  perspective: 1200px;
+}
+
+/* The dashboard card */
+.g-card {
+  position: absolute;
+  top: 50%; inset-inline-end: 0;
+  width: 20rem;
+  transform: translateY(-50%) rotateY(-16deg) rotateX(7deg);
+  transform-origin: center;
+  border-radius: 1.25rem;
+  padding: 1rem 1.15rem 1.25rem;
+  background: linear-gradient(160deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72));
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.9);
+  box-shadow: 0 30px 60px -18px rgba(77,67,184,0.35), 0 8px 20px rgba(27,21,57,0.08);
+  animation: g-card-float 7s ease-in-out infinite;
+}
+html[dir="rtl"] .g-card { transform: translateY(-50%) rotateY(16deg) rotateX(7deg); }
+.g-card__bar { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem; }
+.g-card__dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--line); }
+.g-card__dot:nth-child(1) { background: #ff6b6b; }
+.g-card__dot:nth-child(2) { background: #ffd23f; }
+.g-card__dot:nth-child(3) { background: #35d07f; }
+.g-card__tag { margin-inline-start: 0.4rem; font-size: 0.62rem; letter-spacing: 0.18em; color: var(--mist); font-weight: 700; }
+.g-card__pct { margin-inline-start: auto; font-size: 0.72rem; font-weight: 700; color: #2fae63; }
+
+.g-chart { position: relative; height: 9rem; }
+.g-bars { display: flex; align-items: flex-end; gap: 0.55rem; height: 100%; }
+.g-bar {
+  flex: 1;
+  height: var(--h);
+  border-radius: 0.4rem 0.4rem 0.2rem 0.2rem;
+  background: linear-gradient(to top, var(--iris-deep), var(--iris) 55%, var(--lime));
+  transform-origin: bottom;
+  animation: g-bar-grow 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  box-shadow: 0 4px 10px rgba(114,107,214,0.25);
+}
+.g-bar:nth-child(1) { animation-delay: 0.15s; }
+.g-bar:nth-child(2) { animation-delay: 0.28s; }
+.g-bar:nth-child(3) { animation-delay: 0.41s; }
+.g-bar:nth-child(4) { animation-delay: 0.54s; }
+.g-bar:nth-child(5) { animation-delay: 0.67s; }
+.g-trend {
   position: absolute;
   inset: 0;
-  z-index: -5;
-  pointer-events: none;
-  display: none;
+  width: 100%; height: 100%;
+  overflow: visible;
 }
-.hero-chip {
+.g-trend__line, .g-trend__head {
+  stroke: #ECE64C;
+  stroke-width: 3.5;
+  filter: drop-shadow(0 2px 3px rgba(180,170,40,0.4));
+}
+.g-trend__line { stroke-dasharray: 320; stroke-dashoffset: 320; animation: g-draw 1.3s ease-out 0.7s forwards; }
+.g-trend__head { opacity: 0; animation: g-fade 0.4s ease-out 1.8s forwards; }
+
+/* Floating 3D growth icons */
+.g-icon {
   position: absolute;
-  border-radius: 9999px;
-  padding: 0.55rem 1.1rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--ink);
-  white-space: nowrap;
-  box-shadow: var(--shadow-md);
+  display: grid;
+  place-items: center;
+  width: 3.4rem; height: 3.4rem;
+  border-radius: 1rem;
+  color: #fff;
+  box-shadow: 0 16px 30px -8px rgba(27,21,57,0.35), inset 0 1px 0 rgba(255,255,255,0.4);
+  animation: g-icon-float 6s ease-in-out infinite;
 }
-.hero-chip::before {
-  content: "";
-  display: inline-block;
-  width: 0.5rem; height: 0.5rem;
-  margin-inline-end: 0.5rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--lime), var(--iris));
+.g-icon svg { width: 1.7rem; height: 1.7rem; }
+.g-icon--rocket { inset-block-start: 4%; inset-inline-end: 62%; background: linear-gradient(150deg, var(--iris), var(--iris-deep)); animation-duration: 6.5s; }
+.g-icon--arrow  { inset-block-start: 30%; inset-inline-end: -4%; background: linear-gradient(150deg, #ECE64C, #cdb92f); color: #5a5210; animation-duration: 7.2s; animation-delay: 0.5s; }
+.g-icon--sprout { inset-block-end: 8%; inset-inline-end: 70%; background: linear-gradient(150deg, #35d07f, #1f9e5c); animation-duration: 6.8s; animation-delay: 0.9s; }
+.g-icon--spark  { inset-block-start: -3%; inset-inline-end: 20%; width: 2.6rem; height: 2.6rem; background: linear-gradient(150deg, var(--lime), #b7c23f); color: #4a5210; animation-duration: 5.8s; animation-delay: 0.3s; }
+.g-icon--spark svg { width: 1.3rem; height: 1.3rem; }
+
+.g-proof {
+  position: absolute;
+  inset-block-end: 2%; inset-inline-start: -2%;
+  padding: 0.5rem 0.9rem;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  font-size: 0.72rem; font-weight: 700; color: var(--ink);
+  white-space: nowrap;
+  animation: g-icon-float 7.5s ease-in-out infinite 0.6s;
+}
+.g-proof::before {
+  content: ""; display: inline-block;
+  width: 0.45rem; height: 0.45rem; margin-inline-end: 0.45rem;
+  border-radius: 50%; background: linear-gradient(135deg, var(--lime), var(--iris));
   vertical-align: middle;
 }
-.hero-chip:nth-child(1) { inset-inline-end: 8%;  top: 26%; animation: float 6s ease-in-out infinite; }
-.hero-chip:nth-child(2) { inset-inline-end: 20%; top: 50%; animation: float 7s ease-in-out infinite 0.6s; }
-.hero-chip:nth-child(3) { inset-inline-end: 6%;  top: 66%; animation: float 6.5s ease-in-out infinite 1.2s; }
+
+@keyframes g-card-float {
+  0%, 100% { transform: translateY(-50%) rotateY(-16deg) rotateX(7deg); }
+  50% { transform: translateY(calc(-50% - 0.75rem)) rotateY(-12deg) rotateX(7deg); }
+}
+html[dir="rtl"] .g-card { animation-name: g-card-float-rtl; }
+@keyframes g-card-float-rtl {
+  0%, 100% { transform: translateY(-50%) rotateY(16deg) rotateX(7deg); }
+  50% { transform: translateY(calc(-50% - 0.75rem)) rotateY(12deg) rotateX(7deg); }
+}
+@keyframes g-icon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.9rem); }
+}
+@keyframes g-bar-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes g-draw { to { stroke-dashoffset: 0; } }
+@keyframes g-fade { to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .g-card, .g-icon, .g-proof { animation: none; }
+  .g-bar { animation: none; }
+  .g-trend__line { stroke-dashoffset: 0; animation: none; }
+  .g-trend__head { opacity: 1; animation: none; }
+}
 
 /* Shine sweep on the primary CTA */
 .btn--shine { position: relative; overflow: hidden; }
@@ -1365,7 +1476,24 @@ html.js .reveal { will-change: transform; }
 
   .contact__inner { padding-block: 5rem; }
 
-  .hero__chips { display: block; }
+  /* Hero: copy on the start side, the 3D scene floating on the end side. */
+  .hero__content { padding-inline-end: 25rem; }
+  .hero-3d {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    margin-top: 0;
+    overflow: hidden;
+  }
+  .hero-3d__stage {
+    top: 50%;
+    left: auto;
+    inset-inline-end: 6%;
+    width: 24rem;
+    height: 24rem;
+    transform: translateY(-50%);
+  }
 }
 
 </style>
@@ -1374,9 +1502,6 @@ html.js .reveal { will-change: transform; }
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js"></script>
-  <script type="importmap">
-    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.module.js"}}
-  </script>
 
   <!-- App -->
   <script>
@@ -1543,7 +1668,7 @@ window.BAIGR=window.BAIGR||{};window.BAIGR.__DICTS={"en":{"nav":{"about":"About"
 /* ============================================================
    BAIGR — pointer-driven interactions:
    custom cursor + magnetic buttons. Fine pointers only.
-   (The hero's 3D parallax lives in three-scene.js.)
+   (The hero's 3D growth scene is pure CSS/SVG.)
    ============================================================ */
 (function () {
   "use strict";
@@ -2248,267 +2373,6 @@ window.BAIGR=window.BAIGR||{};window.BAIGR.__DICTS={"en":{"nav":{"about":"About"
 })();
 
 </script>
-  <script type="module">
-/* ============================================================
-   BAIGR — the signature "living silk".
-   A slow, flowing liquid-gradient field: domain-warped noise
-   ribbons in the brand's lime→iris palette drift like silk over
-   the paper page. Calm, premium, deliberately un-busy — the
-   colour concentrates on the right so the headline stays crisp.
-   Reacts to the cursor with a soft warp and glow.
-
-   ES module: Three.js is resolved through the import map in
-   index.html and loaded during idle time so first paint stays fast.
-   ============================================================ */
-
-const VERTEX = /* glsl */ `
-  varying vec2 vUv;
-  void main() {
-    vUv = uv;
-    gl_Position = vec4(position.xy, 0.0, 1.0);
-  }
-`;
-
-const FRAGMENT = /* glsl */ `
-  precision highp float;
-  varying vec2 vUv;
-
-  uniform float uTime;
-  uniform float uAspect;
-  uniform vec2  uPointer;   // 0..1, page space
-  uniform float uPointerOn;
-  uniform vec3  uPaper;
-  uniform vec3  uLime;
-  uniform vec3  uIris;
-  uniform vec3  uDeep;
-  uniform float uRtl;       // 1.0 mirrors the colour bias for Arabic
-
-  // -- smooth value noise + fbm --------------------------------
-  float hash(vec2 p) {
-    p = fract(p * vec2(123.34, 345.45));
-    p += dot(p, p + 34.345);
-    return fract(p.x * p.y);
-  }
-  float noise(vec2 p) {
-    vec2 i = floor(p), f = fract(p);
-    float a = hash(i), b = hash(i + vec2(1.0, 0.0));
-    float c = hash(i + vec2(0.0, 1.0)), d = hash(i + vec2(1.0, 1.0));
-    vec2 u = f * f * (3.0 - 2.0 * f);
-    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
-  }
-  float fbm(vec2 p) {
-    float v = 0.0, a = 0.5;
-    for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.0; a *= 0.5; }
-    return v;
-  }
-
-  void main() {
-    vec2 uv = vUv;
-    // Aspect-correct sample space so flows aren't stretched.
-    vec2 p = vec2(uv.x * uAspect, uv.y) * 2.2;
-    float t = uTime * 0.05;
-
-    // Soft warp toward the cursor.
-    vec2 warp = (uv - uPointer) * uPointerOn;
-    p -= warp * 0.6;
-
-    // Domain warping — the classic marble/silk flow.
-    vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, -t)));
-    vec2 r = vec2(
-      fbm(p + 2.0 * q + vec2(1.7, 9.2) + t * 1.1),
-      fbm(p + 2.0 * q + vec2(8.3, 2.8) - t * 0.8)
-    );
-    float f = fbm(p + 2.4 * r);
-
-    // Build the silk colour from the flow.
-    vec3 flow = uPaper;
-    flow = mix(flow, uLime, smoothstep(0.30, 0.78, f));
-    flow = mix(flow, uIris, smoothstep(0.45, 0.92, r.x * 0.5 + 0.5));
-    flow = mix(flow, uDeep, smoothstep(0.62, 1.0, f * f) * 0.7);
-
-    // Silky sheen — thin flowing highlights.
-    float sheen = 0.5 + 0.5 * sin((f + r.y) * 6.2831 * 1.6 + uTime * 0.25);
-    flow += (uIris - uPaper) * 0.05 * sheen;
-
-    // Cursor glow.
-    float pd = distance(uv, uPointer);
-    float glow = smoothstep(0.4, 0.0, pd) * uPointerOn;
-    flow = mix(flow, uLime, glow * 0.18);
-
-    // Bias colour to the "content-free" side; keep the headline calm.
-    float side = mix(uv.x, 1.0 - uv.x, uRtl);        // strong side
-    float bias = smoothstep(0.15, 0.95, side);
-    // Fade to nothing near the very bottom so the section edge is clean.
-    float vFade = smoothstep(0.0, 0.25, uv.y) * (1.0 - smoothstep(0.86, 1.0, uv.y) * 0.5);
-
-    // Only the coloured part of the flow becomes visible (paper shows through).
-    float intensity = smoothstep(0.34, 0.85, f) + smoothstep(0.5, 1.0, r.x * 0.5 + 0.5) * 0.5;
-    float alpha = clamp(intensity, 0.0, 1.0) * bias * vFade * 0.62 + glow * 0.12;
-
-    gl_FragColor = vec4(flow, clamp(alpha, 0.0, 0.72));
-  }
-`;
-
-function init(THREE, mount) {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isMobile = window.matchMedia("(max-width: 768px)").matches;
-  const cleanupFns = [];
-
-  const scene = new THREE.Scene();
-  // Fullscreen quad — no perspective needed for a gradient field.
-  const camera = new THREE.Camera();
-
-  let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: "high-performance",
-    });
-  } catch (e) {
-    return; // No WebGL: the CSS aurora carries the hero alone.
-  }
-
-  const gl = renderer.getContext();
-  const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-  const glRenderer = debugInfo
-    ? String(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL))
-    : "";
-  const softwareGL = /swiftshader|llvmpipe|software/i.test(glRenderer);
-
-  const dpr = Math.min(window.devicePixelRatio, softwareGL ? 1 : isMobile ? 1.5 : 2);
-  renderer.setPixelRatio(dpr);
-  renderer.setSize(mount.clientWidth, mount.clientHeight);
-  mount.appendChild(renderer.domElement);
-  mount.classList.add("is-ready");
-
-  const rtl = document.documentElement.dir === "rtl" ? 1 : 0;
-  const uniforms = {
-    uTime: { value: 0 },
-    uAspect: { value: mount.clientWidth / mount.clientHeight },
-    uPointer: { value: new THREE.Vector2(rtl ? 0.28 : 0.72, 0.5) },
-    uPointerOn: { value: 0 },
-    uPaper: { value: new THREE.Color("#fefefe") },
-    uLime: { value: new THREE.Color("#d6e06a") },
-    uIris: { value: new THREE.Color("#726bd6") },
-    uDeep: { value: new THREE.Color("#4d43b8") },
-    uRtl: { value: rtl },
-  };
-
-  const material = new THREE.ShaderMaterial({
-    vertexShader: VERTEX,
-    fragmentShader: FRAGMENT,
-    uniforms,
-    transparent: true,
-    depthWrite: false,
-    depthTest: false,
-  });
-  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-  scene.add(quad);
-
-  // Keep colour bias mirrored when the language flips.
-  const onLang = () => {
-    const isRtl = document.documentElement.dir === "rtl" ? 1 : 0;
-    uniforms.uRtl.value = isRtl;
-  };
-  document.addEventListener("baigr:langchange", onLang);
-  cleanupFns.push(() => document.removeEventListener("baigr:langchange", onLang));
-
-  /* ---------- Cursor warp ---------- */
-  const pointerTarget = new THREE.Vector2(uniforms.uPointer.value.x, uniforms.uPointer.value.y);
-  let onTarget = 0;
-  const onPointer = (e) => {
-    pointerTarget.set(e.clientX / window.innerWidth, 1 - e.clientY / window.innerHeight);
-    onTarget = 1;
-  };
-  window.addEventListener("pointermove", onPointer, { passive: true });
-  cleanupFns.push(() => window.removeEventListener("pointermove", onPointer));
-  const onLeave = () => (onTarget = 0);
-  window.addEventListener("pointerout", onLeave);
-  cleanupFns.push(() => window.removeEventListener("pointerout", onLeave));
-
-  /* ---------- Render loop (paused off-screen / hidden tab) ---------- */
-  let raf = 0;
-  let running = false;
-  let last = performance.now();
-  let elapsed = 0;
-  const frameInterval = softwareGL ? 1000 / 30 : 0;
-  let lastFrame = 0;
-
-  const renderFrame = () => {
-    const now = performance.now();
-    const dt = Math.min((now - last) / 1000, 0.1);
-    last = now;
-    elapsed += dt;
-    uniforms.uTime.value = elapsed;
-
-    // Ease the pointer + its influence for a soft, liquid feel.
-    uniforms.uPointer.value.x += (pointerTarget.x - uniforms.uPointer.value.x) * 0.04;
-    uniforms.uPointer.value.y += (pointerTarget.y - uniforms.uPointer.value.y) * 0.04;
-    uniforms.uPointerOn.value += (onTarget - uniforms.uPointerOn.value) * 0.05;
-
-    renderer.render(scene, camera);
-  };
-
-  const loop = (ts) => {
-    if (!frameInterval || ts - lastFrame >= frameInterval) {
-      lastFrame = ts;
-      renderFrame();
-    }
-    raf = requestAnimationFrame(loop);
-  };
-  const start = () => {
-    if (running || reduced) return;
-    running = true;
-    last = performance.now();
-    raf = requestAnimationFrame(loop);
-  };
-  const stop = () => {
-    running = false;
-    cancelAnimationFrame(raf);
-  };
-
-  if (reduced) {
-    uniforms.uTime.value = 8; // a pleasant static frame
-    renderFrame();
-  } else {
-    const io = new IntersectionObserver(([entry]) =>
-      entry.isIntersecting ? start() : stop()
-    );
-    io.observe(mount);
-    const onVis = () => (document.hidden ? stop() : start());
-    document.addEventListener("visibilitychange", onVis);
-    cleanupFns.push(() => {
-      io.disconnect();
-      document.removeEventListener("visibilitychange", onVis);
-    });
-  }
-
-  const onResize = () => {
-    uniforms.uAspect.value = mount.clientWidth / mount.clientHeight;
-    renderer.setSize(mount.clientWidth, mount.clientHeight);
-    if (reduced) renderFrame();
-  };
-  window.addEventListener("resize", onResize);
-  cleanupFns.push(() => window.removeEventListener("resize", onResize));
-}
-
-/* Boot during idle time so hydration of the page stays snappy. */
-const boot = () => {
-  const mount = document.getElementById("hero-field");
-  if (!mount) return;
-  import("three")
-    .then((THREE) => init(THREE, mount))
-    .catch((err) => console.warn("[BAIGR] three.js unavailable:", err.message));
-};
-
-if ("requestIdleCallback" in window) {
-  requestIdleCallback(boot, { timeout: 1200 });
-} else {
-  setTimeout(boot, 350);
-}
-
-</script>
 </head>
 
 <body class="grain" id="top">
@@ -2520,13 +2384,30 @@ if ("requestIdleCallback" in window) {
   <header class="navbar" id="navbar">
     <nav class="navbar__inner container">
       <a href="#top" class="navbar__logo" aria-label="BAIGR — home">
-        <svg class="logo-mark" viewBox="0 0 140 92" fill="none" aria-hidden="true">
-          <g stroke="#d6e06a" stroke-width="8.5" stroke-linecap="round" transform="rotate(-18 70 72)">
-            <path d="M60 72 A10 10 0 0 1 80 72" />
-            <path d="M48 72 A22 22 0 0 1 92 72" />
-            <path d="M36 72 A34 34 0 0 1 104 72" />
-            <path d="M24 72 A46 46 0 0 1 116 72" />
-            <path d="M12 72 A58 58 0 0 1 128 72" />
+        <svg class="logo-mark" viewBox="0 0 150 104" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="baigrGoldN" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FBF6A6" />
+              <stop offset="0.48" stop-color="#ECE64C" />
+              <stop offset="1" stop-color="#D3C838" />
+            </linearGradient>
+            <filter id="baigrShadowN" x="-25%" y="-25%" width="150%" height="160%">
+              <feDropShadow dx="0" dy="2.5" stdDeviation="2.6" flood-color="#b6ad2e" flood-opacity="0.35" />
+            </filter>
+          </defs>
+          <g stroke="url(#baigrGoldN)" stroke-width="11" stroke-linecap="round" filter="url(#baigrShadowN)" transform="rotate(-9 75 78)">
+            <path d="M64 78 A11 11 0 0 1 86 78" />
+            <path d="M50 78 A25 25 0 0 1 100 78" />
+            <path d="M36 78 A39 39 0 0 1 114 78" />
+            <path d="M22 78 A53 53 0 0 1 128 78" />
+            <path d="M8 78 A67 67 0 0 1 142 78" />
+          </g>
+          <g stroke="#FCFAD6" stroke-width="2.4" stroke-linecap="round" opacity="0.65" transform="rotate(-9 75 78)">
+            <path d="M66 72 A17 17 0 0 1 84 72" />
+            <path d="M52 72 A31 31 0 0 1 98 72" />
+            <path d="M38 72 A45 45 0 0 1 112 72" />
+            <path d="M24 72 A59 59 0 0 1 126 72" />
+            <path d="M10 72 A73 73 0 0 1 140 72" />
           </g>
         </svg>
         <span class="logo-word font-display">BAIGR</span>
@@ -2578,16 +2459,8 @@ if ("requestIdleCallback" in window) {
   <main>
     <!-- ===================== HERO ===================== -->
     <section class="hero" id="hero">
-      <div class="hero__field" id="hero-field" aria-hidden="true"></div>
       <div class="hero__aurora" aria-hidden="true"></div>
       <div class="hero__floor" aria-hidden="true"></div>
-
-      <!-- Floating proof chips — orbit the 3D mark on desktop -->
-      <div class="hero__chips" aria-hidden="true">
-        <span class="hero-chip glass" data-hero-chip data-i18n="hero.badges.0">AI-native studio</span>
-        <span class="hero-chip glass" data-hero-chip data-i18n="hero.badges.1">3.4× avg. ROAS</span>
-        <span class="hero-chip glass" data-hero-chip data-i18n="hero.badges.2">Live in days</span>
-      </div>
 
       <div class="container hero__content">
         <p class="eyebrow hero__eyebrow" data-hero-fade>
@@ -2613,6 +2486,51 @@ if ("requestIdleCallback" in window) {
             <span data-i18n="hero.scroll">Scroll</span>
             <span class="scroll-hint__track" aria-hidden="true"><span></span></span>
           </a>
+        </div>
+      </div>
+
+      <!-- 3D growth scene: a rising dashboard + floating growth icons.
+           Pure CSS/SVG — no WebGL, so it stays fast and light. -->
+      <div class="hero-3d" aria-hidden="true">
+        <div class="hero-3d__stage">
+          <!-- Main growth dashboard card -->
+          <div class="g-card g-float">
+            <div class="g-card__bar">
+              <span class="g-card__dot"></span><span class="g-card__dot"></span><span class="g-card__dot"></span>
+              <span class="g-card__tag font-mono">GROWTH</span>
+              <span class="g-card__pct font-mono">▲ +212%</span>
+            </div>
+            <div class="g-chart">
+              <div class="g-bars">
+                <span class="g-bar" style="--h:34%"></span>
+                <span class="g-bar" style="--h:52%"></span>
+                <span class="g-bar" style="--h:66%"></span>
+                <span class="g-bar" style="--h:82%"></span>
+                <span class="g-bar" style="--h:100%"></span>
+              </div>
+              <svg class="g-trend" viewBox="0 0 200 120" fill="none" preserveAspectRatio="none">
+                <path class="g-trend__line" d="M12 104 L60 76 L104 84 L150 40 L190 16" stroke-linecap="round" stroke-linejoin="round" />
+                <path class="g-trend__head" d="M168 12 L192 12 L192 36" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Floating 3D growth icons -->
+          <div class="g-icon g-icon--rocket g-float">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c3 1.5 5 5 5 9l-2.5 4.5h-5L7 11c0-4 2-7.5 5-9Z"/><circle cx="12" cy="9" r="1.6"/><path d="M9.5 16 7 20l3-1M14.5 16 17 20l-3-1"/></svg>
+          </div>
+          <div class="g-icon g-icon--arrow g-float">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 12 8l3 3 4-4"/><path d="M15 7h4v4"/></svg>
+          </div>
+          <div class="g-icon g-icon--sprout g-float">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-7"/><path d="M12 14c0-3 2.5-5 6-5 0 3.5-2.5 5-6 5Z"/><path d="M12 15c0-3-2.5-5-6-5 0 3.5 2.5 5 6 5Z"/></svg>
+          </div>
+          <div class="g-icon g-icon--spark g-float">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M4 12h16"/><path d="m7 7 10 10M17 7 7 17"/></svg>
+          </div>
+
+          <!-- Small floating proof label -->
+          <span class="g-proof g-float font-mono" data-i18n="hero.badges.1">3.4× avg. ROAS</span>
         </div>
       </div>
 
@@ -2919,13 +2837,30 @@ if ("requestIdleCallback" in window) {
       <div class="footer__grid">
         <div>
           <div class="footer__logo">
-            <svg class="logo-mark logo-mark--lg" viewBox="0 0 140 92" fill="none" aria-hidden="true">
-              <g stroke="#d6e06a" stroke-width="8.5" stroke-linecap="round" transform="rotate(-18 70 72)">
-                <path d="M60 72 A10 10 0 0 1 80 72" />
-                <path d="M48 72 A22 22 0 0 1 92 72" />
-                <path d="M36 72 A34 34 0 0 1 104 72" />
-                <path d="M24 72 A46 46 0 0 1 116 72" />
-                <path d="M12 72 A58 58 0 0 1 128 72" />
+            <svg class="logo-mark logo-mark--lg" viewBox="0 0 150 104" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="baigrGoldF" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#FBF6A6" />
+                  <stop offset="0.48" stop-color="#ECE64C" />
+                  <stop offset="1" stop-color="#D3C838" />
+                </linearGradient>
+                <filter id="baigrShadowF" x="-25%" y="-25%" width="150%" height="160%">
+                  <feDropShadow dx="0" dy="2.5" stdDeviation="2.6" flood-color="#b6ad2e" flood-opacity="0.35" />
+                </filter>
+              </defs>
+              <g stroke="url(#baigrGoldF)" stroke-width="11" stroke-linecap="round" filter="url(#baigrShadowF)" transform="rotate(-9 75 78)">
+                <path d="M64 78 A11 11 0 0 1 86 78" />
+                <path d="M50 78 A25 25 0 0 1 100 78" />
+                <path d="M36 78 A39 39 0 0 1 114 78" />
+                <path d="M22 78 A53 53 0 0 1 128 78" />
+                <path d="M8 78 A67 67 0 0 1 142 78" />
+              </g>
+              <g stroke="#FCFAD6" stroke-width="2.4" stroke-linecap="round" opacity="0.65" transform="rotate(-9 75 78)">
+                <path d="M66 72 A17 17 0 0 1 84 72" />
+                <path d="M52 72 A31 31 0 0 1 98 72" />
+                <path d="M38 72 A45 45 0 0 1 112 72" />
+                <path d="M24 72 A59 59 0 0 1 126 72" />
+                <path d="M10 72 A73 73 0 0 1 140 72" />
               </g>
             </svg>
             <span class="footer__word font-display">BAIGR</span>

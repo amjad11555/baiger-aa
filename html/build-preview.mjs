@@ -3,12 +3,12 @@
 
    Outputs:
    • baigr-preview.html — one fully self-contained file (CSS, JS,
-     fonts, three.js and the dictionaries all inlined). Opens
+     fonts and the dictionaries all inlined). Opens
      straight from disk (file://) with every language, the
      assistant and the 3D hero working. Use it to preview.
    • baigr-embed.html — a lighter single file for embedding inside
      WordPress via <iframe>: CSS/JS/dictionaries inlined, but the
-     heavy libraries (GSAP, Lenis, three.js) and the Cairo font
+     heavy libraries (GSAP, Lenis) and the Cairo font
      come from a CDN.
 
    Run:  node build-preview.mjs
@@ -34,7 +34,6 @@ const CSS = {
   resp: read("css/responsive.css"),
 };
 const APP = ["language.js", "smooth-scroll.js", "parallax.js", "animations.js", "app.js"];
-const threeScene = read("js/three-scene.js");
 
 // split/join replace — no regex escaping, no `$` replacement-token pitfalls.
 function inline(html, tag, code) {
@@ -77,16 +76,6 @@ function buildPreview() {
   }
   html = inlineApp(html);
 
-  // three.js: fold core into the wrapper (relative import won't resolve from data:).
-  const coreData = `data:text/javascript;base64,${Buffer.from(read("assets/vendor/three.core.min.js")).toString("base64")}`;
-  const threeMod = read("assets/vendor/three.module.js").split("./three.core.min.js").join(coreData);
-  const threeData = `data:text/javascript;base64,${Buffer.from(threeMod).toString("base64")}`;
-  html = html
-    .replace(/\{ "imports": \{ "three": "\.\/assets\/vendor\/three\.module\.js" \} \}/,
-      JSON.stringify({ imports: { three: threeData } }))
-    .split('<script type="module" src="js/three-scene.js"></script>')
-    .join(`<script type="module">\n${threeScene}\n</script>`);
-
   writeFileSync(join(root, "baigr-preview.html"), html);
   return Buffer.byteLength(html);
 }
@@ -122,13 +111,6 @@ function buildEmbed() {
       .join(`<script defer src="${url}"></script>`);
   }
   html = inlineApp(html);
-
-  // three.js from CDN via the import map; three-scene inlined as a module.
-  html = html
-    .replace(/\{ "imports": \{ "three": "\.\/assets\/vendor\/three\.module\.js" \} \}/,
-      JSON.stringify({ imports: { three: "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.module.js" } }))
-    .split('<script type="module" src="js/three-scene.js"></script>')
-    .join(`<script type="module">\n${threeScene}\n</script>`);
 
   writeFileSync(join(root, "baigr-embed.html"), html);
   return Buffer.byteLength(html);

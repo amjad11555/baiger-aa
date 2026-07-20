@@ -42,7 +42,7 @@
   </script>
 
   <!-- Favicon (inline — no extra request): navy square, lime signal arcs -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffffff'/%3E%3Cg stroke='%23d6e06a' stroke-width='2.6' stroke-linecap='round' fill='none' transform='rotate(-18 16 22)'%3E%3Cpath d='M12.5 22 A3.5 3.5 0 0 1 19.5 22'/%3E%3Cpath d='M8.5 22 A7.5 7.5 0 0 1 23.5 22'/%3E%3Cpath d='M4.5 22 A11.5 11.5 0 0 1 27.5 22'/%3E%3C/g%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23ffffff'/%3E%3Cg stroke='%23ECE64C' stroke-width='3' stroke-linecap='round' fill='none' transform='rotate(-9 16 18)'%3E%3Cpath d='M13.5 18 A2.5 2.5 0 0 1 18.5 18'/%3E%3Cpath d='M10 18 A6 6 0 0 1 22 18'/%3E%3Cpath d='M6.5 18 A9.5 9.5 0 0 1 25.5 18'/%3E%3Cpath d='M3 18 A13 13 0 0 1 29 18'/%3E%3C/g%3E%3C/svg%3E" />
 
   <!-- Typography — Cairo, self-hosted (works offline and from file://) -->
   <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/files/cairo-latin-900-normal.woff2" />
@@ -60,9 +60,6 @@
   <script defer src="assets/vendor/ScrollTrigger.min.js"></script>
   <script defer src="assets/vendor/SplitText.min.js"></script>
   <script defer src="assets/vendor/lenis.min.js"></script>
-  <script type="importmap">
-    { "imports": { "three": "./assets/vendor/three.module.js" } }
-  </script>
 
   <!-- App -->
   <script defer src="js/language.js"></script>
@@ -70,7 +67,6 @@
   <script defer src="js/parallax.js"></script>
   <script defer src="js/animations.js"></script>
   <script defer src="js/app.js"></script>
-  <script type="module" src="js/three-scene.js"></script>
 </head>
 
 <body class="grain" id="top">
@@ -82,13 +78,30 @@
   <header class="navbar" id="navbar">
     <nav class="navbar__inner container">
       <a href="#top" class="navbar__logo" aria-label="BAIGR — home">
-        <svg class="logo-mark" viewBox="0 0 140 92" fill="none" aria-hidden="true">
-          <g stroke="#d6e06a" stroke-width="8.5" stroke-linecap="round" transform="rotate(-18 70 72)">
-            <path d="M60 72 A10 10 0 0 1 80 72" />
-            <path d="M48 72 A22 22 0 0 1 92 72" />
-            <path d="M36 72 A34 34 0 0 1 104 72" />
-            <path d="M24 72 A46 46 0 0 1 116 72" />
-            <path d="M12 72 A58 58 0 0 1 128 72" />
+        <svg class="logo-mark" viewBox="0 0 150 104" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="baigrGoldN" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#FBF6A6" />
+              <stop offset="0.48" stop-color="#ECE64C" />
+              <stop offset="1" stop-color="#D3C838" />
+            </linearGradient>
+            <filter id="baigrShadowN" x="-25%" y="-25%" width="150%" height="160%">
+              <feDropShadow dx="0" dy="2.5" stdDeviation="2.6" flood-color="#b6ad2e" flood-opacity="0.35" />
+            </filter>
+          </defs>
+          <g stroke="url(#baigrGoldN)" stroke-width="11" stroke-linecap="round" filter="url(#baigrShadowN)" transform="rotate(-9 75 78)">
+            <path d="M64 78 A11 11 0 0 1 86 78" />
+            <path d="M50 78 A25 25 0 0 1 100 78" />
+            <path d="M36 78 A39 39 0 0 1 114 78" />
+            <path d="M22 78 A53 53 0 0 1 128 78" />
+            <path d="M8 78 A67 67 0 0 1 142 78" />
+          </g>
+          <g stroke="#FCFAD6" stroke-width="2.4" stroke-linecap="round" opacity="0.65" transform="rotate(-9 75 78)">
+            <path d="M66 72 A17 17 0 0 1 84 72" />
+            <path d="M52 72 A31 31 0 0 1 98 72" />
+            <path d="M38 72 A45 45 0 0 1 112 72" />
+            <path d="M24 72 A59 59 0 0 1 126 72" />
+            <path d="M10 72 A73 73 0 0 1 140 72" />
           </g>
         </svg>
         <span class="logo-word font-display">BAIGR</span>
@@ -140,16 +153,8 @@
   <main>
     <!-- ===================== HERO ===================== -->
     <section class="hero" id="hero">
-      <div class="hero__field" id="hero-field" aria-hidden="true"></div>
       <div class="hero__aurora" aria-hidden="true"></div>
       <div class="hero__floor" aria-hidden="true"></div>
-
-      <!-- Floating proof chips — orbit the 3D mark on desktop -->
-      <div class="hero__chips" aria-hidden="true">
-        <span class="hero-chip glass" data-hero-chip data-i18n="hero.badges.0">AI-native studio</span>
-        <span class="hero-chip glass" data-hero-chip data-i18n="hero.badges.1">3.4× avg. ROAS</span>
-        <span class="hero-chip glass" data-hero-chip data-i18n="hero.badges.2">Live in days</span>
-      </div>
 
       <div class="container hero__content">
         <p class="eyebrow hero__eyebrow" data-hero-fade>
@@ -175,6 +180,51 @@
             <span data-i18n="hero.scroll">Scroll</span>
             <span class="scroll-hint__track" aria-hidden="true"><span></span></span>
           </a>
+        </div>
+      </div>
+
+      <!-- 3D growth scene: a rising dashboard + floating growth icons.
+           Pure CSS/SVG — no WebGL, so it stays fast and light. -->
+      <div class="hero-3d" aria-hidden="true">
+        <div class="hero-3d__stage">
+          <!-- Main growth dashboard card -->
+          <div class="g-card g-float">
+            <div class="g-card__bar">
+              <span class="g-card__dot"></span><span class="g-card__dot"></span><span class="g-card__dot"></span>
+              <span class="g-card__tag font-mono">GROWTH</span>
+              <span class="g-card__pct font-mono">▲ +212%</span>
+            </div>
+            <div class="g-chart">
+              <div class="g-bars">
+                <span class="g-bar" style="--h:34%"></span>
+                <span class="g-bar" style="--h:52%"></span>
+                <span class="g-bar" style="--h:66%"></span>
+                <span class="g-bar" style="--h:82%"></span>
+                <span class="g-bar" style="--h:100%"></span>
+              </div>
+              <svg class="g-trend" viewBox="0 0 200 120" fill="none" preserveAspectRatio="none">
+                <path class="g-trend__line" d="M12 104 L60 76 L104 84 L150 40 L190 16" stroke-linecap="round" stroke-linejoin="round" />
+                <path class="g-trend__head" d="M168 12 L192 12 L192 36" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Floating 3D growth icons -->
+          <div class="g-icon g-icon--rocket g-float">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c3 1.5 5 5 5 9l-2.5 4.5h-5L7 11c0-4 2-7.5 5-9Z"/><circle cx="12" cy="9" r="1.6"/><path d="M9.5 16 7 20l3-1M14.5 16 17 20l-3-1"/></svg>
+          </div>
+          <div class="g-icon g-icon--arrow g-float">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 12 8l3 3 4-4"/><path d="M15 7h4v4"/></svg>
+          </div>
+          <div class="g-icon g-icon--sprout g-float">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-7"/><path d="M12 14c0-3 2.5-5 6-5 0 3.5-2.5 5-6 5Z"/><path d="M12 15c0-3-2.5-5-6-5 0 3.5 2.5 5 6 5Z"/></svg>
+          </div>
+          <div class="g-icon g-icon--spark g-float">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M4 12h16"/><path d="m7 7 10 10M17 7 7 17"/></svg>
+          </div>
+
+          <!-- Small floating proof label -->
+          <span class="g-proof g-float font-mono" data-i18n="hero.badges.1">3.4× avg. ROAS</span>
         </div>
       </div>
 
@@ -481,13 +531,30 @@
       <div class="footer__grid">
         <div>
           <div class="footer__logo">
-            <svg class="logo-mark logo-mark--lg" viewBox="0 0 140 92" fill="none" aria-hidden="true">
-              <g stroke="#d6e06a" stroke-width="8.5" stroke-linecap="round" transform="rotate(-18 70 72)">
-                <path d="M60 72 A10 10 0 0 1 80 72" />
-                <path d="M48 72 A22 22 0 0 1 92 72" />
-                <path d="M36 72 A34 34 0 0 1 104 72" />
-                <path d="M24 72 A46 46 0 0 1 116 72" />
-                <path d="M12 72 A58 58 0 0 1 128 72" />
+            <svg class="logo-mark logo-mark--lg" viewBox="0 0 150 104" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="baigrGoldF" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#FBF6A6" />
+                  <stop offset="0.48" stop-color="#ECE64C" />
+                  <stop offset="1" stop-color="#D3C838" />
+                </linearGradient>
+                <filter id="baigrShadowF" x="-25%" y="-25%" width="150%" height="160%">
+                  <feDropShadow dx="0" dy="2.5" stdDeviation="2.6" flood-color="#b6ad2e" flood-opacity="0.35" />
+                </filter>
+              </defs>
+              <g stroke="url(#baigrGoldF)" stroke-width="11" stroke-linecap="round" filter="url(#baigrShadowF)" transform="rotate(-9 75 78)">
+                <path d="M64 78 A11 11 0 0 1 86 78" />
+                <path d="M50 78 A25 25 0 0 1 100 78" />
+                <path d="M36 78 A39 39 0 0 1 114 78" />
+                <path d="M22 78 A53 53 0 0 1 128 78" />
+                <path d="M8 78 A67 67 0 0 1 142 78" />
+              </g>
+              <g stroke="#FCFAD6" stroke-width="2.4" stroke-linecap="round" opacity="0.65" transform="rotate(-9 75 78)">
+                <path d="M66 72 A17 17 0 0 1 84 72" />
+                <path d="M52 72 A31 31 0 0 1 98 72" />
+                <path d="M38 72 A45 45 0 0 1 112 72" />
+                <path d="M24 72 A59 59 0 0 1 126 72" />
+                <path d="M10 72 A73 73 0 0 1 140 72" />
               </g>
             </svg>
             <span class="footer__word font-display">BAIGR</span>
