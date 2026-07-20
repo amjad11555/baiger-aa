@@ -944,6 +944,15 @@ html[lang="ar"] .footer h3 { text-transform: none; }
 .logo-mark { height: 34px; }
 .logo-mark--lg { height: 46px; }
 
+/* Logo slot: shows your uploaded images/logo.png; falls back to the drawn
+   mark until the file exists (onerror adds .no-logo-img). */
+.logo-slot { display: inline-flex; align-items: center; }
+.logo-img { height: 34px; width: auto; display: block; }
+.logo-slot--lg .logo-img { height: 46px; }
+.logo-slot .logo-fallback { display: none; }
+.logo-slot.no-logo-img .logo-img { display: none; }
+.logo-slot.no-logo-img .logo-fallback { display: block; }
+
 /* Shine sweep on the primary CTA */
 .btn--shine { position: relative; overflow: hidden; }
 .btn--shine::after {
@@ -2453,32 +2462,38 @@ if ("requestIdleCallback" in window) {
   <header class="navbar" id="navbar">
     <nav class="navbar__inner container">
       <a href="#top" class="navbar__logo" aria-label="BAIGR — home">
-        <svg class="logo-mark" viewBox="0 0 150 104" fill="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="baigrGoldN" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#FBF6A6" />
-              <stop offset="0.48" stop-color="#ECE64C" />
-              <stop offset="1" stop-color="#D3C838" />
-            </linearGradient>
-            <filter id="baigrShadowN" x="-25%" y="-25%" width="150%" height="160%">
-              <feDropShadow dx="0" dy="2.5" stdDeviation="2.6" flood-color="#b6ad2e" flood-opacity="0.35" />
-            </filter>
-          </defs>
-          <g stroke="url(#baigrGoldN)" stroke-width="11" stroke-linecap="round" filter="url(#baigrShadowN)" transform="rotate(-9 75 78)">
-            <path d="M64 78 A11 11 0 0 1 86 78" />
-            <path d="M50 78 A25 25 0 0 1 100 78" />
-            <path d="M36 78 A39 39 0 0 1 114 78" />
-            <path d="M22 78 A53 53 0 0 1 128 78" />
-            <path d="M8 78 A67 67 0 0 1 142 78" />
-          </g>
-          <g stroke="#FCFAD6" stroke-width="2.4" stroke-linecap="round" opacity="0.65" transform="rotate(-9 75 78)">
-            <path d="M66 72 A17 17 0 0 1 84 72" />
-            <path d="M52 72 A31 31 0 0 1 98 72" />
-            <path d="M38 72 A45 45 0 0 1 112 72" />
-            <path d="M24 72 A59 59 0 0 1 126 72" />
-            <path d="M10 72 A73 73 0 0 1 140 72" />
-          </g>
-        </svg>
+        <span class="logo-slot">
+          <!-- Your real logo. Drop images/logo.png (or logo.svg) and it shows here.
+               Until then, the drawn fallback below is used. -->
+          <img class="logo-img" src="images/logo.png" alt="BAIGR"
+               onerror="this.closest('.logo-slot').classList.add('no-logo-img')" />
+          <svg class="logo-mark logo-fallback" viewBox="0 0 150 104" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="baigrGoldN" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#FBF6A6" />
+                <stop offset="0.48" stop-color="#ECE64C" />
+                <stop offset="1" stop-color="#D3C838" />
+              </linearGradient>
+              <filter id="baigrShadowN" x="-25%" y="-25%" width="150%" height="160%">
+                <feDropShadow dx="0" dy="2.5" stdDeviation="2.6" flood-color="#b6ad2e" flood-opacity="0.35" />
+              </filter>
+            </defs>
+            <g stroke="url(#baigrGoldN)" stroke-width="11" stroke-linecap="round" filter="url(#baigrShadowN)" transform="rotate(-9 75 78)">
+              <path d="M64 78 A11 11 0 0 1 86 78" />
+              <path d="M50 78 A25 25 0 0 1 100 78" />
+              <path d="M36 78 A39 39 0 0 1 114 78" />
+              <path d="M22 78 A53 53 0 0 1 128 78" />
+              <path d="M8 78 A67 67 0 0 1 142 78" />
+            </g>
+            <g stroke="#FCFAD6" stroke-width="2.4" stroke-linecap="round" opacity="0.65" transform="rotate(-9 75 78)">
+              <path d="M66 72 A17 17 0 0 1 84 72" />
+              <path d="M52 72 A31 31 0 0 1 98 72" />
+              <path d="M38 72 A45 45 0 0 1 112 72" />
+              <path d="M24 72 A59 59 0 0 1 126 72" />
+              <path d="M10 72 A73 73 0 0 1 140 72" />
+            </g>
+          </svg>
+        </span>
         <span class="logo-word font-display">BAIGR</span>
       </a>
 
@@ -2862,32 +2877,36 @@ if ("requestIdleCallback" in window) {
       <div class="footer__grid">
         <div>
           <div class="footer__logo">
-            <svg class="logo-mark logo-mark--lg" viewBox="0 0 150 104" fill="none" aria-hidden="true">
-              <defs>
-                <linearGradient id="baigrGoldF" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="#FBF6A6" />
-                  <stop offset="0.48" stop-color="#ECE64C" />
-                  <stop offset="1" stop-color="#D3C838" />
-                </linearGradient>
-                <filter id="baigrShadowF" x="-25%" y="-25%" width="150%" height="160%">
-                  <feDropShadow dx="0" dy="2.5" stdDeviation="2.6" flood-color="#b6ad2e" flood-opacity="0.35" />
-                </filter>
-              </defs>
-              <g stroke="url(#baigrGoldF)" stroke-width="11" stroke-linecap="round" filter="url(#baigrShadowF)" transform="rotate(-9 75 78)">
-                <path d="M64 78 A11 11 0 0 1 86 78" />
-                <path d="M50 78 A25 25 0 0 1 100 78" />
-                <path d="M36 78 A39 39 0 0 1 114 78" />
-                <path d="M22 78 A53 53 0 0 1 128 78" />
-                <path d="M8 78 A67 67 0 0 1 142 78" />
-              </g>
-              <g stroke="#FCFAD6" stroke-width="2.4" stroke-linecap="round" opacity="0.65" transform="rotate(-9 75 78)">
-                <path d="M66 72 A17 17 0 0 1 84 72" />
-                <path d="M52 72 A31 31 0 0 1 98 72" />
-                <path d="M38 72 A45 45 0 0 1 112 72" />
-                <path d="M24 72 A59 59 0 0 1 126 72" />
-                <path d="M10 72 A73 73 0 0 1 140 72" />
-              </g>
-            </svg>
+            <span class="logo-slot logo-slot--lg">
+              <img class="logo-img" src="images/logo.png" alt="BAIGR"
+                   onerror="this.closest('.logo-slot').classList.add('no-logo-img')" />
+              <svg class="logo-mark logo-mark--lg logo-fallback" viewBox="0 0 150 104" fill="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="baigrGoldF" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#FBF6A6" />
+                    <stop offset="0.48" stop-color="#ECE64C" />
+                    <stop offset="1" stop-color="#D3C838" />
+                  </linearGradient>
+                  <filter id="baigrShadowF" x="-25%" y="-25%" width="150%" height="160%">
+                    <feDropShadow dx="0" dy="2.5" stdDeviation="2.6" flood-color="#b6ad2e" flood-opacity="0.35" />
+                  </filter>
+                </defs>
+                <g stroke="url(#baigrGoldF)" stroke-width="11" stroke-linecap="round" filter="url(#baigrShadowF)" transform="rotate(-9 75 78)">
+                  <path d="M64 78 A11 11 0 0 1 86 78" />
+                  <path d="M50 78 A25 25 0 0 1 100 78" />
+                  <path d="M36 78 A39 39 0 0 1 114 78" />
+                  <path d="M22 78 A53 53 0 0 1 128 78" />
+                  <path d="M8 78 A67 67 0 0 1 142 78" />
+                </g>
+                <g stroke="#FCFAD6" stroke-width="2.4" stroke-linecap="round" opacity="0.65" transform="rotate(-9 75 78)">
+                  <path d="M66 72 A17 17 0 0 1 84 72" />
+                  <path d="M52 72 A31 31 0 0 1 98 72" />
+                  <path d="M38 72 A45 45 0 0 1 112 72" />
+                  <path d="M24 72 A59 59 0 0 1 126 72" />
+                  <path d="M10 72 A73 73 0 0 1 140 72" />
+                </g>
+              </svg>
+            </span>
             <span class="footer__word font-display">BAIGR</span>
           </div>
           <p class="footer__tagline" data-i18n="footer.tagline">Creative strategy and digital growth, powered by AI.</p>

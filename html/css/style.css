@@ -893,6 +893,15 @@ html[lang="ar"] .footer h3 { text-transform: none; }
 .logo-mark { height: 34px; }
 .logo-mark--lg { height: 46px; }
 
+/* Logo slot: shows your uploaded images/logo.png; falls back to the drawn
+   mark until the file exists (onerror adds .no-logo-img). */
+.logo-slot { display: inline-flex; align-items: center; }
+.logo-img { height: 34px; width: auto; display: block; }
+.logo-slot--lg .logo-img { height: 46px; }
+.logo-slot .logo-fallback { display: none; }
+.logo-slot.no-logo-img .logo-img { display: none; }
+.logo-slot.no-logo-img .logo-fallback { display: block; }
+
 /* Shine sweep on the primary CTA */
 .btn--shine { position: relative; overflow: hidden; }
 .btn--shine::after {
