@@ -1,7 +1,7 @@
 /* ============================================================
    BAIGR — pointer-driven interactions:
    custom cursor + magnetic buttons. Fine pointers only.
-   (The hero's 3D growth scene is pure CSS/SVG.)
+   (The hero's 3D parallax lives in three-scene.js.)
    ============================================================ */
 (function () {
   "use strict";

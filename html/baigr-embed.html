@@ -414,9 +414,7 @@ html[dir="rtl"] .scroll-progress { transform-origin: right; }
 .hero {
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
+  align-items: center;
   min-height: 100svh;
   overflow: hidden;
 }
@@ -946,145 +944,6 @@ html[lang="ar"] .footer h3 { text-transform: none; }
 .logo-mark { height: 34px; }
 .logo-mark--lg { height: 46px; }
 
-/* ---------- Hero 3D growth scene (pure CSS/SVG, no WebGL) ----------
-   Mobile-first: the scene sits below the copy, scaled to fit.
-   From lg up (responsive.css) it becomes an absolute right-side panel. */
-.hero-3d {
-  position: relative;
-  width: 100%;
-  height: 15rem;
-  margin-top: 0.5rem;
-  z-index: 0;
-  pointer-events: none;
-}
-.hero-3d__stage {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 21rem;
-  height: 19rem;
-  transform: translate(-50%, -50%) scale(0.66);
-  transform-style: preserve-3d;
-  perspective: 1200px;
-}
-
-/* The dashboard card */
-.g-card {
-  position: absolute;
-  top: 50%; inset-inline-end: 0;
-  width: 20rem;
-  transform: translateY(-50%) rotateY(-16deg) rotateX(7deg);
-  transform-origin: center;
-  border-radius: 1.25rem;
-  padding: 1rem 1.15rem 1.25rem;
-  background: linear-gradient(160deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72));
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.9);
-  box-shadow: 0 30px 60px -18px rgba(77,67,184,0.35), 0 8px 20px rgba(27,21,57,0.08);
-  animation: g-card-float 7s ease-in-out infinite;
-}
-html[dir="rtl"] .g-card { transform: translateY(-50%) rotateY(16deg) rotateX(7deg); }
-.g-card__bar { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem; }
-.g-card__dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--line); }
-.g-card__dot:nth-child(1) { background: #ff6b6b; }
-.g-card__dot:nth-child(2) { background: #ffd23f; }
-.g-card__dot:nth-child(3) { background: #35d07f; }
-.g-card__tag { margin-inline-start: 0.4rem; font-size: 0.62rem; letter-spacing: 0.18em; color: var(--mist); font-weight: 700; }
-.g-card__pct { margin-inline-start: auto; font-size: 0.72rem; font-weight: 700; color: #2fae63; }
-
-.g-chart { position: relative; height: 9rem; }
-.g-bars { display: flex; align-items: flex-end; gap: 0.55rem; height: 100%; }
-.g-bar {
-  flex: 1;
-  height: var(--h);
-  border-radius: 0.4rem 0.4rem 0.2rem 0.2rem;
-  background: linear-gradient(to top, var(--iris-deep), var(--iris) 55%, var(--lime));
-  transform-origin: bottom;
-  animation: g-bar-grow 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  box-shadow: 0 4px 10px rgba(114,107,214,0.25);
-}
-.g-bar:nth-child(1) { animation-delay: 0.15s; }
-.g-bar:nth-child(2) { animation-delay: 0.28s; }
-.g-bar:nth-child(3) { animation-delay: 0.41s; }
-.g-bar:nth-child(4) { animation-delay: 0.54s; }
-.g-bar:nth-child(5) { animation-delay: 0.67s; }
-.g-trend {
-  position: absolute;
-  inset: 0;
-  width: 100%; height: 100%;
-  overflow: visible;
-}
-.g-trend__line, .g-trend__head {
-  stroke: #ECE64C;
-  stroke-width: 3.5;
-  filter: drop-shadow(0 2px 3px rgba(180,170,40,0.4));
-}
-.g-trend__line { stroke-dasharray: 320; stroke-dashoffset: 320; animation: g-draw 1.3s ease-out 0.7s forwards; }
-.g-trend__head { opacity: 0; animation: g-fade 0.4s ease-out 1.8s forwards; }
-
-/* Floating 3D growth icons */
-.g-icon {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  width: 3.4rem; height: 3.4rem;
-  border-radius: 1rem;
-  color: #fff;
-  box-shadow: 0 16px 30px -8px rgba(27,21,57,0.35), inset 0 1px 0 rgba(255,255,255,0.4);
-  animation: g-icon-float 6s ease-in-out infinite;
-}
-.g-icon svg { width: 1.7rem; height: 1.7rem; }
-.g-icon--rocket { inset-block-start: 4%; inset-inline-end: 62%; background: linear-gradient(150deg, var(--iris), var(--iris-deep)); animation-duration: 6.5s; }
-.g-icon--arrow  { inset-block-start: 30%; inset-inline-end: -4%; background: linear-gradient(150deg, #ECE64C, #cdb92f); color: #5a5210; animation-duration: 7.2s; animation-delay: 0.5s; }
-.g-icon--sprout { inset-block-end: 8%; inset-inline-end: 70%; background: linear-gradient(150deg, #35d07f, #1f9e5c); animation-duration: 6.8s; animation-delay: 0.9s; }
-.g-icon--spark  { inset-block-start: -3%; inset-inline-end: 20%; width: 2.6rem; height: 2.6rem; background: linear-gradient(150deg, var(--lime), #b7c23f); color: #4a5210; animation-duration: 5.8s; animation-delay: 0.3s; }
-.g-icon--spark svg { width: 1.3rem; height: 1.3rem; }
-
-.g-proof {
-  position: absolute;
-  inset-block-end: 2%; inset-inline-start: -2%;
-  padding: 0.5rem 0.9rem;
-  border-radius: 9999px;
-  background: rgba(255,255,255,0.92);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-md);
-  font-size: 0.72rem; font-weight: 700; color: var(--ink);
-  white-space: nowrap;
-  animation: g-icon-float 7.5s ease-in-out infinite 0.6s;
-}
-.g-proof::before {
-  content: ""; display: inline-block;
-  width: 0.45rem; height: 0.45rem; margin-inline-end: 0.45rem;
-  border-radius: 50%; background: linear-gradient(135deg, var(--lime), var(--iris));
-  vertical-align: middle;
-}
-
-@keyframes g-card-float {
-  0%, 100% { transform: translateY(-50%) rotateY(-16deg) rotateX(7deg); }
-  50% { transform: translateY(calc(-50% - 0.75rem)) rotateY(-12deg) rotateX(7deg); }
-}
-html[dir="rtl"] .g-card { animation-name: g-card-float-rtl; }
-@keyframes g-card-float-rtl {
-  0%, 100% { transform: translateY(-50%) rotateY(16deg) rotateX(7deg); }
-  50% { transform: translateY(calc(-50% - 0.75rem)) rotateY(12deg) rotateX(7deg); }
-}
-@keyframes g-icon-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-0.9rem); }
-}
-@keyframes g-bar-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-@keyframes g-draw { to { stroke-dashoffset: 0; } }
-@keyframes g-fade { to { opacity: 1; } }
-
-@media (prefers-reduced-motion: reduce) {
-  .g-card, .g-icon, .g-proof { animation: none; }
-  .g-bar { animation: none; }
-  .g-trend__line { stroke-dashoffset: 0; animation: none; }
-  .g-trend__head { opacity: 1; animation: none; }
-}
-
 /* Shine sweep on the primary CTA */
 .btn--shine { position: relative; overflow: hidden; }
 .btn--shine::after {
@@ -1476,24 +1335,6 @@ html.js .reveal { will-change: transform; }
 
   .contact__inner { padding-block: 5rem; }
 
-  /* Hero: copy on the start side, the 3D scene floating on the end side. */
-  .hero__content { padding-inline-end: 25rem; }
-  .hero-3d {
-    position: absolute;
-    inset: 0;
-    width: auto;
-    height: auto;
-    margin-top: 0;
-    overflow: hidden;
-  }
-  .hero-3d__stage {
-    top: 50%;
-    left: auto;
-    inset-inline-end: 6%;
-    width: 24rem;
-    height: 24rem;
-    transform: translateY(-50%);
-  }
 }
 
 </style>
@@ -1502,6 +1343,9 @@ html.js .reveal { will-change: transform; }
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js"></script>
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.module.js"}}
+  </script>
 
   <!-- App -->
   <script>
@@ -1668,7 +1512,7 @@ window.BAIGR=window.BAIGR||{};window.BAIGR.__DICTS={"en":{"nav":{"about":"About"
 /* ============================================================
    BAIGR — pointer-driven interactions:
    custom cursor + magnetic buttons. Fine pointers only.
-   (The hero's 3D growth scene is pure CSS/SVG.)
+   (The hero's 3D parallax lives in three-scene.js.)
    ============================================================ */
 (function () {
   "use strict";
@@ -2373,6 +2217,327 @@ window.BAIGR=window.BAIGR||{};window.BAIGR.__DICTS={"en":{"nav":{"about":"About"
 })();
 
 </script>
+  <script type="module">
+/* ============================================================
+   BAIGR — the signature "growth field".
+   Thousands of warm ember motes rise along a compounding curve —
+   growth drawn in light. Reacts to the cursor (parallax + local
+   glow) and to device tilt on mobile.
+
+   ES module: Three.js is resolved through the import map in
+   index.html and loaded during idle time so first paint stays fast.
+   ============================================================ */
+
+const VERTEX = /* glsl */ `
+  attribute float aSeed;
+  attribute float aOffset;
+  uniform float uTime;
+  uniform vec2 uPointer;   // world-space pointer on the z=0 plane
+  uniform float uPixelRatio;
+  varying float varT;
+  varying float varGlow;
+
+  void main() {
+    float speed = 0.016 + aSeed * 0.022;
+    float t = fract(aOffset + uTime * speed);
+
+    // The growth curve: slow start, compounding rise.
+    float x = mix(-7.5, 7.5, t);
+    float y = pow(t, 1.55) * 5.2 - 2.4;
+
+    // Helical drift around the path so the stream feels alive.
+    float angle = t * 12.0 + aSeed * 6.28318 + uTime * (0.15 + aSeed * 0.2);
+    float radius = 0.35 + aSeed * 1.15;
+    y += sin(angle) * radius * 0.45;
+    float z = cos(angle) * radius - aSeed * 1.5;
+
+    // Gentle breathing across the whole field.
+    x += sin(uTime * 0.22 + aSeed * 9.0) * 0.18;
+
+    vec3 pos = vec3(x, y, z);
+
+    // Local glow: particles brighten near the cursor.
+    float d = distance(pos.xy, uPointer);
+    varGlow = smoothstep(2.6, 0.0, d);
+    varT = t;
+
+    vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+    gl_Position = projectionMatrix * mv;
+
+    float size = (0.7 + aSeed * 1.9) * (1.0 + varGlow * 1.6);
+    gl_PointSize = size * uPixelRatio * (36.0 / -mv.z);
+  }
+`;
+
+const FRAGMENT = /* glsl */ `
+  uniform vec3 uColorA;    // lime
+  uniform vec3 uColorB;    // iris
+  uniform vec3 uColorGlow; // navy — cursor concentration
+  varying float varT;
+  varying float varGlow;
+
+  void main() {
+    vec2 uv = gl_PointCoord - 0.5;
+    float dist = length(uv);
+    float disc = smoothstep(0.5, 0.08, dist);
+    if (disc < 0.01) discard;
+
+    // Ramp lime -> iris along the growth curve; deepen to navy near the cursor.
+    vec3 color = mix(uColorA, uColorB, clamp(varT * 0.9, 0.0, 1.0));
+    color = mix(color, uColorGlow, varGlow * 0.7);
+
+    // Fade in at birth, out at the top of the arc.
+    float life = smoothstep(0.0, 0.08, varT) * (1.0 - smoothstep(0.82, 1.0, varT));
+    // Normal blending over a light page: keep enough alpha to read on paper.
+    float alpha = disc * life * (0.62 + varGlow * 0.38);
+
+    gl_FragColor = vec4(color, alpha);
+  }
+`;
+
+function init(THREE, mount) {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  const cleanupFns = [];
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(
+    50,
+    mount.clientWidth / mount.clientHeight,
+    0.1,
+    50
+  );
+  camera.position.set(0, 0.4, 8.5);
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: false,
+      powerPreference: "high-performance",
+    });
+  } catch (e) {
+    return; // No WebGL: the aurora gradient carries the hero alone.
+  }
+
+  // Software rasterizers (SwiftShader, llvmpipe…) render on the CPU:
+  // scale the scene down so weak machines stay smooth.
+  const gl = renderer.getContext();
+  const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+  const glRenderer = debugInfo
+    ? String(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL))
+    : "";
+  const softwareGL = /swiftshader|llvmpipe|software/i.test(glRenderer);
+
+  const dpr = Math.min(
+    window.devicePixelRatio,
+    softwareGL ? 1 : isMobile ? 1.5 : 1.75
+  );
+  renderer.setPixelRatio(dpr);
+  renderer.setSize(mount.clientWidth, mount.clientHeight);
+  mount.appendChild(renderer.domElement);
+  mount.classList.add("is-ready");
+
+  /* ---------- Growth stream particles ---------- */
+  const count = softwareGL ? 700 : isMobile ? 1300 : 2600;
+  const frameInterval = softwareGL ? 1000 / 24 : 0;
+  const seeds = new Float32Array(count);
+  const offsets = new Float32Array(count);
+  const positions = new Float32Array(count * 3); // real positions live in the shader
+  for (let i = 0; i < count; i++) {
+    seeds[i] = Math.random();
+    offsets[i] = Math.random();
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("aSeed", new THREE.BufferAttribute(seeds, 1));
+  geometry.setAttribute("aOffset", new THREE.BufferAttribute(offsets, 1));
+  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), 20);
+
+  const uniforms = {
+    uTime: { value: 0 },
+    uPointer: { value: new THREE.Vector2(0, 0.6) },
+    uPixelRatio: { value: dpr },
+    uColorA: { value: new THREE.Color("#d6e06a") }, // lime
+    uColorB: { value: new THREE.Color("#726bd6") }, // iris
+    uColorGlow: { value: new THREE.Color("#1b1539") }, // navy
+  };
+
+  const material = new THREE.ShaderMaterial({
+    vertexShader: VERTEX,
+    fragmentShader: FRAGMENT,
+    uniforms,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.NormalBlending, // additive is invisible on a light page
+  });
+
+  scene.add(new THREE.Points(geometry, material));
+
+  /* ---------- Floating wireframe polyhedra (layered 3D anchor) ---------- */
+  const icoGeo = new THREE.IcosahedronGeometry(2.1, 1);
+  const icoMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color("#726bd6"),
+    wireframe: true,
+    transparent: true,
+    opacity: 0.2,
+  });
+  const ico = new THREE.Mesh(icoGeo, icoMat);
+  ico.position.set(isMobile ? 0 : 3.4, 1.1, -2.5);
+  scene.add(ico);
+
+  // A larger, fainter dodecahedron rotating the other way — adds depth.
+  const dodGeo = new THREE.DodecahedronGeometry(3.4, 0);
+  const dodMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color("#aeb93f"),
+    wireframe: true,
+    transparent: true,
+    opacity: 0.1,
+  });
+  const dod = new THREE.Mesh(dodGeo, dodMat);
+  dod.position.copy(ico.position);
+  scene.add(dod);
+
+  // Halo ring — a thin torus catching the eye behind the marks.
+  const ringGeo = new THREE.TorusGeometry(2.85, 0.02, 12, 90);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color("#726bd6"),
+    transparent: true,
+    opacity: 0.22,
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.copy(ico.position);
+  ring.rotation.x = 1.1;
+  scene.add(ring);
+
+  /* ---------- Pointer parallax + interactive light ---------- */
+  const target = { x: 0, y: 0 };
+  const raycastPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+  const raycaster = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  const hit = new THREE.Vector3();
+
+  const onPointer = (e) => {
+    const nx = (e.clientX / window.innerWidth) * 2 - 1;
+    const ny = -(e.clientY / window.innerHeight) * 2 + 1;
+    target.x = nx;
+    target.y = ny;
+    ndc.set(nx, ny);
+    raycaster.setFromCamera(ndc, camera);
+    if (raycaster.ray.intersectPlane(raycastPlane, hit)) {
+      uniforms.uPointer.value.set(hit.x, hit.y);
+    }
+  };
+  window.addEventListener("pointermove", onPointer, { passive: true });
+  cleanupFns.push(() => window.removeEventListener("pointermove", onPointer));
+
+  // Gyroscope on mobile
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+  const onOrientation = (e) => {
+    if (e.gamma == null || e.beta == null) return;
+    target.x = clamp(e.gamma / 30, -1, 1);
+    target.y = clamp((e.beta - 45) / -30, -1, 1);
+  };
+  if (isMobile) {
+    window.addEventListener("deviceorientation", onOrientation);
+    cleanupFns.push(() =>
+      window.removeEventListener("deviceorientation", onOrientation)
+    );
+  }
+
+  /* ---------- Render loop (paused off-screen / hidden tab) ---------- */
+  let raf = 0;
+  let running = false;
+  let last = performance.now();
+  let elapsed = 0;
+
+  const renderFrame = () => {
+    const now = performance.now();
+    const dt = Math.min((now - last) / 1000, 0.1);
+    last = now;
+    elapsed += dt;
+    uniforms.uTime.value = elapsed;
+
+    camera.position.x += (target.x * 0.7 - camera.position.x) * 0.045;
+    camera.position.y += (0.4 + target.y * 0.45 - camera.position.y) * 0.045;
+    camera.lookAt(0, 0.3, 0);
+
+    ico.rotation.x += dt * 0.08;
+    ico.rotation.y += dt * 0.11;
+    ico.position.y = 1.1 + Math.sin(elapsed * 0.5) * 0.25;
+
+    dod.rotation.x -= dt * 0.05;
+    dod.rotation.y -= dt * 0.07;
+    dod.position.y = ico.position.y;
+
+    ring.rotation.z += dt * 0.12;
+    ring.position.y = ico.position.y;
+
+    renderer.render(scene, camera);
+  };
+
+  let lastFrame = 0;
+  const loop = (ts) => {
+    if (!frameInterval || ts - lastFrame >= frameInterval) {
+      lastFrame = ts;
+      renderFrame();
+    }
+    raf = requestAnimationFrame(loop);
+  };
+
+  const start = () => {
+    if (running || reduced) return;
+    running = true;
+    last = performance.now();
+    raf = requestAnimationFrame(loop);
+  };
+  const stop = () => {
+    running = false;
+    cancelAnimationFrame(raf);
+  };
+
+  if (reduced) {
+    uniforms.uTime.value = 12; // a pleasant static frame
+    renderFrame();
+  } else {
+    const io = new IntersectionObserver(([entry]) =>
+      entry.isIntersecting ? start() : stop()
+    );
+    io.observe(mount);
+    const onVis = () => (document.hidden ? stop() : start());
+    document.addEventListener("visibilitychange", onVis);
+    cleanupFns.push(() => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
+    });
+  }
+
+  const onResize = () => {
+    camera.aspect = mount.clientWidth / mount.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(mount.clientWidth, mount.clientHeight);
+    if (reduced) renderFrame();
+  };
+  window.addEventListener("resize", onResize);
+  cleanupFns.push(() => window.removeEventListener("resize", onResize));
+}
+
+/* Boot during idle time so hydration of the page stays snappy. */
+const boot = () => {
+  const mount = document.getElementById("hero-field");
+  if (!mount) return;
+  import("three")
+    .then((THREE) => init(THREE, mount))
+    .catch((err) => console.warn("[BAIGR] three.js unavailable:", err.message));
+};
+
+if ("requestIdleCallback" in window) {
+  requestIdleCallback(boot, { timeout: 1200 });
+} else {
+  setTimeout(boot, 350);
+}
+
+</script>
 </head>
 
 <body class="grain" id="top">
@@ -2459,6 +2624,7 @@ window.BAIGR=window.BAIGR||{};window.BAIGR.__DICTS={"en":{"nav":{"about":"About"
   <main>
     <!-- ===================== HERO ===================== -->
     <section class="hero" id="hero">
+      <div class="hero__field" id="hero-field" aria-hidden="true"></div>
       <div class="hero__aurora" aria-hidden="true"></div>
       <div class="hero__floor" aria-hidden="true"></div>
 
@@ -2486,51 +2652,6 @@ window.BAIGR=window.BAIGR||{};window.BAIGR.__DICTS={"en":{"nav":{"about":"About"
             <span data-i18n="hero.scroll">Scroll</span>
             <span class="scroll-hint__track" aria-hidden="true"><span></span></span>
           </a>
-        </div>
-      </div>
-
-      <!-- 3D growth scene: a rising dashboard + floating growth icons.
-           Pure CSS/SVG — no WebGL, so it stays fast and light. -->
-      <div class="hero-3d" aria-hidden="true">
-        <div class="hero-3d__stage">
-          <!-- Main growth dashboard card -->
-          <div class="g-card g-float">
-            <div class="g-card__bar">
-              <span class="g-card__dot"></span><span class="g-card__dot"></span><span class="g-card__dot"></span>
-              <span class="g-card__tag font-mono">GROWTH</span>
-              <span class="g-card__pct font-mono">▲ +212%</span>
-            </div>
-            <div class="g-chart">
-              <div class="g-bars">
-                <span class="g-bar" style="--h:34%"></span>
-                <span class="g-bar" style="--h:52%"></span>
-                <span class="g-bar" style="--h:66%"></span>
-                <span class="g-bar" style="--h:82%"></span>
-                <span class="g-bar" style="--h:100%"></span>
-              </div>
-              <svg class="g-trend" viewBox="0 0 200 120" fill="none" preserveAspectRatio="none">
-                <path class="g-trend__line" d="M12 104 L60 76 L104 84 L150 40 L190 16" stroke-linecap="round" stroke-linejoin="round" />
-                <path class="g-trend__head" d="M168 12 L192 12 L192 36" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </div>
-          </div>
-
-          <!-- Floating 3D growth icons -->
-          <div class="g-icon g-icon--rocket g-float">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c3 1.5 5 5 5 9l-2.5 4.5h-5L7 11c0-4 2-7.5 5-9Z"/><circle cx="12" cy="9" r="1.6"/><path d="M9.5 16 7 20l3-1M14.5 16 17 20l-3-1"/></svg>
-          </div>
-          <div class="g-icon g-icon--arrow g-float">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15 12 8l3 3 4-4"/><path d="M15 7h4v4"/></svg>
-          </div>
-          <div class="g-icon g-icon--sprout g-float">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-7"/><path d="M12 14c0-3 2.5-5 6-5 0 3.5-2.5 5-6 5Z"/><path d="M12 15c0-3-2.5-5-6-5 0 3.5 2.5 5 6 5Z"/></svg>
-          </div>
-          <div class="g-icon g-icon--spark g-float">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M4 12h16"/><path d="m7 7 10 10M17 7 7 17"/></svg>
-          </div>
-
-          <!-- Small floating proof label -->
-          <span class="g-proof g-float font-mono" data-i18n="hero.badges.1">3.4× avg. ROAS</span>
         </div>
       </div>
 

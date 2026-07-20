@@ -64,22 +64,4 @@
 
   .contact__inner { padding-block: 5rem; }
 
-  /* Hero: copy on the start side, the 3D scene floating on the end side. */
-  .hero__content { padding-inline-end: 25rem; }
-  .hero-3d {
-    position: absolute;
-    inset: 0;
-    width: auto;
-    height: auto;
-    margin-top: 0;
-    overflow: hidden;
-  }
-  .hero-3d__stage {
-    top: 50%;
-    left: auto;
-    inset-inline-end: 6%;
-    width: 24rem;
-    height: 24rem;
-    transform: translateY(-50%);
-  }
 }
