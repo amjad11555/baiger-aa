@@ -2219,81 +2219,15 @@ window.BAIGR=window.BAIGR||{};window.BAIGR.__DICTS={"en":{"nav":{"about":"About"
 </script>
   <script type="module">
 /* ============================================================
-   BAIGR — the signature "growth rise".
-   Motes drift steadily upward, fanning out gently as they climb —
-   compounding growth drawn in light, no swirl. Behind them,
-   concentric arcs pulse outward in sequence, echoing the BAIGR
-   mark. Reacts to the cursor (parallax + local glow) and to
+   BAIGR — the signature concentric arcs.
+   Half-ring arcs stacked like the BAIGR mark pulse outward in
+   sequence — a ripple of growth — while small nodes ride across
+   them. No particles. Reacts to the cursor (parallax) and to
    device tilt on mobile.
 
    ES module: Three.js is resolved through the import map in
    index.html and loaded during idle time so first paint stays fast.
    ============================================================ */
-
-const VERTEX = /* glsl */ `
-  attribute float aSeed;
-  attribute float aOffset;
-  uniform float uTime;
-  uniform vec2 uPointer;   // world-space pointer on the z=0 plane
-  uniform float uPixelRatio;
-  varying float varT;
-  varying float varGlow;
-
-  void main() {
-    float speed = 0.05 + aSeed * 0.06;
-    float t = fract(aOffset + uTime * speed);
-
-    // Calm rise: motes climb straight up, fanning out gently — no swirl.
-    float lane = (aSeed - 0.5) * 2.0;              // -1..1 horizontal lane
-    float spread = 1.4 + t * 2.6;                  // widen as they climb (growth)
-    float x = lane * spread;
-    float y = t * 7.4 - 3.4;
-    float z = (fract(aSeed * 7.31) - 0.5) * 2.6;   // fixed depth per mote
-
-    // Gentle sway so the field breathes (no rotation).
-    x += sin(uTime * 0.3 + aSeed * 9.0) * 0.18;
-    y += sin(uTime * 0.5 + aSeed * 4.0) * 0.08;
-
-    vec3 pos = vec3(x, y, z);
-
-    // Local glow: particles brighten near the cursor.
-    float d = distance(pos.xy, uPointer);
-    varGlow = smoothstep(2.6, 0.0, d);
-    varT = t;
-
-    vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-    gl_Position = projectionMatrix * mv;
-
-    float size = (0.7 + aSeed * 1.9) * (1.0 + varGlow * 1.6);
-    gl_PointSize = size * uPixelRatio * (36.0 / -mv.z);
-  }
-`;
-
-const FRAGMENT = /* glsl */ `
-  uniform vec3 uColorA;    // lime
-  uniform vec3 uColorB;    // iris
-  uniform vec3 uColorGlow; // navy — cursor concentration
-  varying float varT;
-  varying float varGlow;
-
-  void main() {
-    vec2 uv = gl_PointCoord - 0.5;
-    float dist = length(uv);
-    float disc = smoothstep(0.5, 0.08, dist);
-    if (disc < 0.01) discard;
-
-    // Ramp lime -> iris as the bloom rises; deepen to navy near the cursor.
-    vec3 color = mix(uColorA, uColorB, clamp(varT * 0.95, 0.0, 1.0));
-    color = mix(color, uColorGlow, varGlow * 0.7);
-
-    // Fade in at the seed, out at the crown of the bloom.
-    float life = smoothstep(0.0, 0.09, varT) * (1.0 - smoothstep(0.80, 1.0, varT));
-    // Normal blending over a light page: keep enough alpha to read on paper.
-    float alpha = disc * life * (0.62 + varGlow * 0.38);
-
-    gl_FragColor = vec4(color, alpha);
-  }
-`;
 
 function init(THREE, mount) {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2338,41 +2272,7 @@ function init(THREE, mount) {
   mount.appendChild(renderer.domElement);
   mount.classList.add("is-ready");
 
-  /* ---------- Growth bloom particles ---------- */
-  const count = softwareGL ? 700 : isMobile ? 1300 : 2600;
-  const frameInterval = softwareGL ? 1000 / 24 : 0;
-  const seeds = new Float32Array(count);
-  const offsets = new Float32Array(count);
-  const positions = new Float32Array(count * 3); // real positions live in the shader
-  for (let i = 0; i < count; i++) {
-    seeds[i] = Math.random();
-    offsets[i] = Math.random();
-  }
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("aSeed", new THREE.BufferAttribute(seeds, 1));
-  geometry.setAttribute("aOffset", new THREE.BufferAttribute(offsets, 1));
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), 20);
-
-  const uniforms = {
-    uTime: { value: 0 },
-    uPointer: { value: new THREE.Vector2(0, 0.6) },
-    uPixelRatio: { value: dpr },
-    uColorA: { value: new THREE.Color("#d6e06a") }, // lime
-    uColorB: { value: new THREE.Color("#726bd6") }, // iris
-    uColorGlow: { value: new THREE.Color("#1b1539") }, // navy
-  };
-
-  const material = new THREE.ShaderMaterial({
-    vertexShader: VERTEX,
-    fragmentShader: FRAGMENT,
-    uniforms,
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.NormalBlending, // additive is invisible on a light page
-  });
-
-  scene.add(new THREE.Points(geometry, material));
+  const frameInterval = softwareGL ? 1000 / 30 : 0;
 
   /* ---------- Concentric arc system — the BAIGR mark, alive ----------
      Half-ring arcs stacked like the logo's fingerprint, pulsing
@@ -2417,23 +2317,12 @@ function init(THREE, mount) {
     });
   }
 
-  /* ---------- Pointer parallax + interactive light ---------- */
+  /* ---------- Pointer parallax ---------- */
   const target = { x: 0, y: 0 };
-  const raycastPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-  const raycaster = new THREE.Raycaster();
-  const ndc = new THREE.Vector2();
-  const hit = new THREE.Vector3();
 
   const onPointer = (e) => {
-    const nx = (e.clientX / window.innerWidth) * 2 - 1;
-    const ny = -(e.clientY / window.innerHeight) * 2 + 1;
-    target.x = nx;
-    target.y = ny;
-    ndc.set(nx, ny);
-    raycaster.setFromCamera(ndc, camera);
-    if (raycaster.ray.intersectPlane(raycastPlane, hit)) {
-      uniforms.uPointer.value.set(hit.x, hit.y);
-    }
+    target.x = (e.clientX / window.innerWidth) * 2 - 1;
+    target.y = -(e.clientY / window.innerHeight) * 2 + 1;
   };
   window.addEventListener("pointermove", onPointer, { passive: true });
   cleanupFns.push(() => window.removeEventListener("pointermove", onPointer));
@@ -2463,7 +2352,6 @@ function init(THREE, mount) {
     const dt = Math.min((now - last) / 1000, 0.1);
     last = now;
     elapsed += dt;
-    uniforms.uTime.value = elapsed;
 
     camera.position.x += (target.x * 0.7 - camera.position.x) * 0.045;
     camera.position.y += (0.4 + target.y * 0.45 - camera.position.y) * 0.045;
@@ -2513,7 +2401,7 @@ function init(THREE, mount) {
   };
 
   if (reduced) {
-    uniforms.uTime.value = 12; // a pleasant static frame
+    elapsed = 12; // a pleasant static frame
     renderFrame();
   } else {
     const io = new IntersectionObserver(([entry]) =>
