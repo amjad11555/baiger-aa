@@ -180,16 +180,30 @@
     window.__baigrHideWelcome = hide;
   }
 
-  /* ---------- AI assistant (rule-based Q&A + human handoff) ---------- */
+  /* ---------- AI assistant (chips + free-text + human handoff) ---------- */
   function initAssistant() {
     var panel = document.getElementById("assistant");
     var body = document.getElementById("assistant-body");
     var openBtn = document.getElementById("assistant-open");
     var closeBtn = document.getElementById("assistant-close");
+    var form = document.getElementById("assistant-form");
+    var input = document.getElementById("assistant-input");
     if (!panel || !body || !openBtn) return;
 
     function t() {
       return (window.BAIGR.dict && window.BAIGR.dict.assistant) || null;
+    }
+
+    // Fold Arabic hamza/alef/taa variants + lowercase so matching is forgiving.
+    function normalize(s) {
+      return String(s)
+        .toLowerCase()
+        .replace(/[ً-ٰٟ]/g, "")       // tashkeel
+        .replace(/[أإآ]/g, "ا")
+        .replace(/ة/g, "ه")
+        .replace(/[ىي]/g, "ي")
+        .replace(/[ؤئ]/g, "ء")
+        .trim();
     }
 
     function bubble(text, who) {
@@ -199,6 +213,46 @@
       body.appendChild(el);
       body.scrollTop = body.scrollHeight;
       return el;
+    }
+
+    // Pick the best reply for a free-typed message from the intent table.
+    function replyFor(text) {
+      var a = t();
+      if (!a) return "";
+      var q = normalize(text);
+      var best = null, bestScore = 0;
+      (a.intents || []).forEach(function (intent) {
+        var score = 0;
+        (intent.k || []).forEach(function (kw) {
+          if (kw && q.indexOf(normalize(kw)) !== -1) score += kw.length;
+        });
+        if (score > bestScore) { bestScore = score; best = intent; }
+      });
+      return best ? best.a : a.fallback;
+    }
+
+    var typingEl = null;
+    function showTyping() {
+      typingEl = document.createElement("div");
+      typingEl.className = "assistant__typing";
+      typingEl.setAttribute("aria-label", "…");
+      typingEl.innerHTML = "<span></span><span></span><span></span>";
+      body.appendChild(typingEl);
+      body.scrollTop = body.scrollHeight;
+    }
+    function hideTyping() {
+      if (typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+      typingEl = null;
+    }
+
+    // Bot answers with a short, human "typing" beat.
+    function answer(text) {
+      showTyping();
+      var delay = 500 + Math.min(text.length * 8, 900);
+      setTimeout(function () {
+        hideTyping();
+        bubble(text, "bot");
+      }, delay);
     }
 
     function renderChips() {
@@ -213,12 +267,11 @@
       a.qa.forEach(function (item) {
         var chip = document.createElement("button");
         chip.className = "assistant__chip";
+        chip.type = "button";
         chip.textContent = item.q;
         chip.addEventListener("click", function () {
           bubble(item.q, "user");
-          setTimeout(function () {
-            bubble(item.a, "bot");
-          }, 350);
+          answer(item.a);
         });
         wrap.appendChild(chip);
       });
@@ -229,9 +282,11 @@
     function render() {
       var a = t();
       if (!a) return;
+      hideTyping();
       body.innerHTML = "";
       bubble(a.greeting, "bot");
       renderChips();
+      if (input && a.placeholder) input.setAttribute("placeholder", a.placeholder);
     }
 
     function open() {
@@ -241,6 +296,7 @@
       });
       openBtn.setAttribute("aria-expanded", "true");
       if (window.__baigrHideWelcome) window.__baigrHideWelcome();
+      if (input) setTimeout(function () { input.focus(); }, 380);
     }
     function close() {
       panel.classList.remove("is-open");
@@ -248,6 +304,17 @@
       setTimeout(function () {
         panel.hidden = true;
       }, 350);
+    }
+
+    if (form && input) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var msg = input.value.trim();
+        if (!msg) return;
+        bubble(msg, "user");
+        input.value = "";
+        answer(replyFor(msg));
+      });
     }
 
     render();

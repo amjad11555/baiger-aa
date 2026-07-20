@@ -1,77 +1,100 @@
 /* ============================================================
-   BAIGR — the signature "growth bloom".
-   Motes spiral up and outward from a single seed, blooming into
-   a widening cone — compounding growth drawn in light. Behind
-   them, concentric arcs pulse outward in sequence, echoing the
-   BAIGR mark. Reacts to the cursor (parallax + local glow) and
-   to device tilt on mobile.
+   BAIGR — the signature "living silk".
+   A slow, flowing liquid-gradient field: domain-warped noise
+   ribbons in the brand's lime→iris palette drift like silk over
+   the paper page. Calm, premium, deliberately un-busy — the
+   colour concentrates on the right so the headline stays crisp.
+   Reacts to the cursor with a soft warp and glow.
 
    ES module: Three.js is resolved through the import map in
    index.html and loaded during idle time so first paint stays fast.
    ============================================================ */
 
 const VERTEX = /* glsl */ `
-  attribute float aSeed;
-  attribute float aOffset;
-  uniform float uTime;
-  uniform vec2 uPointer;   // world-space pointer on the z=0 plane
-  uniform float uPixelRatio;
-  varying float varT;
-  varying float varGlow;
-
+  varying vec2 vUv;
   void main() {
-    float speed = 0.05 + aSeed * 0.06;
-    float t = fract(aOffset + uTime * speed);
-
-    // Bloom: rise from a low seed and spiral outward as we climb.
-    float y = t * 7.4 - 3.4;
-    float radius = pow(t, 0.72) * (1.1 + aSeed * 2.6);
-    float angle = t * 5.2 + aSeed * 6.28318 + uTime * (0.22 + aSeed * 0.12);
-    float x = cos(angle) * radius;
-    float z = sin(angle) * radius - aSeed * 0.6;
-
-    // Gentle sway so the bloom breathes.
-    x += sin(uTime * 0.3 + aSeed * 9.0) * 0.16;
-    y += sin(uTime * 0.5 + aSeed * 4.0) * 0.08;
-
-    vec3 pos = vec3(x, y, z);
-
-    // Local glow: particles brighten near the cursor.
-    float d = distance(pos.xy, uPointer);
-    varGlow = smoothstep(2.6, 0.0, d);
-    varT = t;
-
-    vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-    gl_Position = projectionMatrix * mv;
-
-    float size = (0.7 + aSeed * 1.9) * (1.0 + varGlow * 1.6);
-    gl_PointSize = size * uPixelRatio * (36.0 / -mv.z);
+    vUv = uv;
+    gl_Position = vec4(position.xy, 0.0, 1.0);
   }
 `;
 
 const FRAGMENT = /* glsl */ `
-  uniform vec3 uColorA;    // lime
-  uniform vec3 uColorB;    // iris
-  uniform vec3 uColorGlow; // navy — cursor concentration
-  varying float varT;
-  varying float varGlow;
+  precision highp float;
+  varying vec2 vUv;
+
+  uniform float uTime;
+  uniform float uAspect;
+  uniform vec2  uPointer;   // 0..1, page space
+  uniform float uPointerOn;
+  uniform vec3  uPaper;
+  uniform vec3  uLime;
+  uniform vec3  uIris;
+  uniform vec3  uDeep;
+  uniform float uRtl;       // 1.0 mirrors the colour bias for Arabic
+
+  // -- smooth value noise + fbm --------------------------------
+  float hash(vec2 p) {
+    p = fract(p * vec2(123.34, 345.45));
+    p += dot(p, p + 34.345);
+    return fract(p.x * p.y);
+  }
+  float noise(vec2 p) {
+    vec2 i = floor(p), f = fract(p);
+    float a = hash(i), b = hash(i + vec2(1.0, 0.0));
+    float c = hash(i + vec2(0.0, 1.0)), d = hash(i + vec2(1.0, 1.0));
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+  }
+  float fbm(vec2 p) {
+    float v = 0.0, a = 0.5;
+    for (int i = 0; i < 5; i++) { v += a * noise(p); p *= 2.0; a *= 0.5; }
+    return v;
+  }
 
   void main() {
-    vec2 uv = gl_PointCoord - 0.5;
-    float dist = length(uv);
-    float disc = smoothstep(0.5, 0.08, dist);
-    if (disc < 0.01) discard;
+    vec2 uv = vUv;
+    // Aspect-correct sample space so flows aren't stretched.
+    vec2 p = vec2(uv.x * uAspect, uv.y) * 2.2;
+    float t = uTime * 0.05;
 
-    // Ramp lime -> iris as the bloom rises; deepen to navy near the cursor.
-    vec3 color = mix(uColorA, uColorB, clamp(varT * 0.95, 0.0, 1.0));
-    color = mix(color, uColorGlow, varGlow * 0.7);
+    // Soft warp toward the cursor.
+    vec2 warp = (uv - uPointer) * uPointerOn;
+    p -= warp * 0.6;
 
-    // Fade in at the seed, out at the crown of the bloom.
-    float life = smoothstep(0.0, 0.09, varT) * (1.0 - smoothstep(0.80, 1.0, varT));
-    // Normal blending over a light page: keep enough alpha to read on paper.
-    float alpha = disc * life * (0.62 + varGlow * 0.38);
+    // Domain warping — the classic marble/silk flow.
+    vec2 q = vec2(fbm(p + vec2(0.0, t)), fbm(p + vec2(5.2, -t)));
+    vec2 r = vec2(
+      fbm(p + 2.0 * q + vec2(1.7, 9.2) + t * 1.1),
+      fbm(p + 2.0 * q + vec2(8.3, 2.8) - t * 0.8)
+    );
+    float f = fbm(p + 2.4 * r);
 
-    gl_FragColor = vec4(color, alpha);
+    // Build the silk colour from the flow.
+    vec3 flow = uPaper;
+    flow = mix(flow, uLime, smoothstep(0.30, 0.78, f));
+    flow = mix(flow, uIris, smoothstep(0.45, 0.92, r.x * 0.5 + 0.5));
+    flow = mix(flow, uDeep, smoothstep(0.62, 1.0, f * f) * 0.7);
+
+    // Silky sheen — thin flowing highlights.
+    float sheen = 0.5 + 0.5 * sin((f + r.y) * 6.2831 * 1.6 + uTime * 0.25);
+    flow += (uIris - uPaper) * 0.05 * sheen;
+
+    // Cursor glow.
+    float pd = distance(uv, uPointer);
+    float glow = smoothstep(0.4, 0.0, pd) * uPointerOn;
+    flow = mix(flow, uLime, glow * 0.18);
+
+    // Bias colour to the "content-free" side; keep the headline calm.
+    float side = mix(uv.x, 1.0 - uv.x, uRtl);        // strong side
+    float bias = smoothstep(0.15, 0.95, side);
+    // Fade to nothing near the very bottom so the section edge is clean.
+    float vFade = smoothstep(0.0, 0.25, uv.y) * (1.0 - smoothstep(0.86, 1.0, uv.y) * 0.5);
+
+    // Only the coloured part of the flow becomes visible (paper shows through).
+    float intensity = smoothstep(0.34, 0.85, f) + smoothstep(0.5, 1.0, r.x * 0.5 + 0.5) * 0.5;
+    float alpha = clamp(intensity, 0.0, 1.0) * bias * vFade * 0.62 + glow * 0.12;
+
+    gl_FragColor = vec4(flow, clamp(alpha, 0.0, 0.72));
   }
 `;
 
@@ -81,27 +104,20 @@ function init(THREE, mount) {
   const cleanupFns = [];
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    50,
-    mount.clientWidth / mount.clientHeight,
-    0.1,
-    50
-  );
-  camera.position.set(0, 0.4, 8.5);
+  // Fullscreen quad — no perspective needed for a gradient field.
+  const camera = new THREE.Camera();
 
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({
       alpha: true,
-      antialias: false,
+      antialias: true,
       powerPreference: "high-performance",
     });
   } catch (e) {
-    return; // No WebGL: the aurora gradient carries the hero alone.
+    return; // No WebGL: the CSS aurora carries the hero alone.
   }
 
-  // Software rasterizers (SwiftShader, llvmpipe…) render on the CPU:
-  // scale the scene down so weak machines stay smooth.
   const gl = renderer.getContext();
   const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
   const glRenderer = debugInfo
@@ -109,38 +125,23 @@ function init(THREE, mount) {
     : "";
   const softwareGL = /swiftshader|llvmpipe|software/i.test(glRenderer);
 
-  const dpr = Math.min(
-    window.devicePixelRatio,
-    softwareGL ? 1 : isMobile ? 1.5 : 1.75
-  );
+  const dpr = Math.min(window.devicePixelRatio, softwareGL ? 1 : isMobile ? 1.5 : 2);
   renderer.setPixelRatio(dpr);
   renderer.setSize(mount.clientWidth, mount.clientHeight);
   mount.appendChild(renderer.domElement);
   mount.classList.add("is-ready");
 
-  /* ---------- Growth bloom particles ---------- */
-  const count = softwareGL ? 700 : isMobile ? 1300 : 2600;
-  const frameInterval = softwareGL ? 1000 / 24 : 0;
-  const seeds = new Float32Array(count);
-  const offsets = new Float32Array(count);
-  const positions = new Float32Array(count * 3); // real positions live in the shader
-  for (let i = 0; i < count; i++) {
-    seeds[i] = Math.random();
-    offsets[i] = Math.random();
-  }
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("aSeed", new THREE.BufferAttribute(seeds, 1));
-  geometry.setAttribute("aOffset", new THREE.BufferAttribute(offsets, 1));
-  geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), 20);
-
+  const rtl = document.documentElement.dir === "rtl" ? 1 : 0;
   const uniforms = {
     uTime: { value: 0 },
-    uPointer: { value: new THREE.Vector2(0, 0.6) },
-    uPixelRatio: { value: dpr },
-    uColorA: { value: new THREE.Color("#d6e06a") }, // lime
-    uColorB: { value: new THREE.Color("#726bd6") }, // iris
-    uColorGlow: { value: new THREE.Color("#1b1539") }, // navy
+    uAspect: { value: mount.clientWidth / mount.clientHeight },
+    uPointer: { value: new THREE.Vector2(rtl ? 0.28 : 0.72, 0.5) },
+    uPointerOn: { value: 0 },
+    uPaper: { value: new THREE.Color("#fefefe") },
+    uLime: { value: new THREE.Color("#d6e06a") },
+    uIris: { value: new THREE.Color("#726bd6") },
+    uDeep: { value: new THREE.Color("#4d43b8") },
+    uRtl: { value: rtl },
   };
 
   const material = new THREE.ShaderMaterial({
@@ -149,94 +150,39 @@ function init(THREE, mount) {
     uniforms,
     transparent: true,
     depthWrite: false,
-    blending: THREE.NormalBlending, // additive is invisible on a light page
+    depthTest: false,
   });
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+  scene.add(quad);
 
-  scene.add(new THREE.Points(geometry, material));
+  // Keep colour bias mirrored when the language flips.
+  const onLang = () => {
+    const isRtl = document.documentElement.dir === "rtl" ? 1 : 0;
+    uniforms.uRtl.value = isRtl;
+  };
+  document.addEventListener("baigr:langchange", onLang);
+  cleanupFns.push(() => document.removeEventListener("baigr:langchange", onLang));
 
-  /* ---------- Concentric arc system — the BAIGR mark, alive ----------
-     Half-ring arcs stacked like the logo's fingerprint, pulsing
-     outward in sequence. Small nodes orbit the outer arc. */
-  const markGroup = new THREE.Group();
-  markGroup.position.set(isMobile ? 0 : 3.3, 1.0, -2.2);
-  markGroup.rotation.x = 0.42;
-  markGroup.rotation.z = -0.32; // matches the mark's -18° tilt, felt in 3D
-  scene.add(markGroup);
-
-  const arcColors = ["#d6e06a", "#aeb93f", "#726bd6", "#4d43b8"];
-  const arcs = [];
-  for (let i = 0; i < 4; i++) {
-    const r = 0.7 + i * 0.72;
-    const arcGeo = new THREE.TorusGeometry(r, 0.028, 10, 80, Math.PI);
-    const arcMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(arcColors[i]),
-      transparent: true,
-      opacity: 0.5 - i * 0.07,
-    });
-    const arc = new THREE.Mesh(arcGeo, arcMat);
-    markGroup.add(arc);
-    arcs.push({ mesh: arc, base: 0.5 - i * 0.07, phase: i * 0.7 });
-  }
-
-  // Orbiting nodes — glints of momentum riding the arcs.
-  const nodes = [];
-  const nodeGeo = new THREE.SphereGeometry(0.058, 12, 12);
-  for (let i = 0; i < 3; i++) {
-    const nodeMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(i % 2 ? "#726bd6" : "#d6e06a"),
-      transparent: true,
-      opacity: 0.9,
-    });
-    const node = new THREE.Mesh(nodeGeo, nodeMat);
-    markGroup.add(node);
-    nodes.push({
-      mesh: node,
-      r: 1.5 + i * 0.7,
-      phase: i * 2.1,
-      speed: 0.45 + i * 0.18,
-    });
-  }
-
-  /* ---------- Pointer parallax + interactive light ---------- */
-  const target = { x: 0, y: 0 };
-  const raycastPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-  const raycaster = new THREE.Raycaster();
-  const ndc = new THREE.Vector2();
-  const hit = new THREE.Vector3();
-
+  /* ---------- Cursor warp ---------- */
+  const pointerTarget = new THREE.Vector2(uniforms.uPointer.value.x, uniforms.uPointer.value.y);
+  let onTarget = 0;
   const onPointer = (e) => {
-    const nx = (e.clientX / window.innerWidth) * 2 - 1;
-    const ny = -(e.clientY / window.innerHeight) * 2 + 1;
-    target.x = nx;
-    target.y = ny;
-    ndc.set(nx, ny);
-    raycaster.setFromCamera(ndc, camera);
-    if (raycaster.ray.intersectPlane(raycastPlane, hit)) {
-      uniforms.uPointer.value.set(hit.x, hit.y);
-    }
+    pointerTarget.set(e.clientX / window.innerWidth, 1 - e.clientY / window.innerHeight);
+    onTarget = 1;
   };
   window.addEventListener("pointermove", onPointer, { passive: true });
   cleanupFns.push(() => window.removeEventListener("pointermove", onPointer));
-
-  // Gyroscope on mobile
-  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
-  const onOrientation = (e) => {
-    if (e.gamma == null || e.beta == null) return;
-    target.x = clamp(e.gamma / 30, -1, 1);
-    target.y = clamp((e.beta - 45) / -30, -1, 1);
-  };
-  if (isMobile) {
-    window.addEventListener("deviceorientation", onOrientation);
-    cleanupFns.push(() =>
-      window.removeEventListener("deviceorientation", onOrientation)
-    );
-  }
+  const onLeave = () => (onTarget = 0);
+  window.addEventListener("pointerout", onLeave);
+  cleanupFns.push(() => window.removeEventListener("pointerout", onLeave));
 
   /* ---------- Render loop (paused off-screen / hidden tab) ---------- */
   let raf = 0;
   let running = false;
   let last = performance.now();
   let elapsed = 0;
+  const frameInterval = softwareGL ? 1000 / 30 : 0;
+  let lastFrame = 0;
 
   const renderFrame = () => {
     const now = performance.now();
@@ -245,34 +191,14 @@ function init(THREE, mount) {
     elapsed += dt;
     uniforms.uTime.value = elapsed;
 
-    camera.position.x += (target.x * 0.7 - camera.position.x) * 0.045;
-    camera.position.y += (0.4 + target.y * 0.45 - camera.position.y) * 0.045;
-    camera.lookAt(0, 0.3, 0);
-
-    // The mark drifts and wobbles in depth; each arc pulses in sequence
-    // like a ripple radiating from the centre.
-    markGroup.position.y = 1.0 + Math.sin(elapsed * 0.5) * 0.22;
-    markGroup.rotation.y = Math.sin(elapsed * 0.35) * 0.35;
-    arcs.forEach((a) => {
-      a.mesh.rotation.z += dt * 0.14;
-      a.mesh.material.opacity =
-        a.base * (0.55 + 0.45 * Math.sin(elapsed * 1.3 - a.phase));
-    });
-
-    // Nodes ride circular paths across the mark's face.
-    nodes.forEach((n) => {
-      const ang = elapsed * n.speed + n.phase;
-      n.mesh.position.set(
-        Math.cos(ang) * n.r,
-        Math.abs(Math.sin(ang)) * n.r * 0.6,
-        Math.sin(ang * 0.7) * 0.3
-      );
-    });
+    // Ease the pointer + its influence for a soft, liquid feel.
+    uniforms.uPointer.value.x += (pointerTarget.x - uniforms.uPointer.value.x) * 0.04;
+    uniforms.uPointer.value.y += (pointerTarget.y - uniforms.uPointer.value.y) * 0.04;
+    uniforms.uPointerOn.value += (onTarget - uniforms.uPointerOn.value) * 0.05;
 
     renderer.render(scene, camera);
   };
 
-  let lastFrame = 0;
   const loop = (ts) => {
     if (!frameInterval || ts - lastFrame >= frameInterval) {
       lastFrame = ts;
@@ -280,7 +206,6 @@ function init(THREE, mount) {
     }
     raf = requestAnimationFrame(loop);
   };
-
   const start = () => {
     if (running || reduced) return;
     running = true;
@@ -293,7 +218,7 @@ function init(THREE, mount) {
   };
 
   if (reduced) {
-    uniforms.uTime.value = 12; // a pleasant static frame
+    uniforms.uTime.value = 8; // a pleasant static frame
     renderFrame();
   } else {
     const io = new IntersectionObserver(([entry]) =>
@@ -309,8 +234,7 @@ function init(THREE, mount) {
   }
 
   const onResize = () => {
-    camera.aspect = mount.clientWidth / mount.clientHeight;
-    camera.updateProjectionMatrix();
+    uniforms.uAspect.value = mount.clientWidth / mount.clientHeight;
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     if (reduced) renderFrame();
   };
