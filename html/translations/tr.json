@@ -37,25 +37,29 @@
     "open": "BAIGR asistanını aç",
     "title": "BAIGR Asistanı",
     "subtitle": "Anında yanıtlar, gerçek ekip tek dokunuş uzağında.",
-    "greeting": "Merhaba! Ben BAIGR asistanı. Bir soru seç, hemen yanıtlayayım 👇",
-    "hint": "Bir soru seç",
+    "greeting": "Hoş geldiniz 👋 Ben BAIGR asistanıyım — markanızı anlamak ve sonuçlarınızı nasıl katlayacağımızı göstermek için buradayım. Kısa bir soru: şu an en çok neyi geliştirmek istiyorsunuz?",
+    "hint": "Birini seçin — ya da doğrudan sorun",
     "human": "WhatsApp'tan ekibimizle konuş",
     "qa": [
       {
-        "q": "Hangi hizmetleri sunuyorsunuz?",
-        "a": "Birbirine bağlı beş disiplin: yapay zekâ kreatif (görsel ve video), Meta, Google, TikTok ve Snapchat'te performans reklamları, web siteleri ve e-ticaret, yapay zekâ sohbet botlarıyla pazarlama otomasyonu ve büyüme danışmanlığı — tüm yolculuk için tek ekip."
+        "q": "Daha fazla satış istiyorum",
+        "a": "Tam da bizim işimiz 💡 Eksiksiz bir büyüme motoru kuruyoruz: kaydırmayı durduran yapay zekâ destekli kreatif ve beğeni değil satış peşinde koşan performans kampanyaları. Sizi doğru yönlendirmem için kısa bir soru: ürün mü yoksa hizmet mi satıyorsunuz ve hangi pazarda? WhatsApp'tan yazın, markanız için ilk fikri 24 saat içinde ücretsiz gönderelim."
       },
       {
-        "q": "Ne kadar bütçe gerekli?",
-        "a": "Müşterilerimizin çoğu reklam ve hizmetler genelinde aylık 2.000–50.000 dolar yatırım yapar. Niyet, büyüklükten önemlidir — büyümek konusunda ciddiysen sana uyan bir plan kurarız."
+        "q": "Sizi farklı kılan ne?",
+        "a": "Üç şey fark yaratır: aynı çabayla 10 kat kreatif veren yapay zekâ üretimi, stajyer değil kıdemli uzmanlardan oluşan bir ekip ve boş erişime değil gelirinize bağlı raporlama. Bunun markanız için çalıştığını hayal edin — pratikte kanıtlıyoruz. Denemeye hazır mısınız? WhatsApp'tan ulaşın."
+      },
+      {
+        "q": "BAIGR işletmeme uygun mu?",
+        "a": "Büyük olasılıkla evet — e-ticaret mağazaları, hizmet sağlayıcılar ve ilk lansmandan ölçeklenmeye markalarla çalışıyoruz. Emin olmak için: sektörünüz ne ve 6 ay sonra nerede olmak istiyorsunuz? Ayrıntıları WhatsApp'tan paylaşın, en uygun seçenek miyiz dürüstçe söyleyeyim."
       },
       {
         "q": "Sonuçları ne zaman görürüm?",
-        "a": "Kampanyalar 2–4 hafta içinde net sinyaller verir; gelirde anlamlı hareket genellikle ilk çeyrekte gelir. Web siteleri ve otomasyon ilk günden kazandırır."
+        "a": "Kampanyalar birkaç hafta içinde net sinyaller verir, gerçek gelir hareketi genellikle ilk çeyrekte gelir; web siteleri ve otomasyon ise ilk günden çalışır. Başlattığımız her şey görebileceğiniz bir rakamla gelir. Projeniz için gerçekçi bir takvim ister misiniz? Hemen WhatsApp'tan yazın."
       },
       {
-        "q": "Nasıl başlıyoruz?",
-        "a": "WhatsApp'tan tek mesaj. Ücretsiz 30 dakikalık bir görüşme ayarlar, elindekini inceler ve bir hafta içinde gerçek rakamlarla bir plan göndeririz — görmeden hiçbir taahhüt yok."
+        "q": "Nasıl başlarız?",
+        "a": "Düşündüğünüzden kolay: WhatsApp'tan tek bir mesaj, hedefinizi anlamak için ücretsiz 30 dakikalık bir görüşme, ardından net bir eylem planı — siz görene kadar hiçbir taahhüt yok. Sizi büyümeden ayıran tek şey bu mesaj. WhatsApp'a dokunun, başlayalım 🚀"
       }
     ]
   },
@@ -314,7 +318,7 @@
       },
       {
         "q": "Ne kadar bütçeye ihtiyacım var?",
-        "a": "Müşterilerimizin çoğu reklam ve hizmetler genelinde aylık 2.000–50.000 dolar yatırım yapar. Açıkçası niyet, büyüklükten önemlidir: büyümek konusunda ciddiysen ve harekete geçmeye hazırsan, bulunduğun yere uyan bir plan kurarız."
+        "a": "Her planı hedefinize, pazarınıza ve kâr marjınıza göre uyarlıyoruz — asla hazır şablon değil. Açıkçası niyet, büyüklükten önemlidir: büyümek konusunda ciddiyseniz ve harekete geçmeye hazırsanız, tam olarak bulunduğunuz yere uyan bir plan kurar, zamanlama uygun değilse dürüstçe söyleriz. İlk görüşme ücretsiz ve taahhütsüzdür."
       },
       {
         "q": "Hangi pazarları kapsıyorsunuz?",

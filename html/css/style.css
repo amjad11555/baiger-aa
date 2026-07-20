@@ -887,7 +887,7 @@ html[lang="ar"] .footer h3 { text-transform: none; }
 }
 
 /* ============================================================
-   Hero enhancements — floating proof chips, keyword ribbon,
+   Hero enhancements — floating proof chips,
    shining CTA, tilted logo mark.
    ============================================================ */
 .logo-mark { height: 34px; }
@@ -922,28 +922,6 @@ html[lang="ar"] .footer h3 { text-transform: none; }
 .hero-chip:nth-child(1) { inset-inline-end: 8%;  top: 26%; animation: float 6s ease-in-out infinite; }
 .hero-chip:nth-child(2) { inset-inline-end: 20%; top: 50%; animation: float 7s ease-in-out infinite 0.6s; }
 .hero-chip:nth-child(3) { inset-inline-end: 6%;  top: 66%; animation: float 6.5s ease-in-out infinite 1.2s; }
-
-.hero__ribbon {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: 1;
-  padding-block: 0.9rem;
-  border-top: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 70%, transparent);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-}
-.hero__ribbon .marquee__row { gap: 0; }
-.hero__ribbon span {
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mist);
-  padding-inline-end: 0;
-}
-html[lang="ar"] .hero__ribbon span { text-transform: none; letter-spacing: 0.06em; }
-.marquee__row--slow { animation-duration: 48s; }
 
 /* Shine sweep on the primary CTA */
 .btn--shine { position: relative; overflow: hidden; }

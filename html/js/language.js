@@ -26,6 +26,11 @@
 
   function loadDict(locale) {
     if (cache[locale]) return Promise.resolve(cache[locale]);
+    // Inlined dictionaries (single-file preview / file:// usage) win over fetch.
+    if (window.BAIGR.__DICTS && window.BAIGR.__DICTS[locale]) {
+      cache[locale] = window.BAIGR.__DICTS[locale];
+      return Promise.resolve(cache[locale]);
+    }
     return fetch("translations/" + locale + ".json")
       .then(function (res) {
         if (!res.ok) throw new Error("HTTP " + res.status);

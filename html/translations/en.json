@@ -37,25 +37,29 @@
     "open": "Open BAIGR assistant",
     "title": "BAIGR Assistant",
     "subtitle": "Instant answers, real humans one tap away.",
-    "greeting": "Hi! I'm the BAIGR assistant. Pick a question and I'll answer right away 👇",
-    "hint": "Choose a question",
+    "greeting": "Welcome 👋 I'm BAIGR's assistant — here to understand your brand and show you how we'd multiply your results. Quick question: what do you most want to improve right now?",
+    "hint": "Pick one — or just ask me",
     "human": "Talk to our team on WhatsApp",
     "qa": [
       {
-        "q": "What services do you offer?",
-        "a": "Five connected disciplines: AI creative (images & video), performance ads on Meta, Google, TikTok and Snapchat, websites and e-commerce, marketing automation with AI chatbots, and growth consulting — one team for the whole journey."
+        "q": "I want more sales",
+        "a": "That's exactly what we build 💡 A full growth engine: AI-native creative that stops the scroll, and performance campaigns that chase sales, not likes. Quick question so I can point you right — do you sell a product or a service, and in which market? Message us on WhatsApp and we'll send a first concept for your brand, free, within 24 hours."
       },
       {
-        "q": "How much budget do I need?",
-        "a": "Most of our clients invest between $2,000 and $50,000 a month across ads and services. Intent matters more than size — if you're serious about growing, we'll shape a plan that fits where you are."
+        "q": "What makes you different?",
+        "a": "Three things: AI-native production that gives you 10× the creative for the same effort, a team of senior experts — never trainees, and reporting tied to your revenue, not empty reach. Picture that working for your brand — we'll prove it in practice. Ready to try? Reach us on WhatsApp."
+      },
+      {
+        "q": "Is BAIGR right for my business?",
+        "a": "Most likely yes — we work with e-commerce stores, service providers, and brands from first launch to scale. To be sure: what's your industry, and where do you want to be in 6 months? Share the details on WhatsApp and I'll tell you honestly if we're the best fit."
       },
       {
         "q": "How fast will I see results?",
-        "a": "Ad campaigns give clear signals within 2–4 weeks, and meaningful revenue usually moves inside the first quarter. Websites and automation pay off from day one."
+        "a": "Campaigns show clear signals within a few weeks, real revenue movement usually within the first quarter, while websites and automation work from day one. Everything we launch comes with a number you can see. Want a realistic timeline for your project? Message us now."
       },
       {
         "q": "How do we start?",
-        "a": "One message on WhatsApp. We'll set up a free 30-minute call, review what you have, and send back a plan with real numbers within a week — no commitment until you've seen it."
+        "a": "Easier than you think: one message on WhatsApp, a free 30-minute call to understand your goal, then a clear action plan — no commitment until you've seen it. The only thing between you and growth is this message. Tap WhatsApp and let's start 🚀"
       }
     ]
   },
@@ -314,7 +318,7 @@
       },
       {
         "q": "What kind of budget do I need?",
-        "a": "Most of our clients invest between $2,000 and $50,000 a month across ads and services. Honestly, intent matters more than size: if you're serious about growing and ready to move, we'll shape a plan that fits where you are."
+        "a": "We tailor every plan to your goal, your market, and your margins — never a template. Honestly, intent matters more than size: if you're serious about growing and ready to move, we'll build a plan that fits exactly where you are, and tell you straight if the timing isn't right. The first call is free, with no commitment."
       },
       {
         "q": "Which markets do you cover?",

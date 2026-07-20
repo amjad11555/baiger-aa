@@ -152,25 +152,29 @@ const en: Dictionary = {
     open: "Open BAIGR assistant",
     title: "BAIGR Assistant",
     subtitle: "Instant answers, real humans one tap away.",
-    greeting: "Hi! I'm the BAIGR assistant. Pick a question and I'll answer right away 👇",
-    hint: "Choose a question",
+    greeting: "Welcome 👋 I'm BAIGR's assistant — here to understand your brand and show you how we'd multiply your results. Quick question: what do you most want to improve right now?",
+    hint: "Pick one — or just ask me",
     human: "Talk to our team on WhatsApp",
     qa: [
       {
-        q: "What services do you offer?",
-        a: "Five connected disciplines: AI creative (images & video), performance ads on Meta, Google, TikTok and Snapchat, websites and e-commerce, marketing automation with AI chatbots, and growth consulting — one team for the whole journey.",
+        q: "I want more sales",
+        a: "That's exactly what we build 💡 A full growth engine: AI-native creative that stops the scroll, and performance campaigns that chase sales, not likes. Quick question so I can point you right — do you sell a product or a service, and in which market? Message us on WhatsApp and we'll send a first concept for your brand, free, within 24 hours.",
       },
       {
-        q: "How much budget do I need?",
-        a: "Most of our clients invest between $2,000 and $50,000 a month across ads and services. Intent matters more than size — if you're serious about growing, we'll shape a plan that fits where you are.",
+        q: "What makes you different?",
+        a: "Three things: AI-native production that gives you 10× the creative for the same effort, a team of senior experts — never trainees, and reporting tied to your revenue, not empty reach. Picture that working for your brand — we'll prove it in practice. Ready to try? Reach us on WhatsApp.",
+      },
+      {
+        q: "Is BAIGR right for my business?",
+        a: "Most likely yes — we work with e-commerce stores, service providers, and brands from first launch to scale. To be sure: what's your industry, and where do you want to be in 6 months? Share the details on WhatsApp and I'll tell you honestly if we're the best fit.",
       },
       {
         q: "How fast will I see results?",
-        a: "Ad campaigns give clear signals within 2–4 weeks, and meaningful revenue usually moves inside the first quarter. Websites and automation pay off from day one.",
+        a: "Campaigns show clear signals within a few weeks, real revenue movement usually within the first quarter, while websites and automation work from day one. Everything we launch comes with a number you can see. Want a realistic timeline for your project? Message us now.",
       },
       {
         q: "How do we start?",
-        a: "One message on WhatsApp. We'll set up a free 30-minute call, review what you have, and send back a plan with real numbers within a week — no commitment until you've seen it.",
+        a: "Easier than you think: one message on WhatsApp, a free 30-minute call to understand your goal, then a clear action plan — no commitment until you've seen it. The only thing between you and growth is this message. Tap WhatsApp and let's start 🚀",
       },
     ],
   },
@@ -403,7 +407,7 @@ const en: Dictionary = {
       },
       {
         q: "What kind of budget do I need?",
-        a: "Most of our clients invest between $2,000 and $50,000 a month across ads and services. Honestly, intent matters more than size: if you're serious about growing and ready to move, we'll shape a plan that fits where you are.",
+        a: "We tailor every plan to your goal, your market, and your margins — never a template. Honestly, intent matters more than size: if you're serious about growing and ready to move, we'll build a plan that fits exactly where you are, and tell you straight if the timing isn't right. The first call is free, with no commitment.",
       },
       {
         q: "Which markets do you cover?",
@@ -473,25 +477,29 @@ const ar: Dictionary = {
     open: "افتح مساعد BAIGR",
     title: "مساعد BAIGR",
     subtitle: "إجابات فورية، وفريق حقيقي على بُعد نقرة.",
-    greeting: "أهلاً! أنا مساعد BAIGR. اختر سؤالاً وسأجيبك فوراً 👇",
-    hint: "اختر سؤالاً",
+    greeting: "أهلاً بك 👋 أنا مساعد BAIGR — مهمّتي أن أفهم مشروعك وأريك كيف نضاعف نتائجك. سؤال سريع: ما أكثر شيء تودّ تحسينه في علامتك الآن؟",
+    hint: "اختر ما يناسبك — أو اسألني مباشرة",
     human: "كلّم فريقنا على واتساب",
     qa: [
       {
-        q: "ما الخدمات التي تقدّمونها؟",
-        a: "خمسة تخصصات مترابطة: إبداع بالذكاء الاصطناعي (صور وفيديو)، إعلانات أداء على ميتا وجوجل وتيك توك وسناب شات، مواقع ومتاجر إلكترونية، أتمتة تسويق مع روبوتات محادثة ذكية، واستشارات نمو — فريق واحد للرحلة كاملة.",
+        q: "أريد مبيعات أكثر",
+        a: "هذا تخصّصنا بالضبط 💡 نبني لك محرّك نموٍّ كاملاً: إبداع بالذكاء الاصطناعي يوقف التمرير، وحملات أداء تلاحق المبيعات لا الإعجابات. سؤال سريع كي أوجّهك: هل تبيع منتجاً أم خدمة، وفي أي سوق؟ أخبرني على واتساب وأرسل لك تصوّراً مبدئياً لعلامتك مجاناً خلال 24 ساعة.",
       },
       {
-        q: "كم أحتاج من ميزانية؟",
-        a: "معظم عملائنا يستثمرون بين 2,000 و50,000 دولار شهرياً بين الإعلانات والخدمات. الجدية أهم من الحجم — إن كنت جاداً في النمو، نفصّل خطة تناسب موقعك.",
+        q: "ما الذي يميّزكم؟",
+        a: "ثلاثة أشياء تصنع الفرق: إنتاجٌ مبنيٌّ على الذكاء الاصطناعي يعطيك إبداعاً مضاعفاً بنفس الجهد، فريق خبراء حقيقي لا متدرّبين، وتقارير مرتبطة بإيراداتك لا بالوصول الفارغ. تخيّل هذا يعمل لعلامتك — ونحن نثبته لك عملياً. جاهز تجرّب؟ تواصل معنا على واتساب.",
+      },
+      {
+        q: "هل خدماتكم تناسب مشروعي؟",
+        a: "غالباً نعم — نعمل مع المتاجر الإلكترونية ومقدّمي الخدمات والعلامات الناشئة والكبيرة. لكن كي أتأكّد: ما مجال عملك، وأين تريد أن تصل خلال 6 أشهر؟ شارِكني التفاصيل على واتساب وسأخبرك بصدق إن كنّا الأنسب لك.",
       },
       {
         q: "متى أرى النتائج؟",
-        a: "الحملات تعطي إشارات واضحة خلال 2–4 أسابيع، وتحرّك الإيرادات الملموس يأتي عادةً خلال الربع الأول. المواقع والأتمتة تؤتي ثمارها من اليوم الأول.",
+        a: "الحملات تعطي إشارات واضحة خلال أسابيع قليلة، وتحرّك الإيرادات الملموس يأتي عادةً خلال الربع الأول، أما المواقع والأتمتة فتعمل من اليوم الأول. وكل ما نطلقه يرافقه رقم تراه بنفسك. تريد جدولاً واقعياً لمشروعك؟ راسلنا الآن على واتساب.",
       },
       {
         q: "كيف نبدأ؟",
-        a: "رسالة واحدة على واتساب. نحجز مكالمة مجانية لثلاثين دقيقة، نراجع ما لديك، ونرسل خطة بأرقام حقيقية خلال أسبوع — بلا أي التزام حتى تراها.",
+        a: "أسهل مما تظن: رسالة واحدة على واتساب، مكالمة مجانية 30 دقيقة نفهم فيها هدفك، ثم خطة عملٍ واضحة — بلا أي التزام حتى تراها. الشيء الوحيد الذي يفصلك عن النمو هو هذه الرسالة. اضغط زر واتساب ولنبدأ 🚀",
       },
     ],
   },
@@ -724,7 +732,7 @@ const ar: Dictionary = {
       },
       {
         q: "ما الميزانية التي أحتاجها؟",
-        a: "معظم عملائنا يستثمرون بين 2,000 و50,000 دولار شهرياً بين الإعلانات والخدمات. وبصراحة، الجدية أهم من الحجم: إن كنت جاداً في النمو ومستعداً للتحرك، سنُفصّل خطةً تناسب موقعك.",
+        a: "نفصّل كل خطة على هدفك وسوقك وهامش ربحك — لا قالب جاهز. وبصراحة، الجدية أهم من الحجم: إن كنت جاداً في النمو ومستعداً للتحرك، نبني لك خطةً تناسب موقعك تماماً، ونصارحك إن كان التوقيت غير مناسب. المكالمة الأولى مجانية ومن دون أي التزام.",
       },
       {
         q: "ما الأسواق التي تغطّونها؟",
@@ -794,25 +802,29 @@ const tr: Dictionary = {
     open: "BAIGR asistanını aç",
     title: "BAIGR Asistanı",
     subtitle: "Anında yanıtlar, gerçek ekip tek dokunuş uzağında.",
-    greeting: "Merhaba! Ben BAIGR asistanı. Bir soru seç, hemen yanıtlayayım 👇",
-    hint: "Bir soru seç",
+    greeting: "Hoş geldiniz 👋 Ben BAIGR asistanıyım — markanızı anlamak ve sonuçlarınızı nasıl katlayacağımızı göstermek için buradayım. Kısa bir soru: şu an en çok neyi geliştirmek istiyorsunuz?",
+    hint: "Birini seçin — ya da doğrudan sorun",
     human: "WhatsApp'tan ekibimizle konuş",
     qa: [
       {
-        q: "Hangi hizmetleri sunuyorsunuz?",
-        a: "Birbirine bağlı beş disiplin: yapay zekâ kreatif (görsel ve video), Meta, Google, TikTok ve Snapchat'te performans reklamları, web siteleri ve e-ticaret, yapay zekâ sohbet botlarıyla pazarlama otomasyonu ve büyüme danışmanlığı — tüm yolculuk için tek ekip.",
+        q: "Daha fazla satış istiyorum",
+        a: "Tam da bizim işimiz 💡 Eksiksiz bir büyüme motoru kuruyoruz: kaydırmayı durduran yapay zekâ destekli kreatif ve beğeni değil satış peşinde koşan performans kampanyaları. Sizi doğru yönlendirmem için kısa bir soru: ürün mü yoksa hizmet mi satıyorsunuz ve hangi pazarda? WhatsApp'tan yazın, markanız için ilk fikri 24 saat içinde ücretsiz gönderelim.",
       },
       {
-        q: "Ne kadar bütçe gerekli?",
-        a: "Müşterilerimizin çoğu reklam ve hizmetler genelinde aylık 2.000–50.000 dolar yatırım yapar. Niyet, büyüklükten önemlidir — büyümek konusunda ciddiysen sana uyan bir plan kurarız.",
+        q: "Sizi farklı kılan ne?",
+        a: "Üç şey fark yaratır: aynı çabayla 10 kat kreatif veren yapay zekâ üretimi, stajyer değil kıdemli uzmanlardan oluşan bir ekip ve boş erişime değil gelirinize bağlı raporlama. Bunun markanız için çalıştığını hayal edin — pratikte kanıtlıyoruz. Denemeye hazır mısınız? WhatsApp'tan ulaşın.",
+      },
+      {
+        q: "BAIGR işletmeme uygun mu?",
+        a: "Büyük olasılıkla evet — e-ticaret mağazaları, hizmet sağlayıcılar ve ilk lansmandan ölçeklenmeye markalarla çalışıyoruz. Emin olmak için: sektörünüz ne ve 6 ay sonra nerede olmak istiyorsunuz? Ayrıntıları WhatsApp'tan paylaşın, en uygun seçenek miyiz dürüstçe söyleyeyim.",
       },
       {
         q: "Sonuçları ne zaman görürüm?",
-        a: "Kampanyalar 2–4 hafta içinde net sinyaller verir; gelirde anlamlı hareket genellikle ilk çeyrekte gelir. Web siteleri ve otomasyon ilk günden kazandırır.",
+        a: "Kampanyalar birkaç hafta içinde net sinyaller verir, gerçek gelir hareketi genellikle ilk çeyrekte gelir; web siteleri ve otomasyon ise ilk günden çalışır. Başlattığımız her şey görebileceğiniz bir rakamla gelir. Projeniz için gerçekçi bir takvim ister misiniz? Hemen WhatsApp'tan yazın.",
       },
       {
-        q: "Nasıl başlıyoruz?",
-        a: "WhatsApp'tan tek mesaj. Ücretsiz 30 dakikalık bir görüşme ayarlar, elindekini inceler ve bir hafta içinde gerçek rakamlarla bir plan göndeririz — görmeden hiçbir taahhüt yok.",
+        q: "Nasıl başlarız?",
+        a: "Düşündüğünüzden kolay: WhatsApp'tan tek bir mesaj, hedefinizi anlamak için ücretsiz 30 dakikalık bir görüşme, ardından net bir eylem planı — siz görene kadar hiçbir taahhüt yok. Sizi büyümeden ayıran tek şey bu mesaj. WhatsApp'a dokunun, başlayalım 🚀",
       },
     ],
   },
@@ -1045,7 +1057,7 @@ const tr: Dictionary = {
       },
       {
         q: "Ne kadar bütçeye ihtiyacım var?",
-        a: "Müşterilerimizin çoğu reklam ve hizmetler genelinde aylık 2.000–50.000 dolar yatırım yapar. Açıkçası niyet, büyüklükten önemlidir: büyümek konusunda ciddiysen ve harekete geçmeye hazırsan, bulunduğun yere uyan bir plan kurarız.",
+        a: "Her planı hedefinize, pazarınıza ve kâr marjınıza göre uyarlıyoruz — asla hazır şablon değil. Açıkçası niyet, büyüklükten önemlidir: büyümek konusunda ciddiyseniz ve harekete geçmeye hazırsanız, tam olarak bulunduğunuz yere uyan bir plan kurar, zamanlama uygun değilse dürüstçe söyleriz. İlk görüşme ücretsiz ve taahhütsüzdür.",
       },
       {
         q: "Hangi pazarları kapsıyorsunuz?",
