@@ -893,7 +893,7 @@ html[lang="ar"] .footer h3 { text-transform: none; }
 .logo-mark { height: 34px; }
 .logo-mark--lg { height: 46px; }
 
-/* Logo slot: shows your uploaded images/logo.svg; falls back to the drawn
+/* Logo slot: shows your uploaded images/logo.png; falls back to the drawn
    mark until the file exists (onerror adds .no-logo-img). */
 .logo-slot { display: inline-flex; align-items: center; }
 .logo-img { height: 34px; width: auto; display: block; }
