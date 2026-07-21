@@ -1,0 +1,5 @@
+# BAIGR — allow all search engines to crawl everything.
+User-agent: *
+Allow: /
+
+Sitemap: https://baigr.com/sitemap.xml
