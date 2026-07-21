@@ -1,4 +1,3 @@
-# BAIGR — allow all search engines to crawl everything.
 User-agent: *
 Allow: /
 
