@@ -13,7 +13,7 @@
   var cache = {};
 
   window.BAIGR = window.BAIGR || {};
-  window.BAIGR.locale = document.documentElement.lang || "en";
+  window.BAIGR.locale = document.documentElement.lang || "ar";
   window.BAIGR.dict = null;
   window.BAIGR.reduced =
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -80,7 +80,7 @@
   }
 
   function setLocale(locale, initial) {
-    if (LOCALES.indexOf(locale) < 0) locale = "en";
+    if (LOCALES.indexOf(locale) < 0) locale = "ar";
     return loadDict(locale)
       .then(function (dict) {
         window.BAIGR.locale = locale;
