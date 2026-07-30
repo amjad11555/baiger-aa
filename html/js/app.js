@@ -231,6 +231,37 @@
       return best ? best.a : a.fallback;
     }
 
+    // Conversation history sent to the server-side Claude proxy.
+    // Falls back to the local intent table when the proxy is
+    // unavailable (offline preview, config missing, network error).
+    var convo = [];
+    var CHAT_ENDPOINT = "chat.php";
+
+    function currentLocale() {
+      return (window.BAIGR && window.BAIGR.lang) ||
+        document.documentElement.getAttribute("lang") || "ar";
+    }
+
+    // Ask the smart proxy; resolves to the reply text, or null on
+    // any failure so the caller can fall back gracefully.
+    function askServer(text) {
+      convo.push({ role: "user", content: text });
+      return fetch(CHAT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locale: currentLocale(), messages: convo })
+      })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (data && data.ok && data.reply) {
+            convo.push({ role: "assistant", content: data.reply });
+            return data.reply;
+          }
+          return null;
+        })
+        .catch(function () { return null; });
+    }
+
     var typingEl = null;
     function showTyping() {
       typingEl = document.createElement("div");
@@ -245,7 +276,7 @@
       typingEl = null;
     }
 
-    // Bot answers with a short, human "typing" beat.
+    // Bot answers a *static* (curated) reply with a short human beat.
     function answer(text) {
       showTyping();
       var delay = 500 + Math.min(text.length * 8, 900);
@@ -253,6 +284,22 @@
         hideTyping();
         bubble(text, "bot");
       }, delay);
+    }
+
+    // Bot answers a *free-typed* message: try the smart proxy first,
+    // fall back to the local intent table if it's unavailable.
+    function answerLive(userText) {
+      showTyping();
+      var started = Date.now();
+      askServer(userText).then(function (reply) {
+        var text = reply || replyFor(userText);
+        // keep a minimum "typing" beat so it never snaps back instantly
+        var wait = Math.max(0, 450 - (Date.now() - started));
+        setTimeout(function () {
+          hideTyping();
+          bubble(text, "bot");
+        }, wait);
+      });
     }
 
     function renderChips() {
@@ -271,6 +318,9 @@
         chip.textContent = item.q;
         chip.addEventListener("click", function () {
           bubble(item.q, "user");
+          // seed the server context with this curated exchange
+          convo.push({ role: "user", content: item.q });
+          convo.push({ role: "assistant", content: item.a });
           answer(item.a);
         });
         wrap.appendChild(chip);
@@ -313,7 +363,7 @@
         if (!msg) return;
         bubble(msg, "user");
         input.value = "";
-        answer(replyFor(msg));
+        answerLive(msg);
       });
     }
 
