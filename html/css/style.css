@@ -2,7 +2,7 @@
    BAIGR — Light identity build.
    Off-white paper, deep-navy ink, lime + iris accents,
    lime→iris gradient echoing the logo's circular ring.
-   Typeface: Readex Pro, across every language.
+   One typeface: Cairo, across every language.
    ============================================================ */
 
 /* ---------- Tokens ---------- */
@@ -18,9 +18,9 @@
   --iris:  #726bd6;   /* accent — eyebrows, links, small marks */
   --iris-deep: #4d43b8;
 
-  --f-display: "Readex Pro", "Segoe UI", system-ui, sans-serif;
-  --f-body: "Readex Pro", "Segoe UI", system-ui, sans-serif;
-  --f-mono: "Readex Pro", "Segoe UI", system-ui, sans-serif;
+  --f-display: "Cairo", sans-serif;
+  --f-body: "Cairo", sans-serif;
+  --f-mono: "Cairo", sans-serif;
   --track-display: -0.01em;
   --track-label: 0.22em;
 
