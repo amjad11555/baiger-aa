@@ -37,46 +37,46 @@
     "open": "BAIGR asistanını aç",
     "title": "BAIGR Asistanı",
     "subtitle": "Anında yanıtlar, gerçek ekip tek dokunuş uzağında.",
-    "greeting": "Hoş geldiniz 👋 Ben BAIGR asistanıyım — markanızı anlamak ve sonuçlarınızı nasıl katlayacağımızı göstermek için buradayım. Kısa bir soru: şu an en çok neyi geliştirmek istiyorsunuz?",
-    "hint": "Birini seçin — ya da doğrudan sorun",
+    "greeting": "Hoş geldiniz 👋 Markanızı anlamak ve akıllıca büyümenize yardımcı olmak için buradayım. Açıkça söyleyin: şu an önünüzdeki en büyük zorluk ne — yetersiz satış, dikkat çekmeyen içerik, yoksa alışveriş yapmayan ziyaretçiler mi?",
+    "hint": "Birini seçin ya da serbestçe yazın",
     "human": "WhatsApp'tan ekibimizle konuş",
     "placeholder": "Mesajınızı yazın…",
     "send": "Gönder",
-    "fallback": "Harika bir soru! Size en net yanıtı vermenin en hızlı yolu ekibimizle kısa bir sohbet — markanızı ve hedefinizi WhatsApp'tan yazın, size özel bir planla dönelim. Bu arada: daha çok satış mı, daha güçlü kreatif mi, yoksa satan bir web sitesi mi istiyorsunuz?",
+    "fallback": "Güzel soru. Kısaca: biz kreatifi, reklamı, web sitenizi ve otomasyonu satışlarınız için çalışan tek bir sistem olarak kuran bir büyüme ajansıyız — sadece şık gönderiler değil. Sektörünüzü ve hedefinizi biraz anlatın, size özel farkın tam olarak nerede olduğunu göstereyim.",
     "intents": [
-      { "k": ["merhaba", "selam", "günaydın", "iyi akşam", "hey", "naber"], "a": "Merhaba ve hoş geldiniz 👋 Büyümenize yardımcı olmayı çok isterim. Kısa bir soru: şu an en çok hangi sonucu istiyorsunuz — daha çok satış, daha güçlü kreatif, yoksa dönüşüm getiren bir web sitesi mi?" },
-      { "k": ["fiyat", "ücret", "ne kadar", "maliyet", "bütçe", "teklif", "pahalı", "ucuz", "kaça"], "a": "Her planı hedefinize, pazarınıza ve kâr marjınıza göre uyarlıyoruz — bu yüzden en akıllı adım, tam olarak neye ihtiyacınız olduğunu birlikte belirleyeceğimiz kısa ve ücretsiz bir görüşme. Hedefinizi WhatsApp'tan yazın, üzerine kurulu bir planla dönelim. Önce neyi başarmak istiyorsunuz?" },
-      { "k": ["satış", "gelir", "müşteri", "potansiyel", "büyü", "büyüme", "ölçek", "artır"], "a": "Tam bizim alanımız 💡 Eksiksiz bir büyüme motoru kuruyoruz — kaydırmayı durduran yapay zekâ kreatifi ve beğeni değil satış peşinde koşan performans kampanyaları. Ürün mü hizmet mi satıyorsunuz, hangi pazarda? WhatsApp'tan yazın, 24 saat içinde ücretsiz ilk konsepti gönderelim." },
-      { "k": ["hizmet", "hizmetler", "sunuyor", "ne yapıyor", "yardım", "neler"], "a": "Tek çatı altında birbirine bağlı beş disiplin: yapay zekâ kreatif (görsel & video), performans reklamları (Meta, Google, TikTok, Snapchat), web siteleri & e-ticaret, yapay zekâ sohbet botlarıyla otomasyon ve büyüme danışmanlığı. Hangisi ihtiyacınıza en yakın? Ya da WhatsApp'tan yazın, birlikte planlayalım." },
-      { "k": ["reklam", "meta", "facebook", "instagram", "google", "tiktok", "snap", "kampanya"], "a": "Meta, Google, TikTok ve Snapchat'te tek bir sayı üzerine kurulu performans reklamları yönetiyoruz: reklam harcamasının getirisi — boş erişimi değil satışı kovalarız. Neyi, nerede tanıtıyorsunuz? WhatsApp'tan paylaşın, planı çıkaralım." },
-      { "k": ["web sitesi", "site", "mağaza", "e-ticaret", "eticaret", "online", "açılış", "dükkan"], "a": "Tek bir şey için tasarlanmış hızlı ve etkileyici web siteleri ve mağazalar kuruyoruz: ziyaretçiyi alıcıya dönüştürmek. Mevcut bir siteniz var mı yoksa sıfırdan mı? WhatsApp'tan yazın, ne yapacağımızı gösterelim." },
-      { "k": ["yapay zeka", "yapay zekâ", "otomasyon", "otomatik", "bot", "sohbet botu", "chatbot", "crm"], "a": "Yapay zekâyı sizin için çalıştırıyoruz: aynı çabayla 10 kat kreatif, artı müşteri adaylarını eleyip kolay satışları 7/24 kapatan otomasyon ve sohbet botları. Önce neyi otomatikleştirmek istersiniz? WhatsApp'ta planlayalım." },
-      { "k": ["sonuç", "ne zaman", "ne kadar sürede", "süre", "zaman", "hızlı", "kaç günde"], "a": "Kampanyalar birkaç hafta içinde net sinyaller verir, gerçek gelir hareketi genellikle ilk çeyrekte gelir, web siteleri ve otomasyon ilk günden çalışır — başlattığımız her şey görebileceğiniz bir rakamla gelir. Projeniz için gerçekçi bir takvim ister misiniz? WhatsApp'tan yazın." },
-      { "k": ["başla", "nasıl başlar", "iletişim", "ulaş", "numara", "whatsapp", "ara", "görüşme", "kayıt"], "a": "Kolay — WhatsApp'tan tek bir mesaj, hedefinizi anlamak için ücretsiz 30 dakikalık bir görüşme, ardından siz görene kadar taahhütsüz net bir eylem planı. Başlayalım mı? Aşağıdaki WhatsApp düğmesine dokunun 🚀" },
-      { "k": ["iş ", "işler", "portföy", "örnek", "vaka", "referans", "müşteriler", "kanıt"], "a": "Anlatmaktansa göstermeyi tercih ederiz — Körfez, Levant ve Türkiye'de cilt bakımı, gayrimenkul, restoran ve daha fazlasını ölçeklendirdik. Sektörünüz için vaka çalışmaları ister misiniz? WhatsApp'tan isteyin, en uygun olanları gönderelim." },
-      { "k": ["pazar", "dil", "arapça", "ingilizce", "türkçe", "ülke", "nerede", "bölge", "körfez", "suudi", "türkiye"], "a": "Arapça, İngilizce ve Türkçede yerel olarak çalışıyoruz — Körfez, Levant, Türkiye ve ötesinde; tek ekip, üç kültür, çeviri katmanı yok. Hangi pazarı hedefliyorsunuz? WhatsApp'tan yazın." },
-      { "k": ["teşekkür", "sağol", "harika", "mükemmel", "tamam", "güzel", "süper"], "a": "Rica ederim 🙌 Hazır olduğunuzda aşağıdaki WhatsApp düğmesine dokunun, ekibimiz bizzat ilgilensin. Önce bilmek istediğiniz başka bir şey var mı?" }
+      { "k": ["merhaba", "selam", "günaydın", "iyi akşam", "hey", "naber"], "a": "Merhaba ve hoş geldiniz 🙌 Sizinle olmak güzel. Size doğru şekilde yardımcı olabilmem için: markanızın alanı ne ve önümüzdeki aylarda hangi sonuca ulaşmak isterdiniz?" },
+      { "k": ["fiyat", "ücret", "ne kadar", "maliyet", "bütçe", "teklif", "pahalı", "ucuz", "kaça"], "a": "Hazır paketler satmıyoruz; planı hedefinize, pazarınıza ve kâr marjınıza göre kuruyoruz — çünkü bir güzellik mağazasında işe yarayan, bir gayrimenkul geliştiricisinde işe yaramaz. Alanınızı ve ne kadar büyük düşündüğünüzü söyleyin, tam olarak ne yapacağımızı ve nedenini çıkarayım. İlk görüşme ücretsiz ve taahhütsüz." },
+      { "k": ["satış", "gelir", "müşteri", "potansiyel", "büyü", "büyüme", "ölçek", "artır"], "a": "İşin özü tam da bu. Satış daha çok gönderiden gelmez; bir sistemden gelir: dikkat çeken kreatif, satın almaya hazır alıcıyı kovalayan reklam, dönüştüren bir site ve tereddüt edenleri takip eden otomasyon. Kısa soru: ürün mü hizmet mi, nerede satıyorsunuz? Oradan bugün satışınızın nerede sızdığını gösterebilirim." },
+      { "k": ["hizmet", "hizmetler", "sunuyor", "ne yapıyor", "yardım", "neler"], "a": "Tek ekip gibi çalışan beş disiplin: yapay zekâ kreatif, performans reklamları (Meta, Google, TikTok, Snapchat), web siteleri & mağazalar, sohbet botlarıyla otomasyon ve büyüme danışmanlığı. Püf noktası birbirine bağlı olmaları — kreatif reklamı, reklam veriyi, veri her şeyi besler. Şu an hangisi ihtiyacınıza en yakın?" },
+      { "k": ["reklam", "meta", "facebook", "instagram", "google", "tiktok", "snap", "kampanya"], "a": "Reklamları sizin için önemli tek bir sayı üzerine yönetiriz: harcadığınız her liranın getirisi — beğeni ya da boş erişim değil. Önce kâr marjınızı ve ideal müşterinizi anlar, sonra izleyiciyi değil alıcıyı kovalayan bir huni kurarız. Bugün neyi tanıtıyorsunuz ve zaten reklam veriyor musunuz yoksa sıfırdan mı?" },
+      { "k": ["web sitesi", "site", "mağaza", "e-ticaret", "eticaret", "online", "açılış", "dükkan"], "a": "Satmayan güzel bir site sadece dekordur. Satın alma kararı etrafında tasarlanmış siteler ve mağazalar kuruyoruz: hız, ilk satırdan güven ve düğmeye giden net bir yol. İyileştirilecek bir siteniz mi var yoksa sıfırdan mı? Söyleyin, dönüşümünüzü tam olarak neyin artıracağını açıklayayım." },
+      { "k": ["yapay zeka", "yapay zekâ", "otomasyon", "otomatik", "bot", "sohbet botu", "chatbot", "crm"], "a": "Buradaki yapay zekâ süs değil — aynı bütçeyle katlanmış kreatif, artı her müşteri adayını takip eden ve siz uyurken kolay satışları 7/24 kapatan otomasyon sağlar. Yorulmayan ve hiçbir takibi unutmayan bir satış ekibi düşünün. Zamanınızı en çok yiyen tekrarlayan iş hangisi? Oradan başlarız." },
+      { "k": ["sonuç", "ne zaman", "ne kadar sürede", "süre", "zaman", "hızlı", "kaç günde"], "a": "Dürüstçe ve abartısız: reklamlar birkaç hafta içinde net sinyaller verir, gelirde anlamlı hareket genellikle ilk çeyrekte gelir, web siteleri ve otomasyon ilk günden çalışır. Sihir vaat etmiyoruz; adım adım bizimle takip edeceğiniz net bir rakam vaat ediyoruz. Sizin için en önemli sayı hangisi?" },
+      { "k": ["başla", "nasıl başlar", "iletişim", "ulaş", "numara", "whatsapp", "ara", "görüşme", "kayıt"], "a": "Sandığınızdan basit: hedefinizi anlamak için kısa bir sohbet, ardından size net bir eylem planı — ikna olana kadar taahhüt yok. Hazır olduğunuzda, aşağıdaki WhatsApp düğmesi sizi doğrudan ekibimize bağlar." },
+      { "k": ["iş ", "işler", "portföy", "örnek", "vaka", "referans", "müşteriler", "kanıt"], "a": "Anlatmaktansa göstermeyi tercih ederiz — Körfez, Levant ve Türkiye'de cilt bakımı, gayrimenkul, restoran ve daha fazlasını gerçek rakamlarla ölçeklendirdik, sloganlarla değil. Alanınızı söyleyin, durumunuza en yakın vakayı ve orada tam olarak neyin işe yaradığını göstereyim." },
+      { "k": ["pazar", "dil", "arapça", "ingilizce", "türkçe", "ülke", "nerede", "bölge", "körfez", "suudi", "türkiye"], "a": "Arapça, İngilizce ve Türkçede yerel olarak çalışıyoruz — kültüre çevirmeden, kültürün içinde yazıyoruz; böylece mesaj sanki yerli biri yazmış gibi ulaşır. Hangi pazarı hedefliyorsunuz ve orada ideal müşteriniz kim?" },
+      { "k": ["teşekkür", "sağol", "harika", "mükemmel", "tamam", "güzel", "süper"], "a": "Rica ederim 🙌 Sohbetimizden keyif aldım. Markanız veya planınız hakkında aklınızda başka bir şey var mı? Buradayım." }
     ],
     "qa": [
       {
         "q": "Daha fazla satış istiyorum",
-        "a": "Tam da bizim işimiz 💡 Eksiksiz bir büyüme motoru kuruyoruz: kaydırmayı durduran yapay zekâ destekli kreatif ve beğeni değil satış peşinde koşan performans kampanyaları. Sizi doğru yönlendirmem için kısa bir soru: ürün mü yoksa hizmet mi satıyorsunuz ve hangi pazarda? WhatsApp'tan yazın, markanız için ilk fikri 24 saat içinde ücretsiz gönderelim."
+        "a": "Harika — tam da bizim kurduğumuz şey bu. Satış daha çok içerikten gelmez; eksiksiz bir sistemden gelir: dikkat çeken kreatif, hazır alıcıyı kovalayan reklam, dönüştüren bir site ve tereddüt edenleri takip eden otomasyon. Söyleyin: ne satıyorsunuz, kime? Oradan bugün nerede satış kaybettiğinizi çıkarabilirim."
       },
       {
         "q": "Sizi farklı kılan ne?",
-        "a": "Üç şey fark yaratır: aynı çabayla 10 kat kreatif veren yapay zekâ üretimi, stajyer değil kıdemli uzmanlardan oluşan bir ekip ve boş erişime değil gelirinize bağlı raporlama. Bunun markanız için çalıştığını hayal edin — pratikte kanıtlıyoruz. Denemeye hazır mısınız? WhatsApp'tan ulaşın."
+        "a": "Üç gerçek fark: yapay zekâ ile kurarız, yani aynı bütçeyle katlanmış kreatif alırsınız; hesabınızda deneme yapan stajyerlerle değil, uzmanlarla çalışırsınız; ve başarıyı görüntüleme sayısıyla değil gelirinizle ölçeriz. Kısacası: bütçenize sanki kendi paramız masadaymış gibi davranırız."
       },
       {
         "q": "BAIGR işletmeme uygun mu?",
-        "a": "Büyük olasılıkla evet — e-ticaret mağazaları, hizmet sağlayıcılar ve ilk lansmandan ölçeklenmeye markalarla çalışıyoruz. Emin olmak için: sektörünüz ne ve 6 ay sonra nerede olmak istiyorsunuz? Ayrıntıları WhatsApp'tan paylaşın, en uygun seçenek miyiz dürüstçe söyleyeyim."
+        "a": "Büyük olasılıkla evet — mağazalar, hizmet sağlayıcılar ve ilk lansmandan ölçeklenmeye markalarla çalışıyoruz. Ama dürüstlük satıştan önemli: sektörünüzü ve 6 ay sonra nerede olmak istediğinizi söyleyin; sizin için en uygun biz değilsek, açıkça söyler ve doğru adrese yönlendiririm."
       },
       {
         "q": "Sonuçları ne zaman görürüm?",
-        "a": "Kampanyalar birkaç hafta içinde net sinyaller verir, gerçek gelir hareketi genellikle ilk çeyrekte gelir; web siteleri ve otomasyon ise ilk günden çalışır. Başlattığımız her şey görebileceğiniz bir rakamla gelir. Projeniz için gerçekçi bir takvim ister misiniz? Hemen WhatsApp'tan yazın."
+        "a": "Reklamlar birkaç hafta içinde net sinyaller verir, gelirde anlamlı hareket genellikle ilk çeyrekte gelir; web siteleri ve otomasyon ise etkisini ilk günden gösterir. Size vaat satmam; başlattığımız her şey bizimle takip edeceğiniz bir rakamla gelir. Sizin için en önemlisi hangisi: satış, müşteri adayı, yoksa daha düşük edinim maliyeti mi?"
       },
       {
         "q": "Nasıl başlarız?",
-        "a": "Düşündüğünüzden kolay: WhatsApp'tan tek bir mesaj, hedefinizi anlamak için ücretsiz 30 dakikalık bir görüşme, ardından net bir eylem planı — siz görene kadar hiçbir taahhüt yok. Sizi büyümeden ayıran tek şey bu mesaj. WhatsApp'a dokunun, başlayalım 🚀"
+        "a": "Tek basit adım: hedefinizi anlamak için kısa bir sohbet, ardından ikna olana kadar taahhütsüz net bir plan. Hazır olduğunuzda, aşağıdaki WhatsApp düğmesi sizi doğrudan ekibimize bağlar."
       }
     ]
   },
@@ -108,8 +108,8 @@
         "desc": "Yapay zekâyla on kat hızlı üretiriz — sonra gerçek bir kreatif direktör her karede son sözü söyler."
       },
       {
-        "title": "Üç pazara ana dilde hâkim",
-        "desc": "Arapça, İngilizce ve Türkçe ana dil gibi — her kültürde çevrilmiş değil, o kültürde doğmuş metinler."
+        "title": "Üç dil, ana dilinde",
+        "desc": "Arapça, İngilizce ve Türkçe — her mesaj kendi kültürünün içinde yazılır, ona çevrilmez. Sözleriniz sanki yerli biri yazmış gibi ulaşır, çünkü öyle."
       }
     ]
   },

@@ -99,7 +99,7 @@ function buildEmbed() {
   const G_FONTS =
     `<link rel="preconnect" href="https://fonts.googleapis.com" />\n` +
     `  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n` +
-    `  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />\n`;
+    `  <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />\n`;
 
   // Drop the local font machinery; Cairo comes from Google Fonts.
   const styleBlock = [CSS.style, CSS.anim, CSS.resp].join("\n\n");
