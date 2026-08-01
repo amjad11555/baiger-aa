@@ -11,9 +11,10 @@
 	<meta charset="<?php bloginfo( 'charset' ); ?>" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="profile" href="https://gmpg.org/xfn/11" />
+	<script>document.documentElement.className+=' js';</script>
 	<?php wp_head(); ?>
 </head>
-<body <?php body_class( 'grain' ); ?>>
+<body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
 <a class="skip-link" href="#content">تخطَّ إلى المحتوى</a>

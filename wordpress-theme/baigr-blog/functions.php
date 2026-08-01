@@ -37,12 +37,12 @@ add_action( 'after_setup_theme', 'baigr_blog_content_width', 0 );
    2. Assets — Cairo + Lenis (smooth scroll) + theme JS/CSS
    ============================================================ */
 function baigr_blog_assets() {
-	wp_enqueue_style( 'baigr-cairo', 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap', array(), null );
+	// Only the weights the theme actually uses — smaller font payload.
+	wp_enqueue_style( 'baigr-cairo', 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap', array(), null );
 	wp_enqueue_style( 'baigr-blog-style', get_stylesheet_uri(), array( 'baigr-cairo' ), wp_get_theme()->get( 'Version' ) );
 
-	// Lenis smooth scroll (MIT). Loaded from CDN; the theme degrades gracefully if unavailable.
-	wp_enqueue_script( 'lenis', 'https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js', array(), '1.1.13', true );
-	wp_enqueue_script( 'baigr-blog-js', get_template_directory_uri() . '/assets/theme.js', array( 'lenis' ), wp_get_theme()->get( 'Version' ), true );
+	// Lightweight, dependency-free motion layer (native scroll — no smooth-scroll library).
+	wp_enqueue_script( 'baigr-blog-js', get_template_directory_uri() . '/assets/theme.js', array(), wp_get_theme()->get( 'Version' ), true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -78,11 +78,16 @@ function baigr_blog_posted_on() {
 	printf( '<span class="posted-on">%s</span>', esc_html( get_the_date() ) );
 }
 
+/** True when a dedicated SEO plugin is active — we then stand down to avoid duplicate tags. */
+function baigr_blog_seo_plugin_active() {
+	return defined( 'WPSEO_VERSION' ) || defined( 'RANK_MATH_VERSION' ) || defined( 'SEOPRESS_VERSION' ) || defined( 'AIOSEO_VERSION' );
+}
+
 /** Best available description for the current view. */
 function baigr_blog_description() {
 	if ( is_singular() ) {
 		$post = get_queried_object();
-		$d = has_excerpt( $post ) ? get_the_excerpt( $post ) : wp_strip_all_tags( $post->post_content );
+		$d = has_excerpt( $post ) ? get_the_excerpt( $post ) : wp_strip_all_tags( strip_shortcodes( $post->post_content ) );
 		return trim( mb_substr( preg_replace( '/\s+/', ' ', $d ), 0, 160 ) );
 	}
 	return get_bloginfo( 'description' );
@@ -115,6 +120,7 @@ function baigr_blog_publisher_logo() {
    to avoid duplicate tags (this theme already covers the basics).
    ============================================================ */
 function baigr_blog_meta_tags() {
+	if ( baigr_blog_seo_plugin_active() ) { return; }
 	$desc  = baigr_blog_description();
 	$title = wp_get_document_title();
 	$url   = is_singular() ? get_permalink() : home_url( add_query_arg( array(), $GLOBALS['wp']->request ) );
@@ -149,6 +155,7 @@ add_action( 'wp_head', 'baigr_blog_meta_tags', 5 );
       BlogPosting + BreadcrumbList on single posts)
    ============================================================ */
 function baigr_blog_schema() {
+	if ( baigr_blog_seo_plugin_active() ) { return; }
 	$org = array(
 		'@type' => 'Organization',
 		'@id'   => BAIGR_SITE . '/#org',

@@ -16,16 +16,16 @@ get_header();
 		<article <?php post_class(); ?>>
 			<header class="entry-header">
 				<div class="post-meta"><?php baigr_blog_posted_on(); ?><?php if ( has_category() ) { echo '<span aria-hidden="true">•</span>'; the_category( '، ' ); } ?></div>
-				<h1 class="wr" data-wr="load"><?php the_title(); ?></h1>
+				<h1><?php the_title(); ?></h1>
 			</header>
 
 			<?php if ( has_post_thumbnail() ) : ?>
-				<figure class="entry-featured reveal">
+				<figure class="entry-featured">
 					<?php the_post_thumbnail( 'full', array( 'alt' => the_title_attribute( array( 'echo' => false ) ) ) ); ?>
 				</figure>
 			<?php endif; ?>
 
-			<div class="entry-content reveal">
+			<div class="entry-content">
 				<?php
 				the_content();
 				wp_link_pages( array( 'before' => '<div class="page-links">صفحات: ', 'after' => '</div>' ) );

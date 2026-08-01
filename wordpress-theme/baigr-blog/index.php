@@ -19,7 +19,7 @@ get_header();
 			else { echo 'مدوّنة BAIGR'; }
 			?>
 		</p>
-		<h1 class="wr" data-wr="load">
+		<h1>
 			<?php
 			if ( is_search() ) { echo 'نتائج: ' . esc_html( get_search_query() ); }
 			elseif ( is_archive() ) { echo esc_html( wp_strip_all_tags( get_the_archive_title() ) ); }

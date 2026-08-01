@@ -87,12 +87,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     radial-gradient(42% 46% at 78% 18%,rgba(214,224,106,.26),transparent 68%),
     radial-gradient(38% 44% at 16% 80%,rgba(114,107,214,.14),transparent 72%);
 }
-/* Barely-there paper grain */
-.grain::after{
-  content:"";position:fixed;inset:-100%;z-index:80;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity:.035;mix-blend-mode:multiply;animation:grain-shift 9s steps(6) infinite;
-}
+/* (Grain overlay removed for performance — it forced full-screen repaints on
+   every scroll frame. The aurora washes carry the atmosphere at zero cost.) */
 
 /* ============================================================
    4. Buttons
@@ -112,7 +108,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 html[dir="rtl"] .scroll-progress{transform-origin:right}
 
 .navbar{position:fixed;inset-inline:0;top:0;z-index:70;border-bottom:1px solid transparent;transition:background .5s ease,border-color .5s ease,box-shadow .5s ease}
-.navbar.is-scrolled:not(.is-open){background:rgba(254,254,254,.72);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border-bottom-color:var(--line);box-shadow:var(--shadow-sm)}
+.navbar.is-scrolled:not(.is-open){background:rgba(254,254,254,.94);border-bottom-color:var(--line);box-shadow:var(--shadow-sm)}
 .navbar__inner{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h)}
 .navbar__logo{display:inline-flex;align-items:center;gap:.55rem;color:var(--ink)}
 .navbar__logo img{height:34px;width:auto}
@@ -127,7 +123,7 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
 .navbar.is-open .burger span:nth-child(1){transform:translateY(4px) rotate(45deg)}
 .navbar.is-open .burger span:nth-child(2){transform:translateY(-4px) rotate(-45deg)}
 
-.menu-overlay{position:fixed;inset:0;top:var(--nav-h);z-index:60;display:flex;flex-direction:column;justify-content:space-between;background:rgba(254,254,254,.98);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);padding:2.5rem 1.5rem;transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .3s ease,transform .3s ease,visibility .3s}
+.menu-overlay{position:fixed;inset:0;top:var(--nav-h);z-index:60;display:flex;flex-direction:column;justify-content:space-between;background:var(--paper);padding:2.5rem 1.5rem;transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .3s ease,transform .3s ease,visibility .3s}
 .menu-overlay.is-open{opacity:1;visibility:visible;transform:none}
 .menu-overlay a{display:flex;align-items:baseline;gap:.75rem;padding-block:.4rem;font-family:var(--f-display);font-size:1.6rem;font-weight:700;color:var(--ink);transition:color .3s ease}
 .menu-overlay a:hover{color:var(--iris)}
@@ -136,7 +132,7 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
    6. Page hero (listing + archive)
    ============================================================ */
 .page-hero{position:relative;overflow:hidden;padding:calc(var(--nav-h) + 3.5rem) 0 3rem;text-align:center}
-.page-hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9}
+.page-hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9;pointer-events:none}
 .page-hero .inner{position:relative;z-index:2}
 .page-hero h1{font-size:clamp(2.1rem,5.4vw,3.4rem);font-weight:900;line-height:1.12;letter-spacing:-.01em}
 .page-hero p{margin-top:1rem;color:var(--mist);font-size:1.1rem;max-width:38rem;margin-inline:auto}
@@ -225,38 +221,49 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
 /* ============================================================
    10. Footer (matches homepage — cloud bg)
    ============================================================ */
-.site-footer{border-top:1px solid var(--line);padding-block:3.5rem;background:var(--cloud);margin-top:4rem}
-.site-footer .grid{display:grid;gap:2.4rem;grid-template-columns:1fr}
-.site-footer .brand{display:inline-flex;align-items:center;gap:.55rem;font-size:1.7rem;font-weight:900;letter-spacing:.06em;color:var(--ink)}
+.site-footer{position:relative;background:var(--cloud);margin-top:4rem;padding-block:3.5rem 1.6rem;border-top:1px solid var(--line)}
+.site-footer::before{content:"";position:absolute;inset-inline:0;top:-1px;height:3px;background:linear-gradient(90deg,var(--lime),var(--iris))}
+.site-footer .grid{display:grid;gap:2.6rem 2rem;grid-template-columns:1fr}
+.site-footer .col-brand{max-width:26rem}
+.site-footer .brand{display:inline-flex;align-items:center;gap:.45rem;font-size:1.7rem;font-weight:900;letter-spacing:.06em;color:var(--ink)}
 .site-footer .brand .dot{color:var(--lime-deep)}
-.site-footer .tagline{margin-top:.7rem;max-width:22rem;color:var(--mist);line-height:1.65}
-.site-footer h4{font-family:var(--f-display);font-size:.8rem;font-weight:800;letter-spacing:var(--track-label);color:var(--iris);margin-bottom:.8rem}
-.site-footer ul{display:flex;flex-direction:column;gap:.5rem}
-.site-footer ul a{font-size:.95rem;color:var(--ink-soft);transition:color .3s}
-.site-footer ul a:hover{color:var(--iris)}
-.site-footer .bottom{margin-top:2.4rem;padding-top:1.4rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.8rem;color:var(--mist)}
+.site-footer .tagline{margin-top:.7rem;color:var(--mist);line-height:1.7}
+.site-footer h4{font-family:var(--f-display);font-size:.78rem;font-weight:800;letter-spacing:var(--track-label);color:var(--iris);margin-bottom:1rem;text-transform:uppercase}
+html[lang="ar"] .site-footer h4{text-transform:none}
+.site-footer ul{display:flex;flex-direction:column;gap:.65rem}
+.site-footer ul a{display:inline-flex;align-items:center;gap:.5rem;font-size:.95rem;font-weight:600;color:var(--ink-soft);transition:color .25s,transform .25s}
+.site-footer ul a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--lime);opacity:0;transition:opacity .25s;flex:none}
+.site-footer ul a:hover{color:var(--iris-deep)}
+.site-footer ul a:hover::before{opacity:1}
+/* Social row */
+.footer-social{display:flex;gap:.6rem;margin-top:1.1rem;flex-wrap:wrap}
+.footer-social a{display:inline-flex;align-items:center;justify-content:center;width:2.5rem;height:2.5rem;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink);font-weight:800;font-size:.85rem;transition:all .28s var(--ease-out)}
+.footer-social a:hover{background:var(--iris-deep);border-color:var(--iris-deep);color:#fff;transform:translateY(-3px)}
+.site-footer .bottom{margin-top:2.8rem;padding-top:1.4rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.82rem;color:var(--mist)}
+.site-footer .to-top{display:inline-flex;align-items:center;gap:.4rem;font-weight:700;color:var(--iris-deep)}
+.site-footer .to-top:hover{color:var(--ink)}
 
 /* ============================================================
    11. Reveal animation states
    ============================================================ */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease-out),transform 1s var(--ease-out)}
-.reveal.is-in{opacity:1;transform:none}
-.wr-word{display:inline-block;overflow:hidden;vertical-align:top}
-.wr-word>span{display:inline-block;transform:translateY(115%);transition:transform .9s var(--ease-out)}
-.wr.is-in .wr-word>span{transform:none}
+/* Reveal only when JS is present, so content is never hidden if JS fails. */
+.js .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out)}
+.js .reveal.is-in{opacity:1;transform:none}
 
 @keyframes sheen{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-@keyframes grain-shift{0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-2%)}60%{transform:translate(-2%,4%)}80%{transform:translate(4%,-3%)}100%{transform:translate(0,0)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
 /* ============================================================
    12. Responsive
    ============================================================ */
+@media (min-width:560px){
+  .site-footer .grid{grid-template-columns:1fr 1fr}
+}
 @media (min-width:900px){
   .navbar__links{display:flex}
   .navbar__cta{display:inline-flex}
   .burger{display:none}
-  .site-footer .grid{grid-template-columns:1.6fr 1fr 1fr}
+  .site-footer .grid{grid-template-columns:2.2fr 1fr 1fr 1.2fr}
+  .site-footer .col-brand{grid-row:span 1}
   .section{padding-block:6rem}
 }
 @media (max-width:640px){
@@ -269,7 +276,5 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
    ============================================================ */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
-  .reveal{opacity:1;transform:none}
-  .wr-word>span{transform:none}
-  .grain::after{display:none}
+  .js .reveal{opacity:1;transform:none}
 }

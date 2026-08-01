@@ -1,7 +1,6 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>معاينة قالب BAIGR Blog</title>
+<!doctype html><html lang="ar" dir="rtl" class="js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>معاينة قالب BAIGR Blog</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>/*
 Theme Name: BAIGR Blog
 Theme URI: https://baigr.com/
@@ -91,12 +90,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     radial-gradient(42% 46% at 78% 18%,rgba(214,224,106,.26),transparent 68%),
     radial-gradient(38% 44% at 16% 80%,rgba(114,107,214,.14),transparent 72%);
 }
-/* Barely-there paper grain */
-.grain::after{
-  content:"";position:fixed;inset:-100%;z-index:80;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity:.035;mix-blend-mode:multiply;animation:grain-shift 9s steps(6) infinite;
-}
+/* (Grain overlay removed for performance — it forced full-screen repaints on
+   every scroll frame. The aurora washes carry the atmosphere at zero cost.) */
 
 /* ============================================================
    4. Buttons
@@ -116,7 +111,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 html[dir="rtl"] .scroll-progress{transform-origin:right}
 
 .navbar{position:fixed;inset-inline:0;top:0;z-index:70;border-bottom:1px solid transparent;transition:background .5s ease,border-color .5s ease,box-shadow .5s ease}
-.navbar.is-scrolled:not(.is-open){background:rgba(254,254,254,.72);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border-bottom-color:var(--line);box-shadow:var(--shadow-sm)}
+.navbar.is-scrolled:not(.is-open){background:rgba(254,254,254,.94);border-bottom-color:var(--line);box-shadow:var(--shadow-sm)}
 .navbar__inner{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h)}
 .navbar__logo{display:inline-flex;align-items:center;gap:.55rem;color:var(--ink)}
 .navbar__logo img{height:34px;width:auto}
@@ -131,7 +126,7 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
 .navbar.is-open .burger span:nth-child(1){transform:translateY(4px) rotate(45deg)}
 .navbar.is-open .burger span:nth-child(2){transform:translateY(-4px) rotate(-45deg)}
 
-.menu-overlay{position:fixed;inset:0;top:var(--nav-h);z-index:60;display:flex;flex-direction:column;justify-content:space-between;background:rgba(254,254,254,.98);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);padding:2.5rem 1.5rem;transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .3s ease,transform .3s ease,visibility .3s}
+.menu-overlay{position:fixed;inset:0;top:var(--nav-h);z-index:60;display:flex;flex-direction:column;justify-content:space-between;background:var(--paper);padding:2.5rem 1.5rem;transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .3s ease,transform .3s ease,visibility .3s}
 .menu-overlay.is-open{opacity:1;visibility:visible;transform:none}
 .menu-overlay a{display:flex;align-items:baseline;gap:.75rem;padding-block:.4rem;font-family:var(--f-display);font-size:1.6rem;font-weight:700;color:var(--ink);transition:color .3s ease}
 .menu-overlay a:hover{color:var(--iris)}
@@ -140,7 +135,7 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
    6. Page hero (listing + archive)
    ============================================================ */
 .page-hero{position:relative;overflow:hidden;padding:calc(var(--nav-h) + 3.5rem) 0 3rem;text-align:center}
-.page-hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9}
+.page-hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9;pointer-events:none}
 .page-hero .inner{position:relative;z-index:2}
 .page-hero h1{font-size:clamp(2.1rem,5.4vw,3.4rem);font-weight:900;line-height:1.12;letter-spacing:-.01em}
 .page-hero p{margin-top:1rem;color:var(--mist);font-size:1.1rem;max-width:38rem;margin-inline:auto}
@@ -229,38 +224,49 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
 /* ============================================================
    10. Footer (matches homepage — cloud bg)
    ============================================================ */
-.site-footer{border-top:1px solid var(--line);padding-block:3.5rem;background:var(--cloud);margin-top:4rem}
-.site-footer .grid{display:grid;gap:2.4rem;grid-template-columns:1fr}
-.site-footer .brand{display:inline-flex;align-items:center;gap:.55rem;font-size:1.7rem;font-weight:900;letter-spacing:.06em;color:var(--ink)}
+.site-footer{position:relative;background:var(--cloud);margin-top:4rem;padding-block:3.5rem 1.6rem;border-top:1px solid var(--line)}
+.site-footer::before{content:"";position:absolute;inset-inline:0;top:-1px;height:3px;background:linear-gradient(90deg,var(--lime),var(--iris))}
+.site-footer .grid{display:grid;gap:2.6rem 2rem;grid-template-columns:1fr}
+.site-footer .col-brand{max-width:26rem}
+.site-footer .brand{display:inline-flex;align-items:center;gap:.45rem;font-size:1.7rem;font-weight:900;letter-spacing:.06em;color:var(--ink)}
 .site-footer .brand .dot{color:var(--lime-deep)}
-.site-footer .tagline{margin-top:.7rem;max-width:22rem;color:var(--mist);line-height:1.65}
-.site-footer h4{font-family:var(--f-display);font-size:.8rem;font-weight:800;letter-spacing:var(--track-label);color:var(--iris);margin-bottom:.8rem}
-.site-footer ul{display:flex;flex-direction:column;gap:.5rem}
-.site-footer ul a{font-size:.95rem;color:var(--ink-soft);transition:color .3s}
-.site-footer ul a:hover{color:var(--iris)}
-.site-footer .bottom{margin-top:2.4rem;padding-top:1.4rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.8rem;color:var(--mist)}
+.site-footer .tagline{margin-top:.7rem;color:var(--mist);line-height:1.7}
+.site-footer h4{font-family:var(--f-display);font-size:.78rem;font-weight:800;letter-spacing:var(--track-label);color:var(--iris);margin-bottom:1rem;text-transform:uppercase}
+html[lang="ar"] .site-footer h4{text-transform:none}
+.site-footer ul{display:flex;flex-direction:column;gap:.65rem}
+.site-footer ul a{display:inline-flex;align-items:center;gap:.5rem;font-size:.95rem;font-weight:600;color:var(--ink-soft);transition:color .25s,transform .25s}
+.site-footer ul a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--lime);opacity:0;transition:opacity .25s;flex:none}
+.site-footer ul a:hover{color:var(--iris-deep)}
+.site-footer ul a:hover::before{opacity:1}
+/* Social row */
+.footer-social{display:flex;gap:.6rem;margin-top:1.1rem;flex-wrap:wrap}
+.footer-social a{display:inline-flex;align-items:center;justify-content:center;width:2.5rem;height:2.5rem;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink);font-weight:800;font-size:.85rem;transition:all .28s var(--ease-out)}
+.footer-social a:hover{background:var(--iris-deep);border-color:var(--iris-deep);color:#fff;transform:translateY(-3px)}
+.site-footer .bottom{margin-top:2.8rem;padding-top:1.4rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.82rem;color:var(--mist)}
+.site-footer .to-top{display:inline-flex;align-items:center;gap:.4rem;font-weight:700;color:var(--iris-deep)}
+.site-footer .to-top:hover{color:var(--ink)}
 
 /* ============================================================
    11. Reveal animation states
    ============================================================ */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease-out),transform 1s var(--ease-out)}
-.reveal.is-in{opacity:1;transform:none}
-.wr-word{display:inline-block;overflow:hidden;vertical-align:top}
-.wr-word>span{display:inline-block;transform:translateY(115%);transition:transform .9s var(--ease-out)}
-.wr.is-in .wr-word>span{transform:none}
+/* Reveal only when JS is present, so content is never hidden if JS fails. */
+.js .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out)}
+.js .reveal.is-in{opacity:1;transform:none}
 
 @keyframes sheen{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-@keyframes grain-shift{0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-2%)}60%{transform:translate(-2%,4%)}80%{transform:translate(4%,-3%)}100%{transform:translate(0,0)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
 /* ============================================================
    12. Responsive
    ============================================================ */
+@media (min-width:560px){
+  .site-footer .grid{grid-template-columns:1fr 1fr}
+}
 @media (min-width:900px){
   .navbar__links{display:flex}
   .navbar__cta{display:inline-flex}
   .burger{display:none}
-  .site-footer .grid{grid-template-columns:1.6fr 1fr 1fr}
+  .site-footer .grid{grid-template-columns:2.2fr 1fr 1fr 1.2fr}
+  .site-footer .col-brand{grid-row:span 1}
   .section{padding-block:6rem}
 }
 @media (max-width:640px){
@@ -273,12 +279,9 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
    ============================================================ */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
-  .reveal{opacity:1;transform:none}
-  .wr-word>span{transform:none}
-  .grain::after{display:none}
+  .js .reveal{opacity:1;transform:none}
 }
-</style></head><body class="grain">
-<a class="skip-link" href="#content">تخطَّ</a>
+</style></head><body>
 <div class="scroll-progress" id="scroll-progress"></div>
 <header class="navbar is-scrolled" id="navbar"><div class="container navbar__inner">
 <a class="navbar__logo" href="#"><span class="logo-word">BAIGR<span class="dot">.</span></span></a>
@@ -289,59 +292,38 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
 <div class="menu-overlay" id="menu-overlay"><nav><a href="#">المدوّنة</a><a href="#">الموقع الرئيسي</a></nav></div>
 <main id="content">
 <section class="page-hero aurora"><canvas id="hero-field"></canvas><div class="floor"></div>
-<div class="container inner">
-<p class="eyebrow eyebrow--center"><span class="eyebrow__line"></span>مدوّنة BAIGR</p>
-<h1 class="wr" data-wr="load">رؤى في التسويق والنموّ</h1>
-<p>مقالات عملية في التسويق والنموّ بالذكاء الاصطناعي — من فريق BAIGR.</p>
-</div></section>
+<div class="container inner"><p class="eyebrow eyebrow--center"><span class="eyebrow__line"></span>مدوّنة BAIGR</p>
+<h1>رؤى في التسويق والنموّ</h1><p>مقالات عملية في التسويق والنموّ بالذكاء الاصطناعي — من فريق BAIGR.</p></div></section>
 <div class="container"><div class="post-grid">
-
-<article class="post-card reveal" data-delay="0">
-<a class="thumb thumb--empty" href="#"><span></span></a>
-<div class="body"><div class="post-meta">1 أغسطس 2026</div>
-<h2><a href="#">ما هو التسويق؟ دليل شامل لأنواعه من الصفر</a></h2><p class="excerpt">تعرّف على مفهوم التسويق وأنواعه التقليدية والرقمية وكيف تختار الأنسب لعملك.</p>
-<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
-<article class="post-card reveal" data-delay="0.08">
-<a class="thumb thumb--empty" href="#"><span></span></a>
-<div class="body"><div class="post-meta">1 أغسطس 2026</div>
-<h2><a href="#">إعلانات ميتا للمتاجر: من الصفر إلى أول عملية بيع</a></h2><p class="excerpt">خطوات عملية لإطلاق حملة مربحة على انستقرام وفيسبوك دون حرق ميزانيتك.</p>
-<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
-<article class="post-card reveal" data-delay="0.16">
-<a class="thumb thumb--empty" href="#"><span></span></a>
-<div class="body"><div class="post-meta">1 أغسطس 2026</div>
-<h2><a href="#">SEO للمبتدئين: كيف تتصدّر جوجل</a></h2><p class="excerpt">الأساسيات التي تجعل موقعك يظهر في نتائج البحث ويجلب عملاء مجاناً.</p>
+<article class="post-card reveal" data-delay="0"><a class="thumb thumb--empty" href="#"><span></span></a>
+<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">ما هو التسويق؟ دليل شامل لأنواعه من الصفر</a></h2><p class="excerpt">تعرّف على مفهوم التسويق وأنواعه التقليدية والرقمية وكيف تختار الأنسب لعملك.</p>
+<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article><article class="post-card reveal" data-delay="0.08"><a class="thumb thumb--empty" href="#"><span></span></a>
+<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">إعلانات ميتا للمتاجر: من الصفر إلى أول عملية بيع</a></h2><p class="excerpt">خطوات عملية لإطلاق حملة مربحة على انستقرام وفيسبوك دون حرق ميزانيتك.</p>
+<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article><article class="post-card reveal" data-delay="0.16"><a class="thumb thumb--empty" href="#"><span></span></a>
+<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">SEO للمبتدئين: كيف تتصدّر جوجل</a></h2><p class="excerpt">الأساسيات التي تجعل موقعك يظهر في نتائج البحث ويجلب عملاء مجاناً.</p>
 <a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
 </div></div>
-
 <div class="container single-wrap" style="border-top:1px solid var(--line);margin-top:2rem">
-<header class="entry-header"><div class="post-meta">1 أغسطس 2026 • أساسيات التسويق</div>
-<h1 class="wr" data-wr="load">مثال على صفحة المقال</h1></header>
-<div class="entry-content reveal">
-<p>هذا نموذج لكيفية ظهور المقال داخل القالب — <strong>بخط Cairo وألوان علامتك الحقيقية</strong>: الكحلي والليموني والبنفسجي.</p>
-<h2>عنوان رئيسي بخط مميّز</h2>
-<p>لاحظ الشريط الليموني بجانب العنوان، والروابط <a href="#">بلون البنفسجي</a>، والاقتباس:</p>
+<header class="entry-header"><div class="post-meta">1 أغسطس 2026 • أساسيات التسويق</div><h1>مثال على صفحة المقال</h1></header>
+<div class="entry-content reveal"><p>هذا نموذج لظهور المقال — <strong>بخط Cairo وألوان علامتك الحقيقية</strong>: الكحلي والليموني والبنفسجي.</p>
+<h2>عنوان رئيسي بشريط ليموني</h2><p>الروابط <a href="#">بلون البنفسجي</a>، والاقتباس:</p>
 <blockquote>التسويق = أن تعرف عميلك، وتظهر أمامه بالرسالة المناسبة، فتحوّله من غريب إلى عميل مخلص.</blockquote>
-<h3>عنوان فرعي</h3>
-<ul><li>نقطة أولى واضحة ومقروءة.</li><li>نقطة ثانية بعلامة بنفسجية.</li></ul>
-</div>
+<h3>عنوان فرعي</h3><ul><li>نقطة أولى واضحة.</li><li>نقطة ثانية بعلامة بنفسجية.</li></ul></div>
 <aside class="brand-cta reveal"><p class="eyebrow"><span class="eyebrow__line"></span>BAIGR</p>
-<h3>تبي تحوّل هذا الكلام إلى نموّ حقيقي؟</h3>
-<p>نبني لك تسويقاً مدعوماً بالذكاء الاصطناعي مصمّماً لسوقك.</p>
-<a class="btn btn--solid btn--lg magnetic" href="#">تعرّف على خدمات BAIGR ←</a></aside>
-</div>
+<h3>تبي تحوّل هذا الكلام إلى نموّ حقيقي؟</h3><p>نبني لك تسويقاً مدعوماً بالذكاء الاصطناعي مصمّماً لسوقك.</p>
+<a class="btn btn--solid btn--lg magnetic" href="#">تعرّف على خدمات BAIGR ←</a></aside></div>
 </main>
 <footer class="site-footer"><div class="container"><div class="grid">
-<div class="reveal"><span class="brand">BAIGR<span class="dot">.</span></span><p class="tagline">تسويق ونموّ مبني على الذكاء الاصطناعي للخليج والشرق الأوسط وتركيا.</p></div>
-<div class="reveal"><h4>روابط</h4><ul><li><a href="#">الموقع الرئيسي</a></li><li><a href="#">المدوّنة</a></li></ul></div>
-<div class="reveal"><h4>تواصل</h4><ul><li><a href="#">team@baigr.com</a></li><li><a href="#">واتساب</a></li></ul></div>
-</div><div class="bottom"><span>© 2026 BAIGR</span><span>صُمّم بعناية في الخليج.</span></div></div></footer>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-<script>/* ============================================================
-   BAIGR Blog — motion layer (vanilla, dependency-light).
-   • Lenis smooth scroll (progressive; native scroll if absent)
-   • scroll-progress bar + navbar scrolled state
-   • .reveal fade-ups + .wr word reveals (IntersectionObserver)
-   • magnetic buttons, mobile menu, ambient particle field
+<div class="col-brand reveal"><span class="brand">BAIGR<span class="dot">.</span></span>
+<p class="tagline">تسويق ونموّ مبني على الذكاء الاصطناعي — نساعد المتاجر والعلامات في الخليج والشرق الأوسط وتركيا على النموّ بنتائج تُقاس.</p>
+<div class="footer-social"><a href="#">واتساب</a><a href="#">إنستقرام</a><a href="#">بريد</a></div></div>
+<nav class="reveal"><h4>تصفّح</h4><ul><li><a href="#">المدوّنة</a></li><li><a href="#">الموقع الرئيسي</a></li><li><a href="#">من نحن</a></li></ul></nav>
+<nav class="reveal"><h4>خدماتنا</h4><ul><li><a href="#">إعلانات الأداء</a></li><li><a href="#">بناء العلامة</a></li><li><a href="#">تصميم المواقع</a></li><li><a href="#">أتمتة بالذكاء الاصطناعي</a></li></ul></nav>
+<nav class="reveal"><h4>تواصل معنا</h4><ul><li><a href="#">team@baigr.com</a></li><li><a href="#">‏+90 537 857 31 81</a></li></ul></nav>
+</div><div class="bottom"><span>© 2026 BAIGR — جميع الحقوق محفوظة.</span><a class="to-top" href="#content">↑ العودة للأعلى</a></div></div></footer><script>/* ============================================================
+   BAIGR Blog — lightweight motion layer (no dependencies).
+   Native scroll (fast). Reveals + progress + magnetic + menu +
+   an ambient particle field that PAUSES when off-screen.
    Respects prefers-reduced-motion.
    ============================================================ */
 (function () {
@@ -349,29 +331,27 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var doc = document.documentElement;
 
-  /* ---- Smooth scroll (Lenis) ---- */
-  var lenis = null;
-  if (!reduce && window.Lenis) {
-    lenis = new window.Lenis({ duration: 1.05, smoothWheel: true });
-    var raf = function (t) { lenis.raf(t); requestAnimationFrame(raf); };
-    requestAnimationFrame(raf);
-  }
-
-  /* ---- Scroll progress + navbar ---- */
+  /* ---- Scroll progress + navbar state (rAF-throttled) ---- */
   var bar = document.getElementById("scroll-progress");
   var nav = document.getElementById("navbar");
+  var ticking = false;
   function onScroll() {
-    var st = window.pageYOffset || doc.scrollTop;
-    var h = doc.scrollHeight - doc.clientHeight;
-    if (bar) bar.style.transform = "scaleX(" + (h > 0 ? st / h : 0) + ")";
-    if (nav) nav.classList.toggle("is-scrolled", st > 12);
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var st = window.pageYOffset || doc.scrollTop;
+      var h = doc.scrollHeight - doc.clientHeight;
+      if (bar) bar.style.transform = "scaleX(" + (h > 0 ? st / h : 0) + ")";
+      if (nav) nav.classList.toggle("is-scrolled", st > 12);
+      ticking = false;
+    });
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  /* ---- Reveals ---- */
-  function revealIO() {
-    var els = document.querySelectorAll(".reveal, .wr");
+  /* ---- Reveal on scroll ---- */
+  function reveals() {
+    var els = document.querySelectorAll(".reveal");
     if (reduce || !("IntersectionObserver" in window)) {
       els.forEach(function (el) { el.classList.add("is-in"); });
       return;
@@ -380,86 +360,57 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
       entries.forEach(function (e) {
         if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
       });
-    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.06 });
-    els.forEach(function (el) {
-      if (el.classList.contains("wr")) splitWords(el);
-      io.observe(el);
-    });
+    }, { rootMargin: "0px 0px -6% 0px", threshold: 0.05 });
+    els.forEach(function (el) { io.observe(el); });
   }
 
-  // Wrap each word so it can rise from a mask — echoes the homepage.
-  function splitWords(el) {
-    if (reduce || el.dataset.split) return;
-    el.dataset.split = "1";
-    var words = el.textContent.split(/(\s+)/);
-    el.textContent = "";
-    words.forEach(function (w) {
-      if (/^\s+$/.test(w)) { el.appendChild(document.createTextNode(w)); return; }
-      var wrap = document.createElement("span");
-      wrap.className = "wr-word";
-      var inner = document.createElement("span");
-      inner.textContent = w;
-      wrap.appendChild(inner);
-      el.appendChild(wrap);
-    });
-    // staggered rise via transition-delay
-    var spans = el.querySelectorAll(".wr-word > span");
-    spans.forEach(function (s, i) { s.style.transitionDelay = (i * 0.05) + "s"; });
-  }
-
-  /* ---- Magnetic buttons ---- */
-  if (!reduce && window.matchMedia("(pointer:fine)").matches) {
+  /* ---- Magnetic buttons (fine pointer only) ---- */
+  function magnetic() {
+    if (reduce || !window.matchMedia("(pointer:fine)").matches) return;
     document.querySelectorAll(".magnetic").forEach(function (m) {
       m.addEventListener("mousemove", function (e) {
         var r = m.getBoundingClientRect();
-        var x = e.clientX - r.left - r.width / 2;
-        var y = e.clientY - r.top - r.height / 2;
-        m.style.transform = "translate(" + x * 0.25 + "px," + y * 0.35 + "px)";
+        m.style.transform = "translate(" + (e.clientX - r.left - r.width / 2) * 0.22 + "px," + (e.clientY - r.top - r.height / 2) * 0.3 + "px)";
       });
       m.addEventListener("mouseleave", function () { m.style.transform = ""; });
     });
   }
 
   /* ---- Mobile menu ---- */
-  var burger = document.getElementById("burger");
-  var overlay = document.getElementById("menu-overlay");
-  if (burger && overlay) {
-    burger.addEventListener("click", function () {
-      var open = overlay.classList.toggle("is-open");
+  function menu() {
+    var burger = document.getElementById("burger");
+    var overlay = document.getElementById("menu-overlay");
+    if (!burger || !overlay) return;
+    function set(open) {
+      overlay.classList.toggle("is-open", open);
       if (nav) nav.classList.toggle("is-open", open);
       burger.setAttribute("aria-expanded", open);
       document.body.style.overflow = open ? "hidden" : "";
-    });
-    overlay.querySelectorAll("a").forEach(function (a) {
-      a.addEventListener("click", function () {
-        overlay.classList.remove("is-open");
-        if (nav) nav.classList.remove("is-open");
-        burger.setAttribute("aria-expanded", "false");
-        document.body.style.overflow = "";
-      });
-    });
+    }
+    burger.addEventListener("click", function () { set(!overlay.classList.contains("is-open")); });
+    overlay.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function () { set(false); }); });
   }
 
-  /* ---- Ambient particle field (echoes the homepage 3D field) ---- */
+  /* ---- Ambient particle field — light, and paused when off-screen ---- */
   function field() {
     var c = document.getElementById("hero-field");
     if (!c || reduce) return;
     var ctx = c.getContext("2d");
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var W, H, pts;
-    var LIME = "214,224,106", IRIS = "114,107,214";
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    var W = 0, H = 0, pts = [], raf = 0, visible = true;
+    var LIME = "214,224,106", IRIS = "114,107,214", LINK = 96;
 
     function resize() {
       W = c.clientWidth; H = c.clientHeight;
       c.width = W * dpr; c.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      var n = Math.min(46, Math.floor(W / 26));
+      var n = Math.min(28, Math.floor(W / 40));
       pts = [];
       for (var i = 0; i < n; i++) {
         pts.push({
           x: Math.random() * W, y: Math.random() * H,
-          vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
-          r: Math.random() * 2 + 1, iris: Math.random() > 0.5
+          vx: (Math.random() - 0.5) * 0.24, vy: (Math.random() - 0.5) * 0.24,
+          r: Math.random() * 1.8 + 1, iris: Math.random() > 0.5
         });
       }
     }
@@ -472,23 +423,37 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
         if (p.y < 0 || p.y > H) p.vy *= -1;
         for (var j = i + 1; j < pts.length; j++) {
           var q = pts[j], dx = p.x - q.x, dy = p.y - q.y, d = Math.hypot(dx, dy);
-          if (d < 120) {
-            ctx.strokeStyle = "rgba(" + IRIS + "," + (0.12 * (1 - d / 120)) + ")";
+          if (d < LINK) {
+            ctx.strokeStyle = "rgba(" + IRIS + "," + (0.11 * (1 - d / LINK)) + ")";
             ctx.lineWidth = 1;
             ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
           }
         }
-        ctx.fillStyle = "rgba(" + (p.iris ? IRIS : LIME) + ",.55)";
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "rgba(" + (p.iris ? IRIS : LIME) + ",.5)";
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
       }
-      requestAnimationFrame(tick);
+      raf = requestAnimationFrame(tick);
     }
+    function start() { if (!raf) raf = requestAnimationFrame(tick); }
+    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+
     resize();
-    window.addEventListener("resize", resize);
-    requestAnimationFrame(tick);
+    window.addEventListener("resize", resize, { passive: true });
+    // Pause the loop whenever the hero scrolls out of view (saves CPU/battery).
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (e) {
+        visible = e[0].isIntersecting;
+        visible ? start() : stop();
+      }, { threshold: 0 }).observe(c);
+    }
+    // Pause when the tab is hidden.
+    document.addEventListener("visibilitychange", function () {
+      document.hidden || !visible ? stop() : start();
+    });
+    start();
   }
 
-  function init() { revealIO(); field(); }
+  function init() { reveals(); magnetic(); menu(); field(); }
   if (document.readyState !== "loading") init();
   else document.addEventListener("DOMContentLoaded", init);
 })();
