@@ -134,12 +134,36 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
 /* ============================================================
    6. Page hero (listing + archive)
    ============================================================ */
-.page-hero{position:relative;overflow:hidden;padding:calc(var(--nav-h) + 3.5rem) 0 3rem;text-align:center}
-.page-hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9;pointer-events:none}
-.page-hero .inner{position:relative;z-index:2}
-.page-hero h1{font-size:clamp(2.1rem,5.4vw,3.4rem);font-weight:900;line-height:1.12;letter-spacing:-.01em}
-.page-hero p{margin-top:1rem;color:var(--mist);font-size:1.1rem;max-width:38rem;margin-inline:auto}
+.page-hero{position:relative;overflow:hidden;padding:calc(var(--nav-h) + 4.5rem) 0 3.4rem}
+.page-hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.5;pointer-events:none}
+.page-hero .inner{position:relative;z-index:2;max-width:46rem}
+.page-hero h1{font-size:clamp(2.3rem,6.4vw,4.2rem);font-weight:900;line-height:1.06;letter-spacing:-.02em}
+.hero-accent{background:linear-gradient(100deg,var(--iris),var(--iris-deep) 55%,var(--iris));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 6s ease-in-out infinite}
+.hero-accent--lime{position:relative;color:inherit;-webkit-text-fill-color:currentColor}
+.hero-accent--lime::after{content:"";position:absolute;inset-inline:0;bottom:.08em;height:.32em;background:var(--lime);z-index:-1;border-radius:3px}
+.page-hero .lead{margin-top:1.3rem;color:var(--mist);font-size:1.16rem;max-width:34rem;line-height:1.75}
+.page-hero__meta{margin-top:1.6rem;display:flex;gap:1rem;flex-wrap:wrap;font-family:var(--f-display);font-size:.78rem;font-weight:800;letter-spacing:var(--track-label);color:var(--iris)}
+.page-hero__meta span{display:inline-flex;align-items:center;gap:.5rem}
 .page-hero .floor{position:absolute;inset-inline:0;bottom:0;height:6rem;background:linear-gradient(to top,var(--paper),transparent);z-index:1}
+
+/* Featured (first) post — editorial hero card */
+.post-featured{position:relative;display:grid;grid-template-columns:1fr;background:var(--card);border:1px solid var(--line);border-radius:28px;overflow:hidden;box-shadow:var(--shadow-sm);margin-top:3.2rem;transition:transform .4s var(--ease-out),box-shadow .4s var(--ease-out)}
+.post-featured:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.post-featured__media{position:relative;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,var(--cloud),#fff)}
+.post-featured__media img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out)}
+.post-featured:hover .post-featured__media img{transform:scale(1.045)}
+.post-featured__media--empty{display:flex;align-items:center;justify-content:center}
+.post-featured__media--empty i{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--lime),var(--iris))}
+.post-featured__body{padding:2.2rem;display:flex;flex-direction:column;gap:1rem;justify-content:center}
+.post-featured__body h2{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:900;line-height:1.22}
+.post-featured__body h2 a{color:var(--ink);transition:color .3s}
+.post-featured:hover .post-featured__body h2 a{color:var(--iris-deep)}
+.post-featured__body .excerpt{color:var(--mist);font-size:1.04rem}
+@media(min-width:820px){.post-featured{grid-template-columns:1.12fr .88fr}.post-featured__media{aspect-ratio:auto;min-height:360px}}
+html[dir="rtl"] .post-featured{direction:rtl}
+
+.chip{align-self:flex-start;display:inline-block;background:var(--lime);color:var(--ink);font-family:var(--f-display);font-weight:800;font-size:.72rem;letter-spacing:.06em;padding:6px 13px;border-radius:999px}
+.thumb .chip{position:absolute;top:14px;inset-inline-start:14px;z-index:2;box-shadow:var(--shadow-sm)}
 
 /* ============================================================
    7. Blog listing cards
@@ -224,27 +248,44 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
 /* ============================================================
    10. Footer (matches homepage — cloud bg)
    ============================================================ */
-.site-footer{position:relative;background:var(--cloud);margin-top:4rem;padding-block:3.5rem 1.6rem;border-top:1px solid var(--line)}
-.site-footer::before{content:"";position:absolute;inset-inline:0;top:-1px;height:3px;background:linear-gradient(90deg,var(--lime),var(--iris))}
-.site-footer .grid{display:grid;gap:2.6rem 2rem;grid-template-columns:1fr}
-.site-footer .col-brand{max-width:26rem}
-.site-footer .brand{display:inline-flex;align-items:center;gap:.45rem;font-size:1.7rem;font-weight:900;letter-spacing:.06em;color:var(--ink)}
-.site-footer .brand .dot{color:var(--lime-deep)}
-.site-footer .tagline{margin-top:.7rem;color:var(--mist);line-height:1.7}
-.site-footer h4{font-family:var(--f-display);font-size:.78rem;font-weight:800;letter-spacing:var(--track-label);color:var(--iris);margin-bottom:1rem;text-transform:uppercase}
-html[lang="ar"] .site-footer h4{text-transform:none}
-.site-footer ul{display:flex;flex-direction:column;gap:.65rem}
-.site-footer ul a{display:inline-flex;align-items:center;gap:.5rem;font-size:.95rem;font-weight:600;color:var(--ink-soft);transition:color .25s,transform .25s}
-.site-footer ul a::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--lime);opacity:0;transition:opacity .25s;flex:none}
-.site-footer ul a:hover{color:var(--iris-deep)}
-.site-footer ul a:hover::before{opacity:1}
-/* Social row */
-.footer-social{display:flex;gap:.6rem;margin-top:1.1rem;flex-wrap:wrap}
-.footer-social a{display:inline-flex;align-items:center;justify-content:center;width:2.5rem;height:2.5rem;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink);font-weight:800;font-size:.85rem;transition:all .28s var(--ease-out)}
-.footer-social a:hover{background:var(--iris-deep);border-color:var(--iris-deep);color:#fff;transform:translateY(-3px)}
-.site-footer .bottom{margin-top:2.8rem;padding-top:1.4rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.82rem;color:var(--mist)}
-.site-footer .to-top{display:inline-flex;align-items:center;gap:.4rem;font-weight:700;color:var(--iris-deep)}
-.site-footer .to-top:hover{color:var(--ink)}
+.site-footer{position:relative;overflow:hidden;background:var(--ink);color:rgba(255,255,255,.72);margin-top:5rem;padding-block:3.4rem 1.8rem}
+.site-footer::before{content:"";position:absolute;inset-inline:0;top:0;height:3px;background:linear-gradient(90deg,var(--lime),var(--iris))}
+.site-footer .container{position:relative;z-index:2}
+
+/* Closing CTA row */
+.footer-cta{display:grid;gap:1.5rem;padding-bottom:2.6rem;margin-bottom:2.6rem;border-bottom:1px solid rgba(255,255,255,.12)}
+.footer-cta__title{color:#fff;font-size:clamp(1.6rem,3.6vw,2.5rem);font-weight:900;line-height:1.2;max-width:20ch}
+.footer-cta__title em{font-style:normal;color:var(--lime)}
+@media(min-width:820px){.footer-cta{grid-template-columns:1fr auto;align-items:center}}
+
+/* Link columns */
+.footer-grid{display:grid;gap:2.6rem 2rem;grid-template-columns:1fr}
+.footer-brandcol{max-width:26rem}
+.footer-brandcol .brand{display:inline-flex;align-items:center;gap:.4rem;font-size:1.8rem;font-weight:900;letter-spacing:.06em;color:#fff}
+.footer-brandcol .brand .dot{color:var(--lime)}
+.footer-brandcol .tagline{margin-top:.8rem;color:rgba(255,255,255,.6);line-height:1.75}
+.site-footer h4{font-family:var(--f-display);font-size:.74rem;font-weight:800;letter-spacing:var(--track-label);color:var(--lime);margin-bottom:1.1rem}
+.site-footer nav ul{display:flex;flex-direction:column;gap:.7rem}
+.site-footer nav a{display:inline-flex;align-items:center;gap:.55rem;font-size:.95rem;font-weight:500;color:rgba(255,255,255,.72);transition:color .25s,gap .25s}
+.site-footer nav a::before{content:"";width:0;height:1px;background:var(--lime);transition:width .25s;flex:none}
+.site-footer nav a:hover{color:#fff}
+.site-footer nav a:hover::before{width:14px}
+
+/* Social — real SVG icons in bordered circles */
+.footer-social{display:flex;gap:.65rem;margin-top:1.3rem}
+.footer-social a{display:inline-flex;align-items:center;justify-content:center;width:2.7rem;height:2.7rem;border-radius:50%;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);transition:all .28s var(--ease-out)}
+.footer-social a svg{width:1.15rem;height:1.15rem}
+.footer-social a:hover{background:var(--lime);border-color:var(--lime);color:var(--ink);transform:translateY(-3px)}
+
+.footer-bottom{margin-top:3rem;padding-top:1.4rem;border-top:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.82rem;color:rgba(255,255,255,.5)}
+.footer-bottom .to-top{display:inline-flex;align-items:center;gap:.4rem;font-weight:700;color:var(--lime)}
+.footer-bottom .to-top:hover{color:#fff}
+
+/* Oversized faded wordmark */
+.footer-mark{position:absolute;inset-inline-start:50%;bottom:-2.2rem;transform:translateX(-50%);font-size:clamp(6rem,22vw,16rem);font-weight:900;letter-spacing:.02em;line-height:1;color:rgba(255,255,255,.035);white-space:nowrap;pointer-events:none;z-index:1;user-select:none}
+
+@media(min-width:560px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.footer-grid{grid-template-columns:2.2fr 1fr 1fr 1.2fr}}
 
 /* ============================================================
    11. Reveal animation states
@@ -258,15 +299,10 @@ html[lang="ar"] .site-footer h4{text-transform:none}
 /* ============================================================
    12. Responsive
    ============================================================ */
-@media (min-width:560px){
-  .site-footer .grid{grid-template-columns:1fr 1fr}
-}
 @media (min-width:900px){
   .navbar__links{display:flex}
   .navbar__cta{display:inline-flex}
   .burger{display:none}
-  .site-footer .grid{grid-template-columns:2.2fr 1fr 1fr 1.2fr}
-  .site-footer .col-brand{grid-row:span 1}
   .section{padding-block:6rem}
 }
 @media (max-width:640px){
@@ -287,40 +323,48 @@ html[lang="ar"] .site-footer h4{text-transform:none}
 <a class="navbar__logo" href="#"><span class="logo-word">BAIGR<span class="dot">.</span></span></a>
 <ul class="navbar__links"><li><a href="#">المدوّنة</a></li><li><a href="#">الموقع الرئيسي</a></li><li><a href="#">خدماتنا</a></li></ul>
 <div class="navbar__actions"><a class="btn btn--solid navbar__cta magnetic" href="#">تواصل معنا</a>
-<button class="burger" id="burger" aria-label="القائمة"><span></span><span></span></button></div>
-</div></header>
-<div class="menu-overlay" id="menu-overlay"><nav><a href="#">المدوّنة</a><a href="#">الموقع الرئيسي</a></nav></div>
+<button class="burger" id="burger"><span></span><span></span></button></div></div></header>
+<div class="menu-overlay" id="menu-overlay"><nav><a href="#">المدوّنة</a></nav></div>
 <main id="content">
 <section class="page-hero aurora"><canvas id="hero-field"></canvas><div class="floor"></div>
-<div class="container inner"><p class="eyebrow eyebrow--center"><span class="eyebrow__line"></span>مدوّنة BAIGR</p>
-<h1>رؤى في التسويق والنموّ</h1><p>مقالات عملية في التسويق والنموّ بالذكاء الاصطناعي — من فريق BAIGR.</p></div></section>
-<div class="container"><div class="post-grid">
-<article class="post-card reveal" data-delay="0"><a class="thumb thumb--empty" href="#"><span></span></a>
-<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">ما هو التسويق؟ دليل شامل لأنواعه من الصفر</a></h2><p class="excerpt">تعرّف على مفهوم التسويق وأنواعه التقليدية والرقمية وكيف تختار الأنسب لعملك.</p>
-<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article><article class="post-card reveal" data-delay="0.08"><a class="thumb thumb--empty" href="#"><span></span></a>
-<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">إعلانات ميتا للمتاجر: من الصفر إلى أول عملية بيع</a></h2><p class="excerpt">خطوات عملية لإطلاق حملة مربحة على انستقرام وفيسبوك دون حرق ميزانيتك.</p>
-<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article><article class="post-card reveal" data-delay="0.16"><a class="thumb thumb--empty" href="#"><span></span></a>
-<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">SEO للمبتدئين: كيف تتصدّر جوجل</a></h2><p class="excerpt">الأساسيات التي تجعل موقعك يظهر في نتائج البحث ويجلب عملاء مجاناً.</p>
+<div class="container"><div class="inner">
+<p class="eyebrow"><span class="eyebrow__line"></span>مدوّنة BAIGR</p>
+<h1>رؤى في التسويق <span class="hero-accent">والنموّ</span></h1>
+<p class="lead">مقالات عملية — لا نظريات — في التسويق والإعلانات والنموّ بالذكاء الاصطناعي، مكتوبة لسوقك الخليجي.</p>
+<div class="page-hero__meta"><span>استراتيجية</span><span>إعلانات أداء</span><span>ذكاء اصطناعي</span></div>
+</div></div></section>
+<div class="container">
+<article class="post-featured reveal"><a class="post-featured__media post-featured__media--empty" href="#"><span class="chip">أساسيات</span><i></i></a>
+<div class="post-featured__body"><div class="post-meta"><span class="chip">مقال مميّز</span>1 أغسطس 2026</div>
+<h2><a href="#">ما هو التسويق؟ دليل شامل لأنواعه من الصفر</a></h2>
+<p class="excerpt">تعرّف على مفهوم التسويق وأنواعه التقليدية والرقمية، وكيف تختار الأنسب لعملك في السوق الخليجي — دليل عملي من الصفر.</p>
+<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
+<div class="post-grid">
+
+<article class="post-card reveal"><a class="thumb thumb--empty" href="#"><span class="chip">إعلانات</span><span></span></a>
+<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">إعلانات ميتا للمتاجر: من الصفر إلى أول عملية بيع</a></h2><p class="excerpt">خطوات عملية لإطلاق حملة مربحة على انستقرام وفيسبوك.</p>
+<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
+<article class="post-card reveal"><a class="thumb thumb--empty" href="#"><span class="chip">سيو</span><span></span></a>
+<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">SEO للمبتدئين: كيف تتصدّر جوجل</a></h2><p class="excerpt">الأساسيات التي تجعل موقعك يظهر في نتائج البحث.</p>
+<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
+<article class="post-card reveal"><a class="thumb thumb--empty" href="#"><span class="chip">ذكاء اصطناعي</span><span></span></a>
+<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">الأتمتة بالذكاء الاصطناعي للتسويق</a></h2><p class="excerpt">كيف توفّر وقتك وتضاعف نتائجك بأنظمة تعمل 24/7.</p>
 <a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
 </div></div>
-<div class="container single-wrap" style="border-top:1px solid var(--line);margin-top:2rem">
-<header class="entry-header"><div class="post-meta">1 أغسطس 2026 • أساسيات التسويق</div><h1>مثال على صفحة المقال</h1></header>
-<div class="entry-content reveal"><p>هذا نموذج لظهور المقال — <strong>بخط Cairo وألوان علامتك الحقيقية</strong>: الكحلي والليموني والبنفسجي.</p>
-<h2>عنوان رئيسي بشريط ليموني</h2><p>الروابط <a href="#">بلون البنفسجي</a>، والاقتباس:</p>
-<blockquote>التسويق = أن تعرف عميلك، وتظهر أمامه بالرسالة المناسبة، فتحوّله من غريب إلى عميل مخلص.</blockquote>
-<h3>عنوان فرعي</h3><ul><li>نقطة أولى واضحة.</li><li>نقطة ثانية بعلامة بنفسجية.</li></ul></div>
-<aside class="brand-cta reveal"><p class="eyebrow"><span class="eyebrow__line"></span>BAIGR</p>
-<h3>تبي تحوّل هذا الكلام إلى نموّ حقيقي؟</h3><p>نبني لك تسويقاً مدعوماً بالذكاء الاصطناعي مصمّماً لسوقك.</p>
-<a class="btn btn--solid btn--lg magnetic" href="#">تعرّف على خدمات BAIGR ←</a></aside></div>
 </main>
-<footer class="site-footer"><div class="container"><div class="grid">
-<div class="col-brand reveal"><span class="brand">BAIGR<span class="dot">.</span></span>
+<footer class="site-footer"><div class="container">
+<div class="footer-cta reveal"><h2 class="footer-cta__title">جاهز تنقل تسويقك إلى <em>المستوى التالي؟</em></h2>
+<a class="btn btn--solid btn--lg magnetic" href="#">لنعمل معاً <span>←</span></a></div>
+<div class="footer-grid">
+<div class="footer-brandcol reveal"><span class="brand">BAIGR<span class="dot">.</span></span>
 <p class="tagline">تسويق ونموّ مبني على الذكاء الاصطناعي — نساعد المتاجر والعلامات في الخليج والشرق الأوسط وتركيا على النموّ بنتائج تُقاس.</p>
-<div class="footer-social"><a href="#">واتساب</a><a href="#">إنستقرام</a><a href="#">بريد</a></div></div>
+<div class="footer-social"><a href="#" aria-label="واتساب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.9c0 2.1.55 4.15 1.6 5.95L2 22l4.3-1.68a9.9 9.9 0 0 0 5.74 1.5c5.46 0 9.9-4.45 9.9-9.9C21.94 6.45 17.5 2 12.04 2Zm5.8 14.06c-.24.68-1.4 1.3-1.94 1.34-.5.05-1.13.07-1.82-.11a12.7 12.7 0 0 1-1.65-.61c-2.9-1.26-4.8-4.19-4.94-4.38-.15-.19-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.58-.37.78-.37l.56.01c.18.01.42-.07.66.5.24.58.82 2.01.9 2.16.07.15.12.32.02.51-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.25 1.63 2.03 1.12 1 2.07 1.31 2.36 1.46.29.15.46.12.63-.07.17-.19.73-.85.92-1.14.19-.29.39-.24.66-.15.27.1 1.7.8 1.99.95.29.15.48.22.55.34.07.12.07.68-.17 1.36Z"/></svg></a><a href="#" aria-label="إنستقرام"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="#" aria-label="بريد"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></a></div></div>
 <nav class="reveal"><h4>تصفّح</h4><ul><li><a href="#">المدوّنة</a></li><li><a href="#">الموقع الرئيسي</a></li><li><a href="#">من نحن</a></li></ul></nav>
 <nav class="reveal"><h4>خدماتنا</h4><ul><li><a href="#">إعلانات الأداء</a></li><li><a href="#">بناء العلامة</a></li><li><a href="#">تصميم المواقع</a></li><li><a href="#">أتمتة بالذكاء الاصطناعي</a></li></ul></nav>
 <nav class="reveal"><h4>تواصل معنا</h4><ul><li><a href="#">team@baigr.com</a></li><li><a href="#">‏+90 537 857 31 81</a></li></ul></nav>
-</div><div class="bottom"><span>© 2026 BAIGR — جميع الحقوق محفوظة.</span><a class="to-top" href="#content">↑ العودة للأعلى</a></div></div></footer><script>/* ============================================================
+</div>
+<div class="footer-bottom"><span>© 2026 BAIGR — جميع الحقوق محفوظة.</span><a class="to-top" href="#content">↑ العودة للأعلى</a></div>
+</div><div class="footer-mark">BAIGR</div></footer><script>/* ============================================================
    BAIGR Blog — lightweight motion layer (no dependencies).
    Native scroll (fast). Reveals + progress + magnetic + menu +
    an ambient particle field that PAUSES when off-screen.
