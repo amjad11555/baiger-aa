@@ -8,7 +8,7 @@
 get_header();
 ?>
 
-<div class="container single-wrap">
+<div class="bgr-container single-wrap">
 	<?php
 	while ( have_posts() ) :
 		the_post();

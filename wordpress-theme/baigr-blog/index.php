@@ -13,7 +13,7 @@ $is_main_first = ( is_home() || is_front_page() ) && ! is_paged() && ! is_search
 <section class="page-hero aurora">
 	<canvas id="hero-field" aria-hidden="true"></canvas>
 	<div class="floor"></div>
-	<div class="container">
+	<div class="bgr-container">
 		<div class="inner">
 			<p class="eyebrow"><span class="eyebrow__line"></span>
 				<?php
@@ -40,7 +40,7 @@ $is_main_first = ( is_home() || is_front_page() ) && ! is_paged() && ! is_search
 	</div>
 </section>
 
-<div class="container">
+<div class="bgr-container">
 	<?php if ( have_posts() ) : ?>
 
 		<?php

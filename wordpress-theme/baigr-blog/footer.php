@@ -8,7 +8,7 @@
 </main><!-- #content -->
 
 <footer class="site-footer">
-	<div class="container">
+	<div class="bgr-container">
 
 		<div class="footer-cta reveal">
 			<h2 class="footer-cta__title">جاهز تنقل تسويقك إلى <em>المستوى التالي؟</em></h2>

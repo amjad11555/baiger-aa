@@ -70,8 +70,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ============================================================
    3. Layout primitives + shared brand devices
    ============================================================ */
-.container{margin-inline:auto;width:100%;max-width:var(--container);padding-inline:1.25rem}
-.container--narrow{max-width:48rem}
+.bgr-container{margin-inline:auto;width:100%;max-width:var(--container);padding-inline:1.25rem}
+.bgr-container--narrow{max-width:48rem}
 .section{position:relative;padding-block:5rem}
 
 .eyebrow{display:inline-flex;align-items:center;gap:.75rem;margin-bottom:1.1rem;font-family:var(--f-display);font-size:.8rem;font-weight:800;letter-spacing:var(--track-label);color:var(--iris)}
@@ -168,7 +168,7 @@ html[dir="rtl"] .post-featured{direction:rtl}
 /* ============================================================
    7. Blog listing cards
    ============================================================ */
-.post-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.8rem;padding:3.5rem 0}
+.post-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:1.8rem;padding:3.5rem 0}
 .post-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;transition:transform .35s var(--ease-out),box-shadow .35s var(--ease-out),border-color .35s}
 .post-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--iris) 30%,var(--line))}
 .post-card .thumb{aspect-ratio:16/10;background:linear-gradient(135deg,var(--cloud),#fff);overflow:hidden}
@@ -250,7 +250,7 @@ html[dir="rtl"] .post-featured{direction:rtl}
    ============================================================ */
 .site-footer{position:relative;overflow:hidden;background:var(--ink);color:rgba(255,255,255,.72);margin-top:5rem;padding-block:3.4rem 1.8rem}
 .site-footer::before{content:"";position:absolute;inset-inline:0;top:0;height:3px;background:linear-gradient(90deg,var(--lime),var(--iris))}
-.site-footer .container{position:relative;z-index:2}
+.site-footer .bgr-container{position:relative;z-index:2}
 
 /* Closing CTA row */
 .footer-cta{display:grid;gap:1.5rem;padding-bottom:2.6rem;margin-bottom:2.6rem;border-bottom:1px solid rgba(255,255,255,.12)}
@@ -319,7 +319,7 @@ html[dir="rtl"] .post-featured{direction:rtl}
 }
 </style></head><body>
 <div class="scroll-progress" id="scroll-progress"></div>
-<header class="navbar is-scrolled" id="navbar"><div class="container navbar__inner">
+<header class="navbar is-scrolled" id="navbar"><div class="bgr-container navbar__inner">
 <a class="navbar__logo" href="#"><span class="logo-word">BAIGR<span class="dot">.</span></span></a>
 <ul class="navbar__links"><li><a href="#">المدوّنة</a></li><li><a href="#">الموقع الرئيسي</a></li><li><a href="#">خدماتنا</a></li></ul>
 <div class="navbar__actions"><a class="btn btn--solid navbar__cta magnetic" href="#">تواصل معنا</a>
@@ -327,13 +327,13 @@ html[dir="rtl"] .post-featured{direction:rtl}
 <div class="menu-overlay" id="menu-overlay"><nav><a href="#">المدوّنة</a></nav></div>
 <main id="content">
 <section class="page-hero aurora"><canvas id="hero-field"></canvas><div class="floor"></div>
-<div class="container"><div class="inner">
+<div class="bgr-container"><div class="inner">
 <p class="eyebrow"><span class="eyebrow__line"></span>مدوّنة BAIGR</p>
 <h1>رؤى في التسويق <span class="hero-accent">والنموّ</span></h1>
 <p class="lead">مقالات عملية — لا نظريات — في التسويق والإعلانات والنموّ بالذكاء الاصطناعي، مكتوبة لسوقك الخليجي.</p>
 <div class="page-hero__meta"><span>استراتيجية</span><span>إعلانات أداء</span><span>ذكاء اصطناعي</span></div>
 </div></div></section>
-<div class="container">
+<div class="bgr-container">
 <article class="post-featured reveal"><a class="post-featured__media post-featured__media--empty" href="#"><span class="chip">أساسيات</span><i></i></a>
 <div class="post-featured__body"><div class="post-meta"><span class="chip">مقال مميّز</span>1 أغسطس 2026</div>
 <h2><a href="#">ما هو التسويق؟ دليل شامل لأنواعه من الصفر</a></h2>
@@ -352,7 +352,7 @@ html[dir="rtl"] .post-featured{direction:rtl}
 <a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
 </div></div>
 </main>
-<footer class="site-footer"><div class="container">
+<footer class="site-footer"><div class="bgr-container">
 <div class="footer-cta reveal"><h2 class="footer-cta__title">جاهز تنقل تسويقك إلى <em>المستوى التالي؟</em></h2>
 <a class="btn btn--solid btn--lg magnetic" href="#">لنعمل معاً <span>←</span></a></div>
 <div class="footer-grid">

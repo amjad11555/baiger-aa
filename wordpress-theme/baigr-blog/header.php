@@ -21,7 +21,7 @@
 <div class="scroll-progress" id="scroll-progress"></div>
 
 <header class="navbar" id="navbar">
-	<div class="container navbar__inner">
+	<div class="bgr-container navbar__inner">
 		<?php if ( has_custom_logo() ) : ?>
 			<div class="navbar__logo"><?php the_custom_logo(); ?></div>
 		<?php else : ?>
