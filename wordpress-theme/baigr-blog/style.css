@@ -303,8 +303,17 @@ html[dir="rtl"] .post-featured{direction:rtl}
   .section{padding-block:6rem}
 }
 @media (max-width:640px){
+  html,body{max-width:100%;overflow-x:hidden}
   body{font-size:1.02rem}
   .entry-content{font-size:1.06rem}
+  .page-hero{padding-top:calc(var(--nav-h) + 2rem)}
+  .page-hero h1{font-size:clamp(1.9rem,8vw,2.4rem)}
+  .post-grid{padding:2rem 0;gap:1.2rem}
+  .post-featured{margin-top:2rem}
+  .post-featured__body{padding:1.5rem}
+  .footer-cta__title{font-size:1.6rem}
+  .footer-mark{font-size:26vw}
+  .entry-content table{display:block;overflow-x:auto;white-space:nowrap}
 }
 
 /* ============================================================
