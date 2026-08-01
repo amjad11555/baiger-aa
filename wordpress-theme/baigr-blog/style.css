@@ -1,0 +1,167 @@
+/*
+Theme Name: BAIGR Blog
+Theme URI: https://baigr.com/
+Author: BAIGR
+Author URI: https://baigr.com/
+Description: قالب مدوّنة عربي خفيف وسريع (RTL) بهوية BAIGR — خط Cairo، أصفر ذهبي، تصميم عصري نظيف مصمّم للعربية من الأساس. متوافق مع محرّك جوتنبرج والسيو.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.7
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: baigr-blog
+Tags: blog, rtl-language-support, right-sidebar, custom-logo, custom-menu, featured-images, translation-ready
+*/
+
+/* ============================================================
+   1. Design tokens (matched to baigr.com)
+   ============================================================ */
+:root{
+  --ink:#15130e;
+  --muted:#5b554a;
+  --gold:#f4b400;
+  --gold-deep:#c98a00;
+  --bg:#fffdf7;
+  --card:#ffffff;
+  --soft:#fbf6ea;
+  --line:#ece5d6;
+  --max:820px;
+  --wide:1140px;
+  --radius:16px;
+  --shadow:0 8px 30px rgba(21,19,14,.07);
+}
+
+/* ============================================================
+   2. Reset & base
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Cairo",system-ui,"Segoe UI",Tahoma,Arial,sans-serif;
+  font-size:18px;line-height:1.9;
+  text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--gold-deep);text-decoration:none;transition:color .15s}
+a:hover{color:var(--ink)}
+h1,h2,h3,h4{line-height:1.35;font-weight:800;margin:1.4em 0 .5em}
+ul,ol{padding-inline-start:1.4em}
+li{margin:.35em 0}
+blockquote{margin:1.2em 0;padding:14px 20px;background:var(--soft);border-inline-start:4px solid var(--gold);border-radius:10px;color:#3a3529}
+table{width:100%;border-collapse:collapse;margin:1.4em 0;font-size:.96rem}
+th,td{border:1px solid var(--line);padding:10px 12px;text-align:start;vertical-align:top}
+th{background:var(--soft);font-weight:800}
+code,pre{font-family:"Courier New",monospace;background:var(--soft);border-radius:6px}
+code{padding:2px 6px}
+pre{padding:16px;overflow:auto}
+.container{max-width:var(--max);margin:0 auto;padding:0 20px}
+.container-wide{max-width:var(--wide);margin:0 auto;padding:0 20px}
+.screen-reader-text{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(1px,1px,1px,1px)}
+
+/* ============================================================
+   3. Header
+   ============================================================ */
+.site-header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(255,253,247,.92);backdrop-filter:saturate(140%) blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.site-header .bar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 20px;max-width:var(--wide);margin:0 auto}
+.site-brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.35rem;color:var(--ink)}
+.site-brand img{max-height:40px;width:auto}
+.site-brand .dot{width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(244,180,0,.18)}
+.nav-menu{list-style:none;display:flex;gap:26px;margin:0;padding:0;align-items:center;font-weight:700;font-size:1rem}
+.nav-menu a{color:var(--ink)}
+.nav-menu a:hover{color:var(--gold-deep)}
+.nav-cta{background:var(--gold);color:var(--ink)!important;padding:9px 18px;border-radius:999px;font-weight:800}
+.nav-cta:hover{background:var(--gold-deep);color:#fff!important}
+.menu-toggle{display:none;background:none;border:0;cursor:pointer;font-size:1.6rem;color:var(--ink)}
+
+/* ============================================================
+   4. Blog listing
+   ============================================================ */
+.page-hero{background:linear-gradient(180deg,var(--soft),var(--bg));border-bottom:1px solid var(--line);padding:48px 20px;text-align:center}
+.page-hero h1{margin:0 0 .2em;font-size:2.1rem}
+.page-hero p{margin:0;color:var(--muted)}
+.post-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:28px;padding:44px 0}
+.post-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.post-card:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(21,19,14,.12)}
+.post-card .thumb{aspect-ratio:16/9;background:var(--soft);overflow:hidden}
+.post-card .thumb img{width:100%;height:100%;object-fit:cover}
+.post-card .body{padding:20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.post-card h2{margin:0;font-size:1.25rem;line-height:1.4}
+.post-card h2 a{color:var(--ink)}
+.post-card h2 a:hover{color:var(--gold-deep)}
+.post-card .excerpt{color:var(--muted);font-size:.98rem;margin:0}
+.post-meta{color:var(--muted);font-size:.85rem;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.read-more{margin-top:auto;font-weight:800;color:var(--gold-deep)}
+.read-more:hover{color:var(--ink)}
+
+/* ============================================================
+   5. Single post & pages
+   ============================================================ */
+.single-main{padding:44px 0 20px}
+.entry-header{text-align:center;margin-bottom:8px}
+.entry-header h1{font-size:2.2rem;margin:.1em 0 .3em}
+.entry-featured{margin:26px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.entry-content{font-size:1.06rem}
+.entry-content p{margin:.7em 0}
+.entry-content h2{font-size:1.6rem;border-inline-start:6px solid var(--gold);padding-inline-start:14px}
+.entry-content h3{font-size:1.25rem;color:var(--gold-deep)}
+.entry-content figure{margin:1.6em 0}
+.entry-content figure img{border-radius:12px}
+.entry-content figcaption{color:var(--muted);font-size:.85rem;text-align:center;margin-top:8px}
+.entry-content a{font-weight:600;text-decoration:underline;text-decoration-color:rgba(201,138,0,.35);text-underline-offset:3px}
+.entry-content a:hover{text-decoration-color:var(--gold-deep)}
+.tags{margin:26px 0;display:flex;gap:10px;flex-wrap:wrap}
+.tags a{background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:.85rem;font-weight:700;color:var(--muted)}
+.tags a:hover{border-color:var(--gold);color:var(--gold-deep)}
+
+/* author / CTA box */
+.brand-cta{background:linear-gradient(135deg,#15130e,#2a2417);color:#fff;border-radius:20px;padding:30px 28px;margin:40px 0}
+.brand-cta h3{color:#fff;margin:0 0 .3em;font-size:1.4rem}
+.brand-cta p{color:#e9e2d2;margin:0 0 16px}
+.brand-cta .btn{display:inline-block;background:var(--gold);color:#15130e;font-weight:800;border-radius:999px;padding:12px 28px}
+.brand-cta .btn:hover{background:#fff}
+
+/* related posts */
+.related{padding:20px 0 10px}
+.related h3{font-size:1.4rem;margin-bottom:16px}
+
+/* ============================================================
+   6. Pagination & comments
+   ============================================================ */
+.pagination{display:flex;justify-content:center;gap:10px;padding:20px 0 60px;flex-wrap:wrap}
+.pagination .page-numbers{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 15px;font-weight:700;color:var(--ink)}
+.pagination .current{background:var(--gold);border-color:var(--gold)}
+.pagination a:hover{border-color:var(--gold-deep)}
+.comments-area{border-top:1px solid var(--line);margin-top:30px;padding-top:24px}
+.comments-area input[type=text],.comments-area input[type=email],.comments-area input[type=url],.comments-area textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:1rem;background:var(--card)}
+.comments-area .submit,.wp-block-button__link{background:var(--gold);color:var(--ink);border:0;border-radius:999px;padding:11px 26px;font-weight:800;cursor:pointer}
+
+/* ============================================================
+   7. Footer
+   ============================================================ */
+.site-footer{background:var(--ink);color:#d8d2c4;margin-top:60px;padding:48px 20px 26px}
+.site-footer .cols{max-width:var(--wide);margin:0 auto;display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
+.site-footer h4{color:#fff;margin:0 0 12px;font-size:1.05rem}
+.site-footer a{color:#d8d2c4}
+.site-footer a:hover{color:var(--gold)}
+.site-footer ul{list-style:none;padding:0;margin:0;line-height:2}
+.site-footer .brand{font-weight:900;font-size:1.4rem;color:#fff;display:flex;align-items:center;gap:10px}
+.footer-bottom{max-width:var(--wide);margin:26px auto 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:.85rem;color:#9c968a;text-align:center}
+
+/* ============================================================
+   8. Responsive
+   ============================================================ */
+@media (max-width:860px){
+  body{font-size:17px}
+  .nav-menu{position:fixed;inset:0 0 0 auto;width:min(78vw,320px);flex-direction:column;align-items:flex-start;gap:18px;background:var(--bg);padding:80px 28px;box-shadow:-10px 0 40px rgba(0,0,0,.12);transform:translateX(-105%);transition:transform .28s;font-size:1.15rem}
+  html[dir=rtl] .nav-menu{transform:translateX(105%)}
+  .nav-menu.open{transform:translateX(0)!important}
+  .menu-toggle{display:block}
+  .entry-header h1{font-size:1.7rem}
+  .page-hero h1{font-size:1.6rem}
+}
