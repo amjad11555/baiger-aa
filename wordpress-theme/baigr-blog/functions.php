@@ -8,6 +8,17 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 define( 'BAIGR_SITE', 'https://baigr.com' );
+define( 'BAIGR_GA_ID', 'G-3DYTW4JCN4' ); // Google Analytics 4 measurement ID
+
+/* Google Analytics (gtag.js) on every blog page. */
+function baigr_blog_analytics() {
+	if ( ! BAIGR_GA_ID || is_admin() ) { return; }
+	$id = esc_js( BAIGR_GA_ID );
+	echo "\n<!-- Google tag (gtag.js) -->\n";
+	echo '<script async src="https://www.googletagmanager.com/gtag/js?id=' . esc_attr( BAIGR_GA_ID ) . '"></script>' . "\n";
+	echo "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','" . $id . "');</script>\n";
+}
+add_action( 'wp_head', 'baigr_blog_analytics', 2 );
 
 /* ============================================================
    1. Theme setup
