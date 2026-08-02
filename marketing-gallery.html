@@ -1,0 +1,276 @@
+<div dir="rtl" lang="ar">
+<style>
+  :root {
+    --navy-deep: #120e29;
+    --navy: #1b1539;
+    --surface: #241d47;
+    --surface-hi: #2c2456;
+    --line: rgba(153, 145, 200, 0.16);
+    --lime: #d6e06a;
+    --iris: #726bd6;
+    --text: #f3f1fb;
+    --muted: #a8a2c8;
+    --radius: 18px;
+    --maxw: 1120px;
+  }
+
+  * { box-sizing: border-box; }
+
+  .mg-root {
+    margin: 0;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(114, 107, 214, 0.20), transparent 60%),
+      radial-gradient(900px 500px at 5% 110%, rgba(214, 224, 106, 0.10), transparent 60%),
+      var(--navy-deep);
+    color: var(--text);
+    font-family: "Segoe UI", "Helvetica Neue", system-ui, -apple-system, "Noto Sans Arabic", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: clamp(28px, 6vw, 72px) clamp(18px, 5vw, 40px) 80px;
+  }
+
+  .mg-wrap { max-width: var(--maxw); margin: 0 auto; }
+
+  /* Header */
+  .mg-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-bottom: clamp(28px, 5vw, 48px);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: clamp(28px, 5vw, 48px);
+  }
+  .mg-eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lime);
+    font-weight: 600;
+  }
+  .mg-title {
+    margin: 0;
+    font-size: clamp(30px, 6vw, 54px);
+    font-weight: 800;
+    line-height: 1.12;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+    background: linear-gradient(100deg, #ffffff 0%, #cfc9f4 40%, var(--iris) 78%, var(--lime) 130%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .mg-sub {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--muted);
+    font-size: clamp(15px, 2.2vw, 18px);
+  }
+  .mg-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .mg-chip {
+    font-size: 12.5px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 5px 12px;
+    border-radius: 999px;
+  }
+  .mg-chip b { color: var(--text); font-weight: 700; }
+
+  /* Grid */
+  .mg-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(16px, 3vw, 26px);
+  }
+  .mg-card {
+    grid-column: span 1;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .mg-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(114, 107, 214, 0.55);
+    box-shadow: 0 18px 40px -20px rgba(114, 107, 214, 0.6);
+  }
+  /* The tall (4:5) card spans one column but its media keeps ratio */
+  .mg-figure {
+    margin: 0;
+    position: relative;
+    background: var(--navy);
+    line-height: 0;
+  }
+  .mg-figure img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+  .mg-badge {
+    position: absolute;
+    top: 12px;
+    inset-inline-start: 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--navy-deep);
+    background: var(--lime);
+    padding: 4px 10px;
+    border-radius: 999px;
+    line-height: 1.4;
+  }
+  .mg-body {
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .mg-card h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .mg-card p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .mg-actions { margin-top: 10px; }
+  .mg-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--navy-deep);
+    background: linear-gradient(90deg, var(--lime), #e6ee97);
+    padding: 8px 14px;
+    border-radius: 10px;
+    transition: filter 0.2s ease;
+  }
+  .mg-link:hover { filter: brightness(1.06); }
+  .mg-link:focus-visible { outline: 2px solid var(--iris); outline-offset: 2px; }
+
+  .mg-foot {
+    margin-top: clamp(32px, 6vw, 56px);
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+  }
+  .mg-foot span { color: var(--lime); }
+
+  @media (max-width: 680px) {
+    .mg-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="mg-root">
+  <div class="mg-wrap">
+
+    <header class="mg-head">
+      <span class="mg-eyebrow">سلسلة أغلفة التسويق الرقمي</span>
+      <h1 class="mg-title">معرض التصاميم البصرية</h1>
+      <p class="mg-sub">خمسة أغلفة سينمائية ثلاثية الأبعاد بهوية موحّدة — خلفية كحلية غامقة مع لمسات ليموني‑فسفوري وبنفسجي، مصمّمة لمقالات التسويق الرقمي.</p>
+      <div class="mg-meta">
+        <span class="mg-chip">الخلفية <b>#1b1539</b></span>
+        <span class="mg-chip">الليموني <b>#d6e06a</b></span>
+        <span class="mg-chip">البنفسجي <b>#726bd6</b></span>
+        <span class="mg-chip">عدد التصاميم <b>5</b></span>
+      </div>
+    </header>
+
+    <main class="mg-grid">
+
+      <article class="mg-card">
+        <figure class="mg-figure">
+          <span class="mg-badge">16:9</span>
+          <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3A2IZSXMGwmH6U2zm4u2mji2FYW/hf_20260802_141810_ddf6599d-a3ea-4a65-8aa1-6b72669d7cce.png" alt="لوحة تحليلات وهاتف عائم مع رسوم بيانية ثلاثية الأبعاد" loading="lazy">
+        </figure>
+        <div class="mg-body">
+          <h3>لوحة التحليلات والهاتف العائم</h3>
+          <p>هاتف ذكي عائم ولوحة تحكم برسوم صاعدة وأيقونات تفاعل متوهجة.</p>
+          <div class="mg-actions">
+            <a class="mg-link" href="https://d8j0ntlcm91z4.cloudfront.net/user_3A2IZSXMGwmH6U2zm4u2mji2FYW/hf_20260802_141810_ddf6599d-a3ea-4a65-8aa1-6b72669d7cce.png" target="_blank" rel="noopener">فتح الصورة ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="mg-card">
+        <figure class="mg-figure">
+          <span class="mg-badge">16:9</span>
+          <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3A2IZSXMGwmH6U2zm4u2mji2FYW/hf_20260802_142225_0b87c171-3eee-42f1-9482-a3be4bb94dce.png" alt="تدفق إشارة تسويقية عبر أيقونات متوهجة نحو كرة تمثل العميل" loading="lazy">
+        </figure>
+        <div class="mg-body">
+          <h3>تدفّق الإشارة نحو العميل</h3>
+          <p>تيارات ضوئية تمر بعُقد القنوات وتتجمع في كرة العميل المتوهجة.</p>
+          <div class="mg-actions">
+            <a class="mg-link" href="https://d8j0ntlcm91z4.cloudfront.net/user_3A2IZSXMGwmH6U2zm4u2mji2FYW/hf_20260802_142225_0b87c171-3eee-42f1-9482-a3be4bb94dce.png" target="_blank" rel="noopener">فتح الصورة ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="mg-card">
+        <figure class="mg-figure">
+          <span class="mg-badge">16:9</span>
+          <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3HMjZPgpKCsHgo8BLC9DovmF1SX/hf_20260802_160742_9e3b5d07-d739-40da-aa35-4fb1421d941a.png" alt="هاتف يعرض feed تواصل اجتماعي مع أيقونات تفاعل لمقال إعلانات Meta" loading="lazy">
+        </figure>
+        <div class="mg-body">
+          <h3>إعلانات Meta</h3>
+          <p>هاتف في المنتصف يعرض بطاقة منتج مع أيقونات تفاعل ثلاثية الأبعاد.</p>
+          <div class="mg-actions">
+            <a class="mg-link" href="https://d8j0ntlcm91z4.cloudfront.net/user_3HMjZPgpKCsHgo8BLC9DovmF1SX/hf_20260802_160742_9e3b5d07-d739-40da-aa35-4fb1421d941a.png" target="_blank" rel="noopener">فتح الصورة ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="mg-card">
+        <figure class="mg-figure">
+          <span class="mg-badge">16:9</span>
+          <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3HMjZPgpKCsHgo8BLC9DovmF1SX/hf_20260802_161108_80c646c3-4b35-4dec-af52-e2bce0e2a184.png" alt="بطاقات إعلانات زجاجية عائمة بصيغ ريل ومربع وكاروسيل" loading="lazy">
+        </figure>
+        <div class="mg-body">
+          <h3>صِيَغ الإعلانات الزجاجية</h3>
+          <p>بطاقات زجاجية شفافة: ريل عمودي، منشور مربع، وكاروسيل.</p>
+          <div class="mg-actions">
+            <a class="mg-link" href="https://d8j0ntlcm91z4.cloudfront.net/user_3HMjZPgpKCsHgo8BLC9DovmF1SX/hf_20260802_161108_80c646c3-4b35-4dec-af52-e2bce0e2a184.png" target="_blank" rel="noopener">فتح الصورة ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="mg-card">
+        <figure class="mg-figure">
+          <span class="mg-badge">4:5</span>
+          <img src="https://d8j0ntlcm91z4.cloudfront.net/user_3HMjZPgpKCsHgo8BLC9DovmF1SX/hf_20260802_161213_35381abd-59e6-417b-9570-1ef6d96d7c5c.png" alt="قمع تسويقي ثلاثي الأبعاد بجسيمات تتقارب نحو نقطة شراء ساطعة" loading="lazy">
+        </figure>
+        <div class="mg-body">
+          <h3>قمع التسويق</h3>
+          <p>جسيمات تمثّل الأشخاص تتدفق وتتقارب نحو نقطة الشراء الساطعة.</p>
+          <div class="mg-actions">
+            <a class="mg-link" href="https://d8j0ntlcm91z4.cloudfront.net/user_3HMjZPgpKCsHgo8BLC9DovmF1SX/hf_20260802_161213_35381abd-59e6-417b-9570-1ef6d96d7c5c.png" target="_blank" rel="noopener">فتح الصورة ↗</a>
+          </div>
+        </div>
+      </article>
+
+    </main>
+
+    <footer class="mg-foot">
+      صُمّمت بواسطة <span>Higgsfield</span> — سلسلة أغلفة التسويق الرقمي
+    </footer>
+
+  </div>
+</div>
+</div>
