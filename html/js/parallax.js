@@ -1,24 +1,64 @@
 /* ============================================================
-   BAIGR — pointer-driven interactions: magnetic buttons.
-   Fine pointers (desktop) only.
+   BAIGR — pointer-driven interactions:
+   custom cursor + magnetic buttons. Fine pointers only.
    (The hero's 3D parallax lives in three-scene.js.)
-
-   The old JS-driven custom cursor was removed: replacing the
-   native cursor with a GSAP-tweened dot+ring meant work on every
-   pointermove, which showed up as lag "on mouse movement". The
-   native cursor is instant and costs nothing.
    ============================================================ */
 (function () {
   "use strict";
 
   document.addEventListener("DOMContentLoaded", function () {
     var finePointer = window.matchMedia("(pointer: fine)").matches;
-    var wideEnough = window.matchMedia("(min-width: 1024px)").matches;
-    if (!finePointer || !wideEnough || window.BAIGR.reduced ||
-        typeof gsap === "undefined")
+    if (!finePointer || window.BAIGR.reduced || typeof gsap === "undefined")
       return;
 
-    /* ---------- Magnetic elements (desktop only) ---------- */
+    /* ---------- Custom cursor ---------- */
+    var dot = document.getElementById("cursor-dot");
+    var ring = document.getElementById("cursor-ring");
+    document.body.dataset.customCursor = "on";
+
+    var dotX = gsap.quickTo(dot, "x", { duration: 0.12, ease: "power2.out" });
+    var dotY = gsap.quickTo(dot, "y", { duration: 0.12, ease: "power2.out" });
+    var ringX = gsap.quickTo(ring, "x", { duration: 0.45, ease: "power3.out" });
+    var ringY = gsap.quickTo(ring, "y", { duration: 0.45, ease: "power3.out" });
+
+    var visible = false;
+
+    window.addEventListener(
+      "pointermove",
+      function (e) {
+        if (!visible) {
+          visible = true;
+          gsap.to([dot, ring], { autoAlpha: 1, duration: 0.3 });
+        }
+        dotX(e.clientX);
+        dotY(e.clientY);
+        ringX(e.clientX);
+        ringY(e.clientY);
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "pointerover",
+      function (e) {
+        var interactive =
+          e.target.closest && e.target.closest("a, button, [data-cursor]");
+        gsap.to(ring, {
+          scale: interactive ? 2.2 : 1,
+          opacity: interactive ? 0.9 : 0.5,
+          duration: 0.35,
+          ease: "power3.out",
+        });
+      },
+      { passive: true }
+    );
+
+    document.documentElement.addEventListener("pointerleave", function () {
+      visible = false;
+      gsap.to([dot, ring], { autoAlpha: 0, duration: 0.3 });
+    });
+
+    /* ---------- Magnetic elements ---------- */
     document.querySelectorAll(".magnetic").forEach(function (el) {
       var strength = parseFloat(el.getAttribute("data-strength")) || 0.35;
       var xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });

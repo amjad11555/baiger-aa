@@ -210,9 +210,6 @@ function init(THREE, mount) {
 const boot = () => {
   const mount = document.getElementById("hero-field");
   if (!mount) return;
-  // Skip the WebGL scene on phones/tablets — the aurora gradient carries
-  // the hero there, and dropping three.js removes the main mobile cost.
-  if (window.matchMedia("(max-width: 1024px)").matches) return;
   import("three")
     .then((THREE) => init(THREE, mount))
     .catch((err) => console.warn("[BAIGR] three.js unavailable:", err.message));

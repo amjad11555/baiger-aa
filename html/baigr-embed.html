@@ -229,9 +229,7 @@ html[lang="tr"] .hero-display { font-size: clamp(1.9rem, 6.2vw, 5.2rem); }
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: 0.035;
   mix-blend-mode: multiply;
-  /* Static texture. The old animated shift kept a full-screen blended
-     layer repainting every frame; a fixed grain reads the same and is
-     composited once. */
+  animation: grain-shift 9s steps(6) infinite;
 }
 
 /* ---------- Layout primitives ---------- */
@@ -415,52 +413,6 @@ html[dir="rtl"] .scroll-progress { transform-origin: right; }
 }
 .navbar.is-open .burger span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
 .navbar.is-open .burger span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
-
-/* ---------- Mobile / tablet header: centred logo + social cluster ----------
-   Desktop (≥1024px) is untouched — these rules only apply below that. */
-.navbar__social { display: none; }
-.navbar__social a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 9999px;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  background: var(--card);
-  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
-}
-.navbar__social a:hover,
-.navbar__social a:focus-visible {
-  color: var(--iris-deep);
-  border-color: var(--iris);
-  transform: translateY(-1px);
-}
-
-@media (max-width: 1023px) {
-  .navbar__inner {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-  }
-  .navbar__logo { grid-column: 2; justify-self: center; gap: 0; }
-  .logo-word { display: none; }                 /* remove the wordmark */
-  .navbar__actions { grid-column: 1; justify-self: start; gap: 0.5rem; }
-  .navbar__actions .lang-switch { display: none; } /* leave just the burger */
-  .navbar__social {
-    grid-column: 3;
-    justify-self: end;
-    display: inline-flex;
-    gap: 0.5rem;
-  }
-}
-
-/* Phones: slightly tighter icons so three items sit comfortably. */
-@media (max-width: 480px) {
-  .navbar__social a { width: 2.15rem; height: 2.15rem; }
-  .navbar__social { gap: 0.4rem; }
-}
 
 .menu-overlay {
   position: fixed;
@@ -1022,8 +974,25 @@ html[lang="ar"] .footer h3 { text-transform: none; }
   animation: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
 }
 
-/* Custom cursor removed — native cursor is instant and cost-free.
-   (.cursor-dot/.cursor-ring elements and JS deleted.) */
+/* ---------- Custom cursor ---------- */
+.cursor-dot, .cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0;
+  translate: -50% -50%;
+}
+.cursor-dot { width: 0.5rem; height: 0.5rem; background: var(--iris); }
+.cursor-ring { width: 2.25rem; height: 2.25rem; border: 1.5px solid rgba(114, 107, 214, 0.6); }
+
+@media (pointer: fine) {
+  body[data-custom-cursor="on"],
+  body[data-custom-cursor="on"] a,
+  body[data-custom-cursor="on"] button { cursor: none; }
+}
 
 /* ============================================================
    Hero enhancements — floating proof chips,
@@ -1584,11 +1553,6 @@ window.BAIGR=window.BAIGR||{};window.BAIGR.__DICTS={"en":{"nav":{"about":"About"
 
   document.addEventListener("DOMContentLoaded", function () {
     if (window.BAIGR.reduced || typeof Lenis === "undefined") return;
-    // Desktop only. On touch devices native momentum scroll is smoother
-    // and cheaper than running Lenis' rAF loop + ScrollTrigger.update.
-    var finePointer = window.matchMedia("(pointer: fine)").matches;
-    var wideEnough = window.matchMedia("(min-width: 1024px)").matches;
-    if (!finePointer || !wideEnough) return;
 
     var lenis = new Lenis({
       lerp: 0.11,
@@ -1612,26 +1576,66 @@ window.BAIGR=window.BAIGR||{};window.BAIGR.__DICTS={"en":{"nav":{"about":"About"
 </script>
   <script>
 /* ============================================================
-   BAIGR — pointer-driven interactions: magnetic buttons.
-   Fine pointers (desktop) only.
+   BAIGR — pointer-driven interactions:
+   custom cursor + magnetic buttons. Fine pointers only.
    (The hero's 3D parallax lives in three-scene.js.)
-
-   The old JS-driven custom cursor was removed: replacing the
-   native cursor with a GSAP-tweened dot+ring meant work on every
-   pointermove, which showed up as lag "on mouse movement". The
-   native cursor is instant and costs nothing.
    ============================================================ */
 (function () {
   "use strict";
 
   document.addEventListener("DOMContentLoaded", function () {
     var finePointer = window.matchMedia("(pointer: fine)").matches;
-    var wideEnough = window.matchMedia("(min-width: 1024px)").matches;
-    if (!finePointer || !wideEnough || window.BAIGR.reduced ||
-        typeof gsap === "undefined")
+    if (!finePointer || window.BAIGR.reduced || typeof gsap === "undefined")
       return;
 
-    /* ---------- Magnetic elements (desktop only) ---------- */
+    /* ---------- Custom cursor ---------- */
+    var dot = document.getElementById("cursor-dot");
+    var ring = document.getElementById("cursor-ring");
+    document.body.dataset.customCursor = "on";
+
+    var dotX = gsap.quickTo(dot, "x", { duration: 0.12, ease: "power2.out" });
+    var dotY = gsap.quickTo(dot, "y", { duration: 0.12, ease: "power2.out" });
+    var ringX = gsap.quickTo(ring, "x", { duration: 0.45, ease: "power3.out" });
+    var ringY = gsap.quickTo(ring, "y", { duration: 0.45, ease: "power3.out" });
+
+    var visible = false;
+
+    window.addEventListener(
+      "pointermove",
+      function (e) {
+        if (!visible) {
+          visible = true;
+          gsap.to([dot, ring], { autoAlpha: 1, duration: 0.3 });
+        }
+        dotX(e.clientX);
+        dotY(e.clientY);
+        ringX(e.clientX);
+        ringY(e.clientY);
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "pointerover",
+      function (e) {
+        var interactive =
+          e.target.closest && e.target.closest("a, button, [data-cursor]");
+        gsap.to(ring, {
+          scale: interactive ? 2.2 : 1,
+          opacity: interactive ? 0.9 : 0.5,
+          duration: 0.35,
+          ease: "power3.out",
+        });
+      },
+      { passive: true }
+    );
+
+    document.documentElement.addEventListener("pointerleave", function () {
+      visible = false;
+      gsap.to([dot, ring], { autoAlpha: 0, duration: 0.3 });
+    });
+
+    /* ---------- Magnetic elements ---------- */
     document.querySelectorAll(".magnetic").forEach(function (el) {
       var strength = parseFloat(el.getAttribute("data-strength")) || 0.35;
       var xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
@@ -2542,9 +2546,6 @@ function init(THREE, mount) {
 const boot = () => {
   const mount = document.getElementById("hero-field");
   if (!mount) return;
-  // Skip the WebGL scene on phones/tablets — the aurora gradient carries
-  // the hero there, and dropping three.js removes the main mobile cost.
-  if (window.matchMedia("(max-width: 1024px)").matches) return;
   import("three")
     .then((THREE) => init(THREE, mount))
     .catch((err) => console.warn("[BAIGR] three.js unavailable:", err.message));
@@ -2622,23 +2623,6 @@ if ("requestIdleCallback" in window) {
         <button class="burger" id="burger" aria-expanded="false" aria-label="Open menu">
           <span></span><span></span>
         </button>
-      </div>
-
-      <!-- Social cluster — shown only on mobile/tablet, in the corner
-           opposite the menu button, with the logo centred between them. -->
-      <div class="navbar__social" aria-label="BAIGR social links">
-        <a href="https://www.instagram.com/baigr.agency/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="3" width="18" height="18" rx="5"></rect>
-            <circle cx="12" cy="12" r="4"></circle>
-            <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"></circle>
-          </svg>
-        </a>
-        <a href="https://wa.me/905378573181" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
-            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.86 9.86 0 0 0 12.04 2Zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.42 5.82c0 4.54-3.7 8.24-8.25 8.24a8.24 8.24 0 0 1-4.2-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24Zm-2.5 4.4c-.16-.36-.33-.37-.48-.38h-.41c-.14 0-.37.05-.57.27-.2.22-.75.73-.75 1.79 0 1.05.77 2.07.88 2.21.11.14 1.5 2.4 3.72 3.27 1.85.73 2.23.58 2.63.55.4-.04 1.29-.53 1.47-1.04.18-.51.18-.95.13-1.04-.05-.09-.2-.14-.41-.25-.22-.11-1.29-.64-1.49-.71-.2-.07-.35-.11-.49.11-.14.22-.56.71-.69.85-.13.14-.25.16-.47.05-.22-.11-.93-.34-1.77-1.09-.65-.58-1.09-1.3-1.22-1.52-.13-.22-.01-.34.1-.45.1-.1.22-.25.33-.38.11-.13.14-.22.22-.37.07-.14.04-.27-.02-.38-.05-.11-.48-1.19-.66-1.62Z"></path>
-          </svg>
-        </a>
       </div>
     </nav>
 
@@ -3110,6 +3094,8 @@ if ("requestIdleCallback" in window) {
   </div>
 
   <!-- Custom cursor -->
+  <div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursor-ring" aria-hidden="true"></div>
 
 </body>
 </html>

@@ -141,9 +141,7 @@ html[lang="tr"] .hero-display { font-size: clamp(1.9rem, 6.2vw, 5.2rem); }
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: 0.035;
   mix-blend-mode: multiply;
-  /* Static texture. The old animated shift kept a full-screen blended
-     layer repainting every frame; a fixed grain reads the same and is
-     composited once. */
+  animation: grain-shift 9s steps(6) infinite;
 }
 
 /* ---------- Layout primitives ---------- */
@@ -327,52 +325,6 @@ html[dir="rtl"] .scroll-progress { transform-origin: right; }
 }
 .navbar.is-open .burger span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
 .navbar.is-open .burger span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
-
-/* ---------- Mobile / tablet header: centred logo + social cluster ----------
-   Desktop (≥1024px) is untouched — these rules only apply below that. */
-.navbar__social { display: none; }
-.navbar__social a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 9999px;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  background: var(--card);
-  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
-}
-.navbar__social a:hover,
-.navbar__social a:focus-visible {
-  color: var(--iris-deep);
-  border-color: var(--iris);
-  transform: translateY(-1px);
-}
-
-@media (max-width: 1023px) {
-  .navbar__inner {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-  }
-  .navbar__logo { grid-column: 2; justify-self: center; gap: 0; }
-  .logo-word { display: none; }                 /* remove the wordmark */
-  .navbar__actions { grid-column: 1; justify-self: start; gap: 0.5rem; }
-  .navbar__actions .lang-switch { display: none; } /* leave just the burger */
-  .navbar__social {
-    grid-column: 3;
-    justify-self: end;
-    display: inline-flex;
-    gap: 0.5rem;
-  }
-}
-
-/* Phones: slightly tighter icons so three items sit comfortably. */
-@media (max-width: 480px) {
-  .navbar__social a { width: 2.15rem; height: 2.15rem; }
-  .navbar__social { gap: 0.4rem; }
-}
 
 .menu-overlay {
   position: fixed;
@@ -934,8 +886,25 @@ html[lang="ar"] .footer h3 { text-transform: none; }
   animation: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
 }
 
-/* Custom cursor removed — native cursor is instant and cost-free.
-   (.cursor-dot/.cursor-ring elements and JS deleted.) */
+/* ---------- Custom cursor ---------- */
+.cursor-dot, .cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0;
+  translate: -50% -50%;
+}
+.cursor-dot { width: 0.5rem; height: 0.5rem; background: var(--iris); }
+.cursor-ring { width: 2.25rem; height: 2.25rem; border: 1.5px solid rgba(114, 107, 214, 0.6); }
+
+@media (pointer: fine) {
+  body[data-custom-cursor="on"],
+  body[data-custom-cursor="on"] a,
+  body[data-custom-cursor="on"] button { cursor: none; }
+}
 
 /* ============================================================
    Hero enhancements — floating proof chips,
