@@ -55,6 +55,8 @@ function inlineApp(html) {
    ============================================================ */
 function buildPreview() {
   let html = read("index.html");
+  // Strip cache-busting ?v= queries so the inlining string-matches still work.
+  html = html.replace(/(\.(?:js|css))\?v=[0-9a-z.-]+/gi, "$1");
 
   // Fonts: embed each woff2 as a data: URI, drop .woff fallbacks.
   let fontsCss = read("fonts/fonts.css")
@@ -96,6 +98,7 @@ function buildPreview() {
    ============================================================ */
 function buildEmbed() {
   let html = read("index.html");
+  html = html.replace(/(\.(?:js|css))\?v=[0-9a-z.-]+/gi, "$1");
   const G_FONTS =
     `<link rel="preconnect" href="https://fonts.googleapis.com" />\n` +
     `  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n` +
