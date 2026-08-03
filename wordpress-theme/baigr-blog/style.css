@@ -4,7 +4,7 @@ Theme URI: https://baigr.com/
 Author: BAIGR
 Author URI: https://baigr.com/
 Description: قالب مدوّنة عربي (RTL) بهوية BAIGR الحقيقية — كحلي عميق + ليموني + بنفسجي إيريس، خط Cairo، تمرير ناعم وحركات كشف وحقل جزيئات مثل الصفحة الرئيسية. مدمج فيه أكواد Meta وSchema وSEO تلقائياً. سريع، إبداعي، ومصمّم للعربية.
-Version: 2.0.0
+Version: 2.1.0
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -124,10 +124,28 @@ html[dir="rtl"] .scroll-progress{transform-origin:right}
 .navbar.is-open .burger span:nth-child(1){transform:translateY(4px) rotate(45deg)}
 .navbar.is-open .burger span:nth-child(2){transform:translateY(-4px) rotate(-45deg)}
 
-.menu-overlay{position:fixed;inset:0;top:var(--nav-h);z-index:60;display:flex;flex-direction:column;justify-content:space-between;background:var(--paper);padding:2.5rem 1.5rem;transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .3s ease,transform .3s ease,visibility .3s}
+.menu-overlay{position:fixed;inset:0;top:var(--nav-h);z-index:60;display:flex;flex-direction:column;justify-content:flex-start;gap:1.6rem;overflow-y:auto;background:var(--paper);padding:2.2rem 1.5rem 3rem;transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .3s ease,transform .3s ease,visibility .3s}
 .menu-overlay.is-open{opacity:1;visibility:visible;transform:none}
-.menu-overlay a{display:flex;align-items:baseline;gap:.75rem;padding-block:.4rem;font-family:var(--f-display);font-size:1.6rem;font-weight:700;color:var(--ink);transition:color .3s ease}
-.menu-overlay a:hover{color:var(--iris)}
+/* Big display links — scoped to the primary menu only, so chips/buttons stay small. */
+.menu-overlay__links{list-style:none;margin:0;padding:0}
+.menu-overlay__links a{display:flex;align-items:baseline;gap:.75rem;padding-block:.4rem;font-family:var(--f-display);font-size:1.6rem;font-weight:700;color:var(--ink);transition:color .3s ease}
+.menu-overlay__links a:hover,.menu-overlay__links .current-menu-item>a{color:var(--iris)}
+.menu-overlay__cats h4{font-family:var(--f-display);font-size:.8rem;font-weight:800;letter-spacing:var(--track-label);color:var(--mist);margin:0 0 .75rem}
+
+/* ---------- Blog filter bar (search + category chips) ---------- */
+.blog-filter{margin:2.4rem 0 .5rem;display:flex;flex-direction:column;gap:1.1rem}
+.blog-search{display:flex;align-items:center;gap:.6rem;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:.55rem .55rem .55rem 1.1rem;max-width:32rem;box-shadow:var(--shadow-sm);transition:border-color .25s ease,box-shadow .25s ease}
+.blog-search:focus-within{border-color:var(--iris);box-shadow:0 0 0 3px color-mix(in srgb,var(--iris) 16%,transparent)}
+.blog-search svg{color:var(--mist);flex:0 0 auto}
+.blog-search input{flex:1 1 auto;min-width:0;border:0;background:none;font:inherit;color:var(--ink)}
+.blog-search input::placeholder{color:var(--mist)}
+.blog-search input:focus{outline:none}
+.blog-search button{flex:0 0 auto;border:0;border-radius:999px;background:var(--iris-deep);color:#fff;font-family:var(--f-display);font-weight:800;font-size:.85rem;padding:.5rem 1.1rem;cursor:pointer;transition:background .25s ease,transform .25s ease}
+.blog-search button:hover{background:var(--iris);transform:translateY(-1px)}
+.blog-cats{display:flex;flex-wrap:wrap;gap:.5rem}
+.cat-chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.4rem .95rem;font-family:var(--f-display);font-weight:700;font-size:.85rem;color:var(--ink-soft);background:var(--card);transition:color .2s ease,border-color .2s ease,background .2s ease}
+.cat-chip:hover{border-color:var(--iris);color:var(--iris-deep)}
+.cat-chip.is-active{background:var(--ink);border-color:var(--ink);color:#fff}
 
 /* ============================================================
    6. Page hero (listing + archive)

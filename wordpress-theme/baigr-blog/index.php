@@ -41,6 +41,8 @@ $is_main_first = ( is_home() || is_front_page() ) && ! is_paged() && ! is_search
 </section>
 
 <div class="bgr-container">
+	<?php baigr_blog_filter_bar(); ?>
+
 	<?php if ( have_posts() ) : ?>
 
 		<?php

@@ -30,19 +30,7 @@
 			</a>
 		<?php endif; ?>
 
-		<?php
-		if ( has_nav_menu( 'primary' ) ) {
-			wp_nav_menu( array(
-				'theme_location' => 'primary',
-				'menu_class'     => 'navbar__links',
-				'menu_id'        => 'primary-menu',
-				'container'      => false,
-				'depth'          => 1,
-			) );
-		} else {
-			baigr_blog_fallback_menu();
-		}
-		?>
+		<?php baigr_blog_primary_nav( 'navbar__links', 'primary-menu' ); ?>
 
 		<div class="navbar__actions">
 			<a class="btn btn--solid navbar__cta magnetic" href="<?php echo esc_url( BAIGR_SITE ); ?>/">تواصل معنا</a>
@@ -54,12 +42,29 @@
 </header>
 
 <div class="menu-overlay" id="menu-overlay">
-	<nav>
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>">المدوّنة</a>
-		<a href="<?php echo esc_url( BAIGR_SITE ); ?>/">الموقع الرئيسي</a>
-		<a href="<?php echo esc_url( BAIGR_SITE ); ?>/">خدماتنا</a>
-		<a href="mailto:team@baigr.com">تواصل معنا</a>
+	<nav class="menu-overlay__nav" aria-label="القائمة">
+		<?php baigr_blog_primary_nav( 'menu-overlay__links', 'mobile-menu' ); ?>
 	</nav>
+
+	<form role="search" method="get" class="menu-overlay__search" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+		<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
+		<input type="search" name="s" placeholder="ابحث في المدوّنة…" value="<?php echo esc_attr( get_search_query() ); ?>" aria-label="ابحث في المدوّنة" />
+		<button type="submit">بحث</button>
+	</form>
+
+	<?php
+	$overlay_cats = get_categories( array( 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => true, 'number' => 10 ) );
+	if ( ! empty( $overlay_cats ) ) :
+		?>
+		<div class="menu-overlay__cats">
+			<h4>التصنيفات</h4>
+			<div class="blog-cats">
+				<?php foreach ( $overlay_cats as $ocat ) : ?>
+					<a class="cat-chip" href="<?php echo esc_url( get_category_link( $ocat->term_id ) ); ?>"><?php echo esc_html( $ocat->name ); ?></a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	<?php endif; ?>
 </div>
 
 <main id="content" class="site-content">

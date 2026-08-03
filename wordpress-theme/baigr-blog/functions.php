@@ -78,11 +78,59 @@ add_filter( 'excerpt_length', 'baigr_blog_excerpt_length' );
 function baigr_blog_excerpt_more() { return '…'; }
 add_filter( 'excerpt_more', 'baigr_blog_excerpt_more' );
 
-function baigr_blog_fallback_menu() {
-	echo '<ul id="primary-menu" class="navbar__links">';
+/**
+ * The single source of truth for the site navigation. Used for BOTH the
+ * desktop bar and the mobile overlay, so they always match. If a menu is
+ * assigned to the "primary" location it wins; otherwise this fallback list
+ * (blog + main-site sections) is shown identically in both places.
+ */
+function baigr_blog_primary_nav( $menu_class = 'navbar__links', $menu_id = 'primary-menu' ) {
+	if ( has_nav_menu( 'primary' ) ) {
+		wp_nav_menu( array(
+			'theme_location' => 'primary',
+			'menu_class'     => $menu_class,
+			'menu_id'        => $menu_id,
+			'container'      => false,
+			'depth'          => 1,
+		) );
+		return;
+	}
+	echo '<ul id="' . esc_attr( $menu_id ) . '" class="' . esc_attr( $menu_class ) . '">';
 	echo '<li><a href="' . esc_url( home_url( '/' ) ) . '">المدوّنة</a></li>';
 	echo '<li><a href="' . esc_url( BAIGR_SITE ) . '/">الموقع الرئيسي</a></li>';
+	echo '<li><a href="' . esc_url( BAIGR_SITE ) . '/#services">خدماتنا</a></li>';
+	echo '<li><a href="' . esc_url( BAIGR_SITE ) . '/#contact">تواصل معنا</a></li>';
 	echo '</ul>';
+}
+
+/** Back-compat alias. */
+function baigr_blog_fallback_menu() { baigr_blog_primary_nav(); }
+
+/**
+ * A search box + category chips bar for the blog listing / archive pages,
+ * so readers can filter to the topic they want in one tap.
+ */
+function baigr_blog_filter_bar() {
+	$cats    = get_categories( array( 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => true, 'number' => 12 ) );
+	$current = ( is_category() ) ? (int) get_queried_object_id() : 0;
+	$all_active = ( ! $current && ( is_home() || is_front_page() ) ) ? ' is-active' : '';
+	?>
+	<nav class="blog-filter reveal" aria-label="تصفية المقالات">
+		<form role="search" method="get" class="blog-search" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
+			<input type="search" name="s" placeholder="ابحث في المدوّنة…" value="<?php echo esc_attr( get_search_query() ); ?>" aria-label="ابحث في المدوّنة" />
+			<button type="submit">بحث</button>
+		</form>
+		<?php if ( ! empty( $cats ) ) : ?>
+			<div class="blog-cats" role="list">
+				<a class="cat-chip<?php echo esc_attr( $all_active ); ?>" href="<?php echo esc_url( home_url( '/' ) ); ?>" role="listitem">الكل</a>
+				<?php foreach ( $cats as $cat ) : ?>
+					<a class="cat-chip<?php echo ( $cat->term_id === $current ) ? ' is-active' : ''; ?>" href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>" role="listitem"><?php echo esc_html( $cat->name ); ?></a>
+				<?php endforeach; ?>
+			</div>
+		<?php endif; ?>
+	</nav>
+	<?php
 }
 
 function baigr_blog_posted_on() {
@@ -167,6 +215,18 @@ add_action( 'wp_head', 'baigr_blog_meta_tags', 5 );
    ============================================================ */
 function baigr_blog_schema() {
 	if ( baigr_blog_seo_plugin_active() ) { return; }
+
+	// If a single post already embeds its own JSON-LD in the content
+	// (our long-form articles ship BlogPosting + FAQPage + BreadcrumbList),
+	// don't emit a second set — that would create duplicate/competing
+	// entities. The article's own schema wins.
+	if ( is_singular( 'post' ) ) {
+		$content = get_post_field( 'post_content', get_queried_object_id() );
+		if ( $content && stripos( $content, 'application/ld+json' ) !== false ) {
+			return;
+		}
+	}
+
 	$org = array(
 		'@type' => 'Organization',
 		'@id'   => BAIGR_SITE . '/#org',
