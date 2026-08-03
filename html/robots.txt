@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://baigr.com/sitemap.xml
+Sitemap: https://baigr.com/blog/wp-sitemap.xml

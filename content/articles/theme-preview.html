@@ -1,0 +1,504 @@
+<!doctype html><html lang="ar" dir="rtl" class="js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>معاينة قالب BAIGR Blog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>/*
+Theme Name: BAIGR Blog
+Theme URI: https://baigr.com/
+Author: BAIGR
+Author URI: https://baigr.com/
+Description: قالب مدوّنة عربي (RTL) بهوية BAIGR الحقيقية — كحلي عميق + ليموني + بنفسجي إيريس، خط Cairo، تمرير ناعم وحركات كشف وحقل جزيئات مثل الصفحة الرئيسية. مدمج فيه أكواد Meta وSchema وSEO تلقائياً. سريع، إبداعي، ومصمّم للعربية.
+Version: 2.0.0
+Requires at least: 6.0
+Tested up to: 6.7
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: baigr-blog
+Tags: blog, rtl-language-support, custom-logo, custom-menu, featured-images, translation-ready, threaded-comments
+*/
+
+/* ============================================================
+   1. Design tokens — matched 1:1 to baigr.com
+   ============================================================ */
+:root{
+  --paper:#fefefe;
+  --cloud:#f2f0fa;
+  --card:#ffffff;
+  --ink:#1b1539;
+  --ink-soft:#3a3363;
+  --mist:#575178;
+  --lime:#d6e06a;
+  --lime-deep:#aeb93f;
+  --iris:#726bd6;
+  --iris-deep:#4d43b8;
+
+  --f-display:"Cairo",sans-serif;
+  --f-body:"Cairo",sans-serif;
+  --track-label:0.12em;
+
+  --line:rgba(27,21,57,.12);
+  --shadow-sm:0 4px 18px rgba(27,21,57,.06);
+  --shadow-md:0 14px 44px rgba(27,21,57,.09);
+  --shadow-lg:0 26px 70px rgba(27,21,57,.14);
+
+  --container:72rem;
+  --nav-h:72px;
+  --ease-out:cubic-bezier(0.22,1,0.36,1);
+}
+
+/* ============================================================
+   2. Reset & base
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--f-body);font-size:1.06rem;font-weight:500;line-height:1.75;
+  -webkit-font-smoothing:antialiased;overflow-x:clip;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul,ol{list-style:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--lime);color:var(--ink)}
+:focus-visible{outline:2px solid var(--iris);outline-offset:3px;border-radius:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip-link{position:absolute;left:-999px;top:0;z-index:200;background:var(--ink);color:#fff;padding:10px 16px;border-radius:0 0 10px 0}
+.skip-link:focus{left:0}
+
+/* ============================================================
+   3. Layout primitives + shared brand devices
+   ============================================================ */
+.bgr-container{margin-inline:auto;width:100%;max-width:var(--container);padding-inline:1.25rem}
+.bgr-container--narrow{max-width:48rem}
+.section{position:relative;padding-block:5rem}
+
+.eyebrow{display:inline-flex;align-items:center;gap:.75rem;margin-bottom:1.1rem;font-family:var(--f-display);font-size:.8rem;font-weight:800;letter-spacing:var(--track-label);color:var(--iris)}
+.eyebrow__line{display:inline-block;height:2px;width:2rem;border-radius:2px;background:linear-gradient(90deg,var(--lime),var(--iris))}
+.eyebrow--center{justify-content:center}
+
+.text-gradient{
+  background:linear-gradient(100deg,var(--iris) 0%,var(--iris-deep) 55%,var(--iris) 100%);
+  background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:sheen 6s ease-in-out infinite;
+}
+
+/* Soft lime + iris wash */
+.aurora{
+  background:
+    radial-gradient(42% 46% at 78% 18%,rgba(214,224,106,.26),transparent 68%),
+    radial-gradient(38% 44% at 16% 80%,rgba(114,107,214,.14),transparent 72%);
+}
+/* (Grain overlay removed for performance — it forced full-screen repaints on
+   every scroll frame. The aurora washes carry the atmosphere at zero cost.) */
+
+/* ============================================================
+   4. Buttons
+   ============================================================ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;border-radius:9999px;font-weight:800;white-space:nowrap;transition:all .35s var(--ease-out);height:2.9rem;padding-inline:1.6rem;font-size:.95rem}
+.btn--lg{height:3.5rem;padding-inline:2.25rem;font-size:1.02rem}
+.btn--solid{background:var(--lime);color:var(--ink);box-shadow:var(--shadow-sm)}
+.btn--solid:hover{background:var(--iris-deep);color:#fff;transform:translateY(-2px);box-shadow:0 16px 38px rgba(114,107,214,.4)}
+.btn--glass{background:var(--card);border:1px solid var(--line);color:var(--ink);box-shadow:var(--shadow-sm)}
+.btn--glass:hover{border-color:var(--iris);color:var(--iris-deep);transform:translateY(-2px)}
+.magnetic{display:inline-flex;will-change:transform}
+
+/* ============================================================
+   5. Scroll progress + navbar
+   ============================================================ */
+.scroll-progress{position:fixed;inset-inline:0;top:0;z-index:75;height:3px;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,var(--lime),var(--iris));will-change:transform}
+html[dir="rtl"] .scroll-progress{transform-origin:right}
+
+.navbar{position:fixed;inset-inline:0;top:0;z-index:70;border-bottom:1px solid transparent;transition:background .5s ease,border-color .5s ease,box-shadow .5s ease}
+.navbar.is-scrolled:not(.is-open){background:rgba(254,254,254,.94);border-bottom-color:var(--line);box-shadow:var(--shadow-sm)}
+.navbar__inner{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h)}
+.navbar__logo{display:inline-flex;align-items:center;gap:.55rem;color:var(--ink)}
+.navbar__logo img{height:34px;width:auto}
+.logo-word{font-size:1.35rem;font-weight:900;letter-spacing:.06em;color:var(--ink)}
+.logo-word .dot{color:var(--lime-deep)}
+.navbar__links{display:none;align-items:center;gap:1.8rem}
+.navbar__links a{font-size:.92rem;font-weight:700;color:var(--mist);transition:color .3s ease}
+.navbar__links a:hover{color:var(--ink)}
+.navbar__cta{display:none}
+.burger{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:2.5rem;height:2.5rem}
+.burger span{height:2px;width:1.5rem;border-radius:2px;background:var(--ink);transition:transform .3s ease,opacity .3s ease}
+.navbar.is-open .burger span:nth-child(1){transform:translateY(4px) rotate(45deg)}
+.navbar.is-open .burger span:nth-child(2){transform:translateY(-4px) rotate(-45deg)}
+
+.menu-overlay{position:fixed;inset:0;top:var(--nav-h);z-index:60;display:flex;flex-direction:column;justify-content:space-between;background:var(--paper);padding:2.5rem 1.5rem;transform:translateY(-8px);opacity:0;visibility:hidden;transition:opacity .3s ease,transform .3s ease,visibility .3s}
+.menu-overlay.is-open{opacity:1;visibility:visible;transform:none}
+.menu-overlay a{display:flex;align-items:baseline;gap:.75rem;padding-block:.4rem;font-family:var(--f-display);font-size:1.6rem;font-weight:700;color:var(--ink);transition:color .3s ease}
+.menu-overlay a:hover{color:var(--iris)}
+
+/* ============================================================
+   6. Page hero (listing + archive)
+   ============================================================ */
+.page-hero{position:relative;overflow:hidden;padding:calc(var(--nav-h) + 4.5rem) 0 3.4rem}
+.page-hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.5;pointer-events:none}
+.page-hero .inner{position:relative;z-index:2;max-width:46rem}
+.page-hero h1{font-size:clamp(2.3rem,6.4vw,4.2rem);font-weight:900;line-height:1.06;letter-spacing:-.02em}
+.hero-accent{background:linear-gradient(100deg,var(--iris),var(--iris-deep) 55%,var(--iris));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 6s ease-in-out infinite}
+.hero-accent--lime{position:relative;color:inherit;-webkit-text-fill-color:currentColor}
+.hero-accent--lime::after{content:"";position:absolute;inset-inline:0;bottom:.08em;height:.32em;background:var(--lime);z-index:-1;border-radius:3px}
+.page-hero .lead{margin-top:1.3rem;color:var(--mist);font-size:1.16rem;max-width:34rem;line-height:1.75}
+.page-hero__meta{margin-top:1.6rem;display:flex;gap:1rem;flex-wrap:wrap;font-family:var(--f-display);font-size:.78rem;font-weight:800;letter-spacing:var(--track-label);color:var(--iris)}
+.page-hero__meta span{display:inline-flex;align-items:center;gap:.5rem}
+.page-hero .floor{position:absolute;inset-inline:0;bottom:0;height:6rem;background:linear-gradient(to top,var(--paper),transparent);z-index:1}
+
+/* Featured (first) post — editorial hero card */
+.post-featured{position:relative;display:grid;grid-template-columns:1fr;background:var(--card);border:1px solid var(--line);border-radius:28px;overflow:hidden;box-shadow:var(--shadow-sm);margin-top:3.2rem;transition:transform .4s var(--ease-out),box-shadow .4s var(--ease-out)}
+.post-featured:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.post-featured__media{position:relative;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,var(--cloud),#fff)}
+.post-featured__media img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out)}
+.post-featured:hover .post-featured__media img{transform:scale(1.045)}
+.post-featured__media--empty{display:flex;align-items:center;justify-content:center}
+.post-featured__media--empty i{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--lime),var(--iris))}
+.post-featured__body{padding:2.2rem;display:flex;flex-direction:column;gap:1rem;justify-content:center}
+.post-featured__body h2{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:900;line-height:1.22}
+.post-featured__body h2 a{color:var(--ink);transition:color .3s}
+.post-featured:hover .post-featured__body h2 a{color:var(--iris-deep)}
+.post-featured__body .excerpt{color:var(--mist);font-size:1.04rem}
+@media(min-width:820px){.post-featured{grid-template-columns:1.12fr .88fr}.post-featured__media{aspect-ratio:auto;min-height:360px}}
+html[dir="rtl"] .post-featured{direction:rtl}
+
+.chip{align-self:flex-start;display:inline-block;background:var(--lime);color:var(--ink);font-family:var(--f-display);font-weight:800;font-size:.72rem;letter-spacing:.06em;padding:6px 13px;border-radius:999px}
+.thumb .chip{position:absolute;top:14px;inset-inline-start:14px;z-index:2;box-shadow:var(--shadow-sm)}
+
+/* ============================================================
+   7. Blog listing cards
+   ============================================================ */
+.post-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:1.8rem;padding:3.5rem 0}
+.post-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;transition:transform .35s var(--ease-out),box-shadow .35s var(--ease-out),border-color .35s}
+.post-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--iris) 30%,var(--line))}
+.post-card .thumb{aspect-ratio:16/10;background:linear-gradient(135deg,var(--cloud),#fff);overflow:hidden}
+.post-card .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease-out)}
+.post-card:hover .thumb img{transform:scale(1.05)}
+.post-card .thumb--empty{display:flex;align-items:center;justify-content:center}
+.post-card .thumb--empty span{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--lime),var(--iris))}
+.post-card .body{padding:1.4rem 1.5rem 1.6rem;display:flex;flex-direction:column;gap:.7rem;flex:1}
+.post-card h2{font-size:1.3rem;line-height:1.4;font-weight:800}
+.post-card h2 a{color:var(--ink);background-image:linear-gradient(var(--iris),var(--iris));background-size:0% 2px;background-repeat:no-repeat;background-position:right bottom;transition:background-size .35s var(--ease-out),color .3s}
+.post-card:hover h2 a{color:var(--iris-deep)}
+.post-card .excerpt{color:var(--mist);font-size:.98rem;margin:0}
+.post-meta{color:var(--iris);font-family:var(--f-display);font-size:.78rem;font-weight:800;letter-spacing:var(--track-label);display:flex;gap:.8rem;flex-wrap:wrap;align-items:center}
+.read-more{margin-top:auto;font-weight:800;color:var(--iris-deep);display:inline-flex;gap:.4rem;align-items:center}
+.read-more:hover{gap:.7rem}
+
+/* ============================================================
+   8. Single post
+   ============================================================ */
+.single-wrap{position:relative;padding-top:calc(var(--nav-h) + 2.5rem);padding-bottom:2rem}
+.entry-header{text-align:center;max-width:46rem;margin-inline:auto}
+.entry-header .post-meta{justify-content:center;margin-bottom:1rem}
+.entry-header h1{font-size:clamp(1.9rem,4.6vw,3rem);font-weight:900;line-height:1.18;letter-spacing:-.01em}
+.entry-featured{margin:2.2rem auto;max-width:60rem;border-radius:24px;overflow:hidden;box-shadow:var(--shadow-md)}
+.entry-featured img{width:100%;height:auto}
+.entry-content{max-width:46rem;margin-inline:auto;font-size:1.12rem;line-height:1.95}
+.entry-content>*{margin-bottom:1.15em}
+.entry-content h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;line-height:1.25;margin-top:1.8em;padding-inline-start:16px;border-inline-start:5px solid var(--lime);position:relative}
+.entry-content h3{font-size:1.3rem;font-weight:800;color:var(--iris-deep);margin-top:1.5em}
+.entry-content h4{font-size:1.12rem;font-weight:800;margin-top:1.3em}
+.entry-content a{color:var(--iris-deep);font-weight:600;text-decoration:underline;text-decoration-color:rgba(114,107,214,.35);text-underline-offset:3px}
+.entry-content a:hover{text-decoration-color:var(--iris-deep)}
+.entry-content strong{color:var(--ink);font-weight:800}
+.entry-content ul,.entry-content ol{padding-inline-start:1.4em}
+.entry-content li{margin:.4em 0}
+.entry-content ul li::marker{color:var(--iris)}
+.entry-content blockquote{padding:16px 22px;background:var(--cloud);border-inline-start:4px solid var(--iris);border-radius:12px;color:var(--ink-soft);font-weight:600}
+.entry-content img{border-radius:16px}
+.entry-content figure{margin:2em 0}
+.entry-content figcaption{text-align:center;color:var(--mist);font-size:.85rem;margin-top:.6rem}
+.entry-content table{width:100%;border-collapse:collapse;font-size:.98rem;box-shadow:var(--shadow-sm);border-radius:14px;overflow:hidden}
+.entry-content th,.entry-content td{border:1px solid var(--line);padding:12px 14px;text-align:start;vertical-align:top}
+.entry-content th{background:var(--cloud);font-weight:800;color:var(--ink)}
+.entry-content code{background:var(--cloud);padding:2px 7px;border-radius:6px;font-size:.92em}
+.entry-content pre{background:var(--ink);color:#eee;padding:18px;border-radius:14px;overflow:auto}
+
+.tags{max-width:46rem;margin:2rem auto 0;display:flex;gap:.6rem;flex-wrap:wrap}
+.tags a{background:var(--cloud);border:1px solid var(--line);border-radius:9999px;padding:6px 15px;font-size:.85rem;font-weight:700;color:var(--mist);transition:all .25s}
+.tags a:hover{border-color:var(--iris);color:var(--iris-deep);transform:translateY(-1px)}
+
+/* Brand CTA */
+.brand-cta{max-width:46rem;margin:3rem auto 0;position:relative;overflow:hidden;border-radius:26px;padding:2.6rem 2.2rem;background:var(--ink);color:#fff}
+.brand-cta::before{content:"";position:absolute;inset:0;background:radial-gradient(45% 60% at 85% 10%,rgba(214,224,106,.28),transparent 70%),radial-gradient(45% 60% at 10% 100%,rgba(114,107,214,.4),transparent 72%)}
+.brand-cta>*{position:relative;z-index:2}
+.brand-cta .eyebrow{color:var(--lime)}
+.brand-cta h3{font-size:1.7rem;font-weight:900;margin-bottom:.5rem;line-height:1.25}
+.brand-cta p{color:#d9d5ea;margin-bottom:1.4rem}
+
+/* Related */
+.related{max-width:60rem;margin:3.5rem auto 0}
+.related>h3{font-size:1.5rem;font-weight:900;margin-bottom:1.2rem;text-align:center}
+
+/* ============================================================
+   9. Comments, pagination
+   ============================================================ */
+.pagination{display:flex;justify-content:center;gap:.6rem;padding:1rem 0 4rem;flex-wrap:wrap}
+.pagination .page-numbers{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 16px;font-weight:800;color:var(--ink);transition:all .25s}
+.pagination a.page-numbers:hover{border-color:var(--iris);color:var(--iris-deep)}
+.pagination .current{background:var(--lime);border-color:var(--lime)}
+.comments-area{max-width:46rem;margin:3rem auto 0;border-top:1px solid var(--line);padding-top:2rem}
+.comments-area h3{font-size:1.3rem;font-weight:900;margin-bottom:1rem}
+.comment-list{display:flex;flex-direction:column;gap:1rem}
+.comments-area input[type=text],.comments-area input[type=email],.comments-area input[type=url],.comments-area textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-family:inherit;font-size:1rem;background:var(--card);margin-bottom:.8rem}
+.comments-area .submit{background:var(--lime);color:var(--ink);border-radius:9999px;padding:12px 28px;font-weight:800;transition:all .3s}
+.comments-area .submit:hover{background:var(--iris-deep);color:#fff}
+
+/* ============================================================
+   10. Footer (matches homepage — cloud bg)
+   ============================================================ */
+.site-footer{position:relative;overflow:hidden;background:var(--ink);color:rgba(255,255,255,.72);margin-top:5rem;padding-block:3.4rem 1.8rem}
+.site-footer::before{content:"";position:absolute;inset-inline:0;top:0;height:3px;background:linear-gradient(90deg,var(--lime),var(--iris))}
+.site-footer .bgr-container{position:relative;z-index:2}
+
+/* Closing CTA row */
+.footer-cta{display:grid;gap:1.5rem;padding-bottom:2.6rem;margin-bottom:2.6rem;border-bottom:1px solid rgba(255,255,255,.12)}
+.footer-cta__title{color:#fff;font-size:clamp(1.6rem,3.6vw,2.5rem);font-weight:900;line-height:1.2;max-width:20ch}
+.footer-cta__title em{font-style:normal;color:var(--lime)}
+@media(min-width:820px){.footer-cta{grid-template-columns:1fr auto;align-items:center}}
+
+/* Link columns */
+.footer-grid{display:grid;gap:2.6rem 2rem;grid-template-columns:1fr}
+.footer-brandcol{max-width:26rem}
+.footer-brandcol .brand{display:inline-flex;align-items:center;gap:.4rem;font-size:1.8rem;font-weight:900;letter-spacing:.06em;color:#fff}
+.footer-brandcol .brand .dot{color:var(--lime)}
+.footer-brandcol .tagline{margin-top:.8rem;color:rgba(255,255,255,.6);line-height:1.75}
+.site-footer h4{font-family:var(--f-display);font-size:.74rem;font-weight:800;letter-spacing:var(--track-label);color:var(--lime);margin-bottom:1.1rem}
+.site-footer nav ul{display:flex;flex-direction:column;gap:.7rem}
+.site-footer nav a{display:inline-flex;align-items:center;gap:.55rem;font-size:.95rem;font-weight:500;color:rgba(255,255,255,.72);transition:color .25s,gap .25s}
+.site-footer nav a::before{content:"";width:0;height:1px;background:var(--lime);transition:width .25s;flex:none}
+.site-footer nav a:hover{color:#fff}
+.site-footer nav a:hover::before{width:14px}
+
+/* Social — real SVG icons in bordered circles */
+.footer-social{display:flex;gap:.65rem;margin-top:1.3rem}
+.footer-social a{display:inline-flex;align-items:center;justify-content:center;width:2.7rem;height:2.7rem;border-radius:50%;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);transition:all .28s var(--ease-out)}
+.footer-social a svg{width:1.15rem;height:1.15rem}
+.footer-social a:hover{background:var(--lime);border-color:var(--lime);color:var(--ink);transform:translateY(-3px)}
+
+.footer-bottom{margin-top:3rem;padding-top:1.4rem;border-top:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.82rem;color:rgba(255,255,255,.5)}
+.footer-bottom .to-top{display:inline-flex;align-items:center;gap:.4rem;font-weight:700;color:var(--lime)}
+.footer-bottom .to-top:hover{color:#fff}
+
+/* Oversized faded wordmark */
+.footer-mark{position:absolute;inset-inline-start:50%;bottom:-2.2rem;transform:translateX(-50%);font-size:clamp(6rem,22vw,16rem);font-weight:900;letter-spacing:.02em;line-height:1;color:rgba(255,255,255,.035);white-space:nowrap;pointer-events:none;z-index:1;user-select:none}
+
+@media(min-width:560px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.footer-grid{grid-template-columns:2.2fr 1fr 1fr 1.2fr}}
+
+/* ============================================================
+   11. Reveal animation states
+   ============================================================ */
+/* Reveal only when JS is present, so content is never hidden if JS fails. */
+.js .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out)}
+.js .reveal.is-in{opacity:1;transform:none}
+
+@keyframes sheen{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+/* ============================================================
+   12. Responsive
+   ============================================================ */
+@media (min-width:900px){
+  .navbar__links{display:flex}
+  .navbar__cta{display:inline-flex}
+  .burger{display:none}
+  .section{padding-block:6rem}
+}
+@media (max-width:640px){
+  body{font-size:1.02rem}
+  .entry-content{font-size:1.06rem}
+}
+
+/* ============================================================
+   13. Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .js .reveal{opacity:1;transform:none}
+}
+</style></head><body>
+<div class="scroll-progress" id="scroll-progress"></div>
+<header class="navbar is-scrolled" id="navbar"><div class="bgr-container navbar__inner">
+<a class="navbar__logo" href="#"><span class="logo-word">BAIGR<span class="dot">.</span></span></a>
+<ul class="navbar__links"><li><a href="#">المدوّنة</a></li><li><a href="#">الموقع الرئيسي</a></li><li><a href="#">خدماتنا</a></li></ul>
+<div class="navbar__actions"><a class="btn btn--solid navbar__cta magnetic" href="#">تواصل معنا</a>
+<button class="burger" id="burger"><span></span><span></span></button></div></div></header>
+<div class="menu-overlay" id="menu-overlay"><nav><a href="#">المدوّنة</a></nav></div>
+<main id="content">
+<section class="page-hero aurora"><canvas id="hero-field"></canvas><div class="floor"></div>
+<div class="bgr-container"><div class="inner">
+<p class="eyebrow"><span class="eyebrow__line"></span>مدوّنة BAIGR</p>
+<h1>رؤى في التسويق <span class="hero-accent">والنموّ</span></h1>
+<p class="lead">مقالات عملية — لا نظريات — في التسويق والإعلانات والنموّ بالذكاء الاصطناعي، مكتوبة لسوقك الخليجي.</p>
+<div class="page-hero__meta"><span>استراتيجية</span><span>إعلانات أداء</span><span>ذكاء اصطناعي</span></div>
+</div></div></section>
+<div class="bgr-container">
+<article class="post-featured reveal"><a class="post-featured__media post-featured__media--empty" href="#"><span class="chip">أساسيات</span><i></i></a>
+<div class="post-featured__body"><div class="post-meta"><span class="chip">مقال مميّز</span>1 أغسطس 2026</div>
+<h2><a href="#">ما هو التسويق؟ دليل شامل لأنواعه من الصفر</a></h2>
+<p class="excerpt">تعرّف على مفهوم التسويق وأنواعه التقليدية والرقمية، وكيف تختار الأنسب لعملك في السوق الخليجي — دليل عملي من الصفر.</p>
+<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
+<div class="post-grid">
+
+<article class="post-card reveal"><a class="thumb thumb--empty" href="#"><span class="chip">إعلانات</span><span></span></a>
+<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">إعلانات ميتا للمتاجر: من الصفر إلى أول عملية بيع</a></h2><p class="excerpt">خطوات عملية لإطلاق حملة مربحة على انستقرام وفيسبوك.</p>
+<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
+<article class="post-card reveal"><a class="thumb thumb--empty" href="#"><span class="chip">سيو</span><span></span></a>
+<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">SEO للمبتدئين: كيف تتصدّر جوجل</a></h2><p class="excerpt">الأساسيات التي تجعل موقعك يظهر في نتائج البحث.</p>
+<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
+<article class="post-card reveal"><a class="thumb thumb--empty" href="#"><span class="chip">ذكاء اصطناعي</span><span></span></a>
+<div class="body"><div class="post-meta">1 أغسطس 2026</div><h2><a href="#">الأتمتة بالذكاء الاصطناعي للتسويق</a></h2><p class="excerpt">كيف توفّر وقتك وتضاعف نتائجك بأنظمة تعمل 24/7.</p>
+<a class="read-more" href="#">اقرأ المقال <span>←</span></a></div></article>
+</div></div>
+</main>
+<footer class="site-footer"><div class="bgr-container">
+<div class="footer-cta reveal"><h2 class="footer-cta__title">جاهز تنقل تسويقك إلى <em>المستوى التالي؟</em></h2>
+<a class="btn btn--solid btn--lg magnetic" href="#">لنعمل معاً <span>←</span></a></div>
+<div class="footer-grid">
+<div class="footer-brandcol reveal"><span class="brand">BAIGR<span class="dot">.</span></span>
+<p class="tagline">تسويق ونموّ مبني على الذكاء الاصطناعي — نساعد المتاجر والعلامات في الخليج والشرق الأوسط وتركيا على النموّ بنتائج تُقاس.</p>
+<div class="footer-social"><a href="#" aria-label="واتساب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.9c0 2.1.55 4.15 1.6 5.95L2 22l4.3-1.68a9.9 9.9 0 0 0 5.74 1.5c5.46 0 9.9-4.45 9.9-9.9C21.94 6.45 17.5 2 12.04 2Zm5.8 14.06c-.24.68-1.4 1.3-1.94 1.34-.5.05-1.13.07-1.82-.11a12.7 12.7 0 0 1-1.65-.61c-2.9-1.26-4.8-4.19-4.94-4.38-.15-.19-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.58-.37.78-.37l.56.01c.18.01.42-.07.66.5.24.58.82 2.01.9 2.16.07.15.12.32.02.51-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.76 1.25 1.63 2.03 1.12 1 2.07 1.31 2.36 1.46.29.15.46.12.63-.07.17-.19.73-.85.92-1.14.19-.29.39-.24.66-.15.27.1 1.7.8 1.99.95.29.15.48.22.55.34.07.12.07.68-.17 1.36Z"/></svg></a><a href="#" aria-label="إنستقرام"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="#" aria-label="بريد"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></a></div></div>
+<nav class="reveal"><h4>تصفّح</h4><ul><li><a href="#">المدوّنة</a></li><li><a href="#">الموقع الرئيسي</a></li><li><a href="#">من نحن</a></li></ul></nav>
+<nav class="reveal"><h4>خدماتنا</h4><ul><li><a href="#">إعلانات الأداء</a></li><li><a href="#">بناء العلامة</a></li><li><a href="#">تصميم المواقع</a></li><li><a href="#">أتمتة بالذكاء الاصطناعي</a></li></ul></nav>
+<nav class="reveal"><h4>تواصل معنا</h4><ul><li><a href="#">team@baigr.com</a></li><li><a href="#">‏+90 537 857 31 81</a></li></ul></nav>
+</div>
+<div class="footer-bottom"><span>© 2026 BAIGR — جميع الحقوق محفوظة.</span><a class="to-top" href="#content">↑ العودة للأعلى</a></div>
+</div><div class="footer-mark">BAIGR</div></footer><script>/* ============================================================
+   BAIGR Blog — lightweight motion layer (no dependencies).
+   Native scroll (fast). Reveals + progress + magnetic + menu +
+   an ambient particle field that PAUSES when off-screen.
+   Respects prefers-reduced-motion.
+   ============================================================ */
+(function () {
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var doc = document.documentElement;
+
+  /* ---- Scroll progress + navbar state (rAF-throttled) ---- */
+  var bar = document.getElementById("scroll-progress");
+  var nav = document.getElementById("navbar");
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var st = window.pageYOffset || doc.scrollTop;
+      var h = doc.scrollHeight - doc.clientHeight;
+      if (bar) bar.style.transform = "scaleX(" + (h > 0 ? st / h : 0) + ")";
+      if (nav) nav.classList.toggle("is-scrolled", st > 12);
+      ticking = false;
+    });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* ---- Reveal on scroll ---- */
+  function reveals() {
+    var els = document.querySelectorAll(".reveal");
+    if (reduce || !("IntersectionObserver" in window)) {
+      els.forEach(function (el) { el.classList.add("is-in"); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -6% 0px", threshold: 0.05 });
+    els.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---- Magnetic buttons (fine pointer only) ---- */
+  function magnetic() {
+    if (reduce || !window.matchMedia("(pointer:fine)").matches) return;
+    document.querySelectorAll(".magnetic").forEach(function (m) {
+      m.addEventListener("mousemove", function (e) {
+        var r = m.getBoundingClientRect();
+        m.style.transform = "translate(" + (e.clientX - r.left - r.width / 2) * 0.22 + "px," + (e.clientY - r.top - r.height / 2) * 0.3 + "px)";
+      });
+      m.addEventListener("mouseleave", function () { m.style.transform = ""; });
+    });
+  }
+
+  /* ---- Mobile menu ---- */
+  function menu() {
+    var burger = document.getElementById("burger");
+    var overlay = document.getElementById("menu-overlay");
+    if (!burger || !overlay) return;
+    function set(open) {
+      overlay.classList.toggle("is-open", open);
+      if (nav) nav.classList.toggle("is-open", open);
+      burger.setAttribute("aria-expanded", open);
+      document.body.style.overflow = open ? "hidden" : "";
+    }
+    burger.addEventListener("click", function () { set(!overlay.classList.contains("is-open")); });
+    overlay.querySelectorAll("a").forEach(function (a) { a.addEventListener("click", function () { set(false); }); });
+  }
+
+  /* ---- Ambient particle field — light, and paused when off-screen ---- */
+  function field() {
+    var c = document.getElementById("hero-field");
+    if (!c || reduce) return;
+    var ctx = c.getContext("2d");
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    var W = 0, H = 0, pts = [], raf = 0, visible = true;
+    var LIME = "214,224,106", IRIS = "114,107,214", LINK = 96;
+
+    function resize() {
+      W = c.clientWidth; H = c.clientHeight;
+      c.width = W * dpr; c.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var n = Math.min(28, Math.floor(W / 40));
+      pts = [];
+      for (var i = 0; i < n; i++) {
+        pts.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.24, vy: (Math.random() - 0.5) * 0.24,
+          r: Math.random() * 1.8 + 1, iris: Math.random() > 0.5
+        });
+      }
+    }
+    function tick() {
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < pts.length; i++) {
+        var p = pts[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+        for (var j = i + 1; j < pts.length; j++) {
+          var q = pts[j], dx = p.x - q.x, dy = p.y - q.y, d = Math.hypot(dx, dy);
+          if (d < LINK) {
+            ctx.strokeStyle = "rgba(" + IRIS + "," + (0.11 * (1 - d / LINK)) + ")";
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+          }
+        }
+        ctx.fillStyle = "rgba(" + (p.iris ? IRIS : LIME) + ",.5)";
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    function start() { if (!raf) raf = requestAnimationFrame(tick); }
+    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+    // Pause the loop whenever the hero scrolls out of view (saves CPU/battery).
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (e) {
+        visible = e[0].isIntersecting;
+        visible ? start() : stop();
+      }, { threshold: 0 }).observe(c);
+    }
+    // Pause when the tab is hidden.
+    document.addEventListener("visibilitychange", function () {
+      document.hidden || !visible ? stop() : start();
+    });
+    start();
+  }
+
+  function init() { reveals(); magnetic(); menu(); field(); }
+  if (document.readyState !== "loading") init();
+  else document.addEventListener("DOMContentLoaded", init);
+})();
+</script></body></html>
