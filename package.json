@@ -1,0 +1,19 @@
+{
+  "name": "baiger-aa",
+  "version": "1.0.0",
+  "description": "نظام رد آلي مخصص لوكالة baigr عبر واتساب — مساعد مبيعات ذكي يعمل عبر WhatsApp Cloud API و Claude",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2"
+  }
+}
