@@ -1,4 +1,10 @@
-import { upsertLead, setContactStatus, addAlert, getLead } from './store.js';
+import {
+  upsertLead,
+  setContactStatus,
+  addAlert,
+  getLead,
+  setAppointment,
+} from './store.js';
 
 export const TOOLS = [
   {
@@ -65,6 +71,11 @@ export const TOOLS = [
           type: 'string',
           description: 'ملخّص قصير جدًا لاحتياج العميل (لتجهيز الفريق للمكالمة)',
         },
+        scheduled_at_iso: {
+          type: 'string',
+          description:
+            'وقت المكالمة بصيغة ISO 8601 مع فرق التوقيت (مثل 2026-08-05T17:00:00+03:00)، محسوبًا من "التاريخ والوقت الحالي" في الملاحظة السياقية. يُستخدم لجدولة تذكير تلقائي للعميل. اتركه فارغًا إن كان الوقت غير محدد بدقة.',
+        },
       },
       required: ['preferred_time'],
     },
@@ -110,6 +121,12 @@ export function runTool(waId, name, input) {
         summary: input.summary,
         next_action: `مكالمة مجدولة: ${input.preferred_time}`,
       });
+      let callAt = null;
+      if (input.scheduled_at_iso) {
+        const t = Date.parse(input.scheduled_at_iso);
+        if (!Number.isNaN(t)) callAt = t;
+      }
+      setAppointment(waId, callAt, input.preferred_time);
       const txt =
         `📞 موعد مكالمة جديد (${waId})\n` +
         `العميل: ${input.name || '—'}\n` +

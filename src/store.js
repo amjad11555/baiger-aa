@@ -54,4 +54,6 @@ export const markSeen = (msgId) => db.markProcessed(msgId);
 
 export const getLead = (waId) => db.getLead(waId);
 export const upsertLead = (waId, fields) => db.upsertLead(waId, fields);
+export const setAppointment = (waId, callAt, timeText) =>
+  db.setAppointment(waId, callAt, timeText);
 export const addAlert = (waId, type, text) => db.addAlert(waId, type, text);

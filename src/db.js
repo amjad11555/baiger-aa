@@ -56,6 +56,17 @@ CREATE TABLE IF NOT EXISTS alerts (
 );
 `);
 
+// ترقية آمنة: إضافة أعمدة المواعيد والمتابعة إن لم تكن موجودة (لقواعد بيانات قديمة)
+function ensureColumn(table, col, ddl) {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all().map((c) => c.name);
+  if (!cols.includes(col)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${ddl}`);
+}
+ensureColumn('leads', 'call_at', 'call_at INTEGER');
+ensureColumn('leads', 'call_time_text', 'call_time_text TEXT');
+ensureColumn('leads', 'call_reminded', 'call_reminded INTEGER NOT NULL DEFAULT 0');
+ensureColumn('leads', 'reengage_count', 'reengage_count INTEGER NOT NULL DEFAULT 0');
+ensureColumn('leads', 'last_reengage_at', 'last_reengage_at INTEGER');
+
 const now = () => Date.now();
 
 // ===== جهات الاتصال =====
@@ -151,6 +162,49 @@ export function upsertLead(waId, f = {}) {
 }
 const _getLead = db.prepare('SELECT * FROM leads WHERE wa_id = ?');
 export const getLead = (waId) => _getLead.get(waId);
+
+// ===== مواعيد المكالمات =====
+const _setAppointment = db.prepare(
+  'UPDATE leads SET call_at = ?, call_time_text = ?, call_reminded = 0, updated_at = ? WHERE wa_id = ?',
+);
+export const setAppointment = (waId, callAt, timeText) =>
+  _setAppointment.run(callAt ?? null, timeText ?? null, now(), waId);
+
+const _markReminded = db.prepare(
+  'UPDATE leads SET call_reminded = 1, updated_at = ? WHERE wa_id = ?',
+);
+export const markCallReminded = (waId) => _markReminded.run(now(), waId);
+
+// مكالمات قادمة خلال الفترة القريبة لم يُرسل لها تذكير بعد
+const _dueReminders = db.prepare(`
+  SELECT l.wa_id, l.call_at, l.call_time_text, c.last_inbound_at
+  FROM leads l JOIN contacts c ON c.wa_id = l.wa_id
+  WHERE l.call_at IS NOT NULL AND l.call_reminded = 0
+    AND c.status = 'active'
+    AND l.call_at > @now AND l.call_at <= @horizon
+`);
+export const dueCallReminders = (nowTs, beforeMs) =>
+  _dueReminders.all({ now: nowTs, horizon: nowTs + beforeMs });
+
+// ===== متابعة العملاء الذين لم يُغلقوا الصفقة (بعد يومين+) =====
+const _incReengage = db.prepare(
+  'UPDATE leads SET reengage_count = reengage_count + 1, last_reengage_at = ?, updated_at = ? WHERE wa_id = ?',
+);
+export const incReengage = (waId, ts = now()) =>
+  _incReengage.run(ts, ts, waId);
+
+const _reengage = db.prepare(`
+  SELECT l.wa_id, l.name, l.stage, c.last_inbound_at, c.last_outbound_at
+  FROM leads l JOIN contacts c ON c.wa_id = l.wa_id
+  WHERE c.status = 'active'
+    AND l.stage NOT IN ('won', 'lost')
+    AND COALESCE(c.last_outbound_at, c.last_inbound_at, 0) < @idleBefore
+    AND l.reengage_count < @maxCount
+    AND (l.last_reengage_at IS NULL OR l.last_reengage_at < @reengageBefore)
+    AND (l.call_at IS NULL OR l.call_at < @now)
+`);
+export const reengageCandidates = ({ idleBefore, maxCount, reengageBefore, now: nowTs }) =>
+  _reengage.all({ idleBefore, maxCount, reengageBefore, now: nowTs ?? Date.now() });
 
 // ===== التنبيهات =====
 const _addAlert = db.prepare(

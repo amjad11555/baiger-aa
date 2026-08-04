@@ -51,6 +51,28 @@ export const config = {
     checkMs: Number(process.env.FOLLOWUP_CHECK_MS || 15 * 60 * 1000),
   },
 
+  // المنطقة الزمنية للوكالة (لحساب مواعيد المكالمات)
+  timezone: process.env.TIMEZONE || 'Asia/Riyadh',
+
+  // لغة قوالب واتساب المعتمدة
+  templateLang: process.env.TEMPLATE_LANG || 'ar',
+
+  // تذكير العميل قبل موعد المكالمة
+  reminder: {
+    enabled: (process.env.REMINDER_ENABLED ?? 'true') !== 'false',
+    beforeMinutes: Number(process.env.REMINDER_BEFORE_MINUTES || 60),
+    checkMs: Number(process.env.REMINDER_CHECK_MS || 5 * 60 * 1000),
+    template: process.env.REMINDER_TEMPLATE || '', // قالب معتمد للتذكير خارج 24 ساعة
+  },
+
+  // متابعة العميل الذي لم يُغلق الصفقة بعد يومين+ (تحتاج قالبًا معتمدًا)
+  reengage: {
+    afterDays: Number(process.env.REENGAGE_AFTER_DAYS || 2),
+    everyDays: Number(process.env.REENGAGE_EVERY_DAYS || 2),
+    max: Number(process.env.REENGAGE_MAX || 3),
+    template: process.env.REENGAGE_TEMPLATE || '',
+  },
+
   // تفريغ الرسائل الصوتية (خدمة متوافقة مع OpenAI Whisper — OpenAI / Groq / ...)
   // يُفعَّل تلقائيًا بمجرد وضع VOICE_API_KEY (ما لم يُضبط VOICE_TRANSCRIBE_ENABLED=false)
   voice: {

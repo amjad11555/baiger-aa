@@ -50,6 +50,29 @@ export async function sendText(to, body) {
   });
 }
 
+/**
+ * إرسال رسالة قالب معتمد (للرسائل خارج نافذة 24 ساعة — قاعدة واتساب).
+ * bodyParams: مصفوفة نصوص تملأ متغيرات القالب {{1}}, {{2}} ...
+ */
+export async function sendTemplate(to, name, lang = 'ar', bodyParams = []) {
+  if (!name) return null;
+  const components = bodyParams.length
+    ? [
+        {
+          type: 'body',
+          parameters: bodyParams.map((t) => ({ type: 'text', text: String(t) })),
+        },
+      ]
+    : [];
+  return callGraph({
+    messaging_product: 'whatsapp',
+    recipient_type: 'individual',
+    to,
+    type: 'template',
+    template: { name, language: { code: lang }, components },
+  });
+}
+
 const SUPPORTED_IMAGE = new Set([
   'image/jpeg',
   'image/png',

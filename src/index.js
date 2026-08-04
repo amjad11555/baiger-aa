@@ -11,6 +11,7 @@ import { transcribeAudio } from './transcribe.js';
 import { generateReply } from './brain.js';
 import { notifyOwner } from './notify.js';
 import { startFollowupLoop } from './followup.js';
+import { startReminderLoop } from './reminders.js';
 import * as db from './db.js';
 import {
   pushToBuffer,
@@ -183,8 +184,8 @@ async function respond(from) {
     }
   }
 
-  // إن أرسل العميل صوتًا تعذّر تفريغه، نوجّه النموذج للاعتذار بلطف وطلب الكتابة
-  let contextNote = buildContextNote(from);
+  // نضمّن الوقت الحالي (لحساب مواعيد المكالمات) + ملف العميل
+  let contextNote = [nowNote(), buildContextNote(from)].filter(Boolean).join(' ');
   if (audioFallback && texts.length === 0) {
     contextNote =
       (contextNote ? contextNote + ' ' : '') +
@@ -219,6 +220,19 @@ async function respond(from) {
     await sendText(from, text);
   }
   for (const note of effects.notifyOwner || []) await notifyOwner(note);
+}
+
+function nowNote() {
+  const f = new Intl.DateTimeFormat('en-CA', {
+    timeZone: config.timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+  return `التاريخ والوقت الحالي: ${f.format(new Date())} (${config.timezone}). عند حجز مكالمة احسب scheduled_at_iso بصيغة ISO 8601 مع فرق التوقيت اعتمادًا على هذا.`;
 }
 
 function buildContextNote(from) {
@@ -307,4 +321,5 @@ app.listen(config.port, () => {
   if (!config.whatsapp.appSecret)
     console.warn('[أمان] WHATSAPP_APP_SECRET غير مضبوط — يُنصح بتفعيل التحقق من التوقيع.');
   startFollowupLoop();
+  startReminderLoop();
 });
