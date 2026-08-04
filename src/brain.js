@@ -3,7 +3,12 @@ import { config } from './config.js';
 import { buildSystemPrompt } from './prompt.js';
 import { TOOLS, runTool } from './tools.js';
 
-const client = new Anthropic({ apiKey: config.anthropic.apiKey });
+// تهيئة كسولة لعميل Claude — حتى يُقلع الخادم حتى لو لم يُضبط المفتاح بعد
+let _client;
+function client() {
+  if (!_client) _client = new Anthropic({ apiKey: config.anthropic.apiKey });
+  return _client;
+}
 
 // نبني نظام التعليمات مرة واحدة ونثبّته للاستفادة من التخزين المؤقت (prompt caching).
 const SYSTEM_PROMPT = buildSystemPrompt();
@@ -28,7 +33,7 @@ export async function generateReply(messages, { waId, contextNote } = {}) {
 
   try {
     for (let i = 0; i < MAX_TOOL_ITERATIONS; i++) {
-      const response = await client.messages.create({
+      const response = await client().messages.create({
         model: config.anthropic.model,
         max_tokens: 2048,
         thinking: { type: 'adaptive' },
