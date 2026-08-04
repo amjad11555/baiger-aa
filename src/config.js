@@ -50,4 +50,17 @@ export const config = {
     max: Number(process.env.FOLLOWUP_MAX || 2), // أقصى عدد رسائل متابعة
     checkMs: Number(process.env.FOLLOWUP_CHECK_MS || 15 * 60 * 1000),
   },
+
+  // تفريغ الرسائل الصوتية (خدمة متوافقة مع OpenAI Whisper — OpenAI / Groq / ...)
+  // يُفعَّل تلقائيًا بمجرد وضع VOICE_API_KEY (ما لم يُضبط VOICE_TRANSCRIBE_ENABLED=false)
+  voice: {
+    enabled:
+      !!process.env.VOICE_API_KEY &&
+      process.env.VOICE_TRANSCRIBE_ENABLED !== 'false',
+    apiUrl:
+      process.env.VOICE_API_URL ||
+      'https://api.openai.com/v1/audio/transcriptions',
+    apiKey: process.env.VOICE_API_KEY || '',
+    model: process.env.VOICE_MODEL || 'whisper-1',
+  },
 };

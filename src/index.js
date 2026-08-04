@@ -1,7 +1,13 @@
 import express from 'express';
 import crypto from 'node:crypto';
 import { config } from './config.js';
-import { markReadAndTyping, sendText, downloadMedia } from './whatsapp.js';
+import {
+  markReadAndTyping,
+  sendText,
+  downloadImage,
+  downloadMediaBuffer,
+} from './whatsapp.js';
+import { transcribeAudio } from './transcribe.js';
 import { generateReply } from './brain.js';
 import { notifyOwner } from './notify.js';
 import { startFollowupLoop } from './followup.js';
@@ -148,14 +154,15 @@ async function respond(from) {
   const items = drainBuffer(from);
   if (items.length === 0) return;
 
-  // نبني نص التخزين + كتل المحتوى (مع الصور) للجولة الحالية
+  // نبني نص التخزين + كتل المحتوى (مع الصور والصوت) للجولة الحالية
   const texts = [];
   const imageBlocks = [];
+  let audioFallback = false;
   for (const it of items) {
     if (it.type === 'text') texts.push(it.text);
     else if (it.type === 'image') {
       if (it.caption) texts.push(it.caption);
-      const media = await downloadMedia(it.mediaId);
+      const media = await downloadImage(it.mediaId);
       if (media) {
         imageBlocks.push({
           type: 'image',
@@ -166,12 +173,29 @@ async function respond(from) {
           },
         });
       }
+    } else if (it.type === 'audio') {
+      const media = await downloadMediaBuffer(it.mediaId);
+      const transcript = media
+        ? await transcribeAudio(media.buffer, media.mime)
+        : null;
+      if (transcript) texts.push(transcript);
+      else audioFallback = true;
     }
   }
 
+  // إن أرسل العميل صوتًا تعذّر تفريغه، نوجّه النموذج للاعتذار بلطف وطلب الكتابة
+  let contextNote = buildContextNote(from);
+  if (audioFallback && texts.length === 0) {
+    contextNote =
+      (contextNote ? contextNote + ' ' : '') +
+      'ملاحظة: أرسل العميل رسالة صوتية تعذّر تفريغها. اعتذر بلطف واطلب منه كتابة طلبه نصًّا باختصار.';
+  }
+
   const userText = texts.join('\n').trim();
-  const storageText =
-    (imageBlocks.length ? '[صورة] ' : '') + (userText || '(صورة)');
+  const hasAudio = items.some((i) => i.type === 'audio');
+  const prefix =
+    (imageBlocks.length ? '[صورة] ' : '') + (hasAudio ? '[صوت] ' : '');
+  const storageText = (prefix + userText).trim() || '(وسائط)';
   appendHistory(from, 'user', storageText);
 
   // نبني رسائل Claude من السجل، مع استبدال الجولة الأخيرة بالصور إن وُجدت
@@ -187,7 +211,7 @@ async function respond(from) {
 
   const { text, effects } = await generateReply(messages, {
     waId: from,
-    contextNote: buildContextNote(from),
+    contextNote,
   });
 
   if (text) {
@@ -226,6 +250,8 @@ function extractItem(msg) {
         mediaId: msg.image?.id,
         caption: msg.image?.caption?.trim() || '',
       };
+    case 'audio':
+      return msg.audio?.id ? { type: 'audio', mediaId: msg.audio.id } : null;
     case 'button':
       return msg.button?.text?.trim()
         ? { type: 'text', text: msg.button.text.trim() }
@@ -240,8 +266,11 @@ function extractItem(msg) {
   }
 }
 
-const itemToText = (it) =>
-  it.type === 'text' ? it.text : '[صورة] ' + (it.caption || '');
+const itemToText = (it) => {
+  if (it.type === 'text') return it.text;
+  if (it.type === 'audio') return '[صوت]';
+  return '[صورة] ' + (it.caption || '');
+};
 
 // ===== لوحة الإدارة والإحصائيات =====
 function checkAdmin(req, res) {

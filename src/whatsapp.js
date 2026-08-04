@@ -58,10 +58,10 @@ const SUPPORTED_IMAGE = new Set([
 ]);
 
 /**
- * تنزيل وسائط (صورة) من واتساب وإرجاعها base64 لتحليلها عبر رؤية Claude.
- * يُرجع null إذا لم تكن صورة مدعومة أو فشل التنزيل أو تجاوز الحجم.
+ * تنزيل أي وسائط من واتساب وإرجاعها كـ Buffer + نوع MIME.
+ * يُرجع null عند الفشل أو تجاوز الحجم الأقصى.
  */
-export async function downloadMedia(mediaId) {
+export async function downloadMediaBuffer(mediaId, maxBytes = 16 * 1024 * 1024) {
   try {
     const metaRes = await fetch(`${BASE}/${mediaId}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -69,19 +69,27 @@ export async function downloadMedia(mediaId) {
     if (!metaRes.ok) return null;
     const meta = await metaRes.json();
     const mime = (meta.mime_type || '').split(';')[0].trim();
-    if (!SUPPORTED_IMAGE.has(mime)) return null;
-    if (meta.file_size && meta.file_size > 5 * 1024 * 1024) return null; // 5MB
+    if (meta.file_size && meta.file_size > maxBytes) return null;
 
     const binRes = await fetch(meta.url, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!binRes.ok) return null;
-    const buf = Buffer.from(await binRes.arrayBuffer());
-    if (buf.length > 5 * 1024 * 1024) return null;
+    const buffer = Buffer.from(await binRes.arrayBuffer());
+    if (buffer.length > maxBytes) return null;
 
-    return { base64: buf.toString('base64'), mime };
+    return { buffer, mime };
   } catch (err) {
     console.error('[WhatsApp] فشل تنزيل الوسائط:', err?.message || err);
     return null;
   }
+}
+
+/**
+ * تنزيل صورة وإرجاعها base64 لتحليلها عبر رؤية Claude (صور مدعومة فقط، حتى 5MB).
+ */
+export async function downloadImage(mediaId) {
+  const media = await downloadMediaBuffer(mediaId, 5 * 1024 * 1024);
+  if (!media || !SUPPORTED_IMAGE.has(media.mime)) return null;
+  return { base64: media.buffer.toString('base64'), mime: media.mime };
 }
