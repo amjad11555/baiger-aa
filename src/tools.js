@@ -45,6 +45,31 @@ export const TOOLS = [
     },
   },
   {
+    name: 'book_call',
+    description:
+      'سجّل موعد مكالمة بعد أن يوافق العميل ويعطيك الوقت المناسب له. استدعِها بمجرد حصولك على الوقت المفضّل. ' +
+      'سيصل تنبيه فوري بالموعد لفريق الوكالة ليتصل بالعميل. بعدها أرسل للعميل رسالة تأكيد لطيفة.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        preferred_time: {
+          type: 'string',
+          description: 'اليوم/الوقت المناسب للعميل كما ذكره بالضبط',
+        },
+        name: { type: 'string', description: 'اسم العميل إن عُرف' },
+        interest: {
+          type: 'string',
+          description: 'الخدمة أو الحاجة التي يهتم بها العميل',
+        },
+        summary: {
+          type: 'string',
+          description: 'ملخّص قصير جدًا لاحتياج العميل (لتجهيز الفريق للمكالمة)',
+        },
+      },
+      required: ['preferred_time'],
+    },
+  },
+  {
     name: 'escalate_to_human',
     description:
       'حوّل المحادثة لمختص بشري في الحالات الحرجة أو المعقّدة (شكوى، طلب استثنائي، تفاوض كبير، ' +
@@ -75,6 +100,29 @@ export function runTool(waId, name, input) {
         effects.notifyOwner = txt;
       }
       return { result: 'تم تحديث بيانات العميل بنجاح.', effects };
+    }
+
+    if (name === 'book_call') {
+      upsertLead(waId, {
+        name: input.name,
+        interest: input.interest,
+        stage: 'hot',
+        summary: input.summary,
+        next_action: `مكالمة مجدولة: ${input.preferred_time}`,
+      });
+      const txt =
+        `📞 موعد مكالمة جديد (${waId})\n` +
+        `العميل: ${input.name || '—'}\n` +
+        `الوقت المفضّل: ${input.preferred_time}\n` +
+        `الاهتمام: ${input.interest || '—'}\n` +
+        `الملخّص: ${input.summary || '—'}`;
+      addAlert(waId, 'call_booked', txt);
+      effects.notifyOwner = txt;
+      return {
+        result:
+          'تم تسجيل الموعد وإخطار الفريق. أكّد للعميل بلطف أن أحد مختصينا سيتواصل معه في الوقت المحدّد.',
+        effects,
+      };
     }
 
     if (name === 'escalate_to_human') {
