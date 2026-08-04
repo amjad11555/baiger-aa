@@ -16,6 +16,8 @@ export const config = {
     phoneNumberId: required('WHATSAPP_PHONE_NUMBER_ID'),
     verifyToken: required('WHATSAPP_VERIFY_TOKEN'),
     graphVersion: process.env.GRAPH_API_VERSION || 'v21.0',
+    // سر التطبيق للتحقق من توقيع الويبهوك (اختياري لكن يُنصح به بشدة)
+    appSecret: process.env.WHATSAPP_APP_SECRET || '',
   },
 
   anthropic: {
@@ -29,6 +31,23 @@ export const config = {
   humanHandoffNote:
     process.env.HUMAN_HANDOFF_NOTE || 'سيتواصل معك أحد مختصينا خلال دقائق',
 
-  // عدد الرسائل المحفوظة في ذاكرة كل محادثة
+  // عدد الرسائل المحفوظة في سياق كل محادثة
   maxHistoryMessages: Number(process.env.MAX_HISTORY_MESSAGES || 40),
+
+  // قاعدة البيانات (حفظ دائم)
+  dbPath: process.env.DB_PATH || 'data/baigr.db',
+
+  // رقم صاحب الوكالة لاستقبال تنبيهات الصفقات الساخنة والتحويل البشري
+  ownerWaId: process.env.OWNER_WA_ID || '',
+
+  // مفتاح حماية لوحة الإحصائيات والإدارة
+  adminKey: process.env.ADMIN_KEY || '',
+
+  // المتابعة التلقائية للعملاء الصامتين
+  followup: {
+    enabled: (process.env.FOLLOWUP_ENABLED ?? 'true') !== 'false',
+    hours: Number(process.env.FOLLOWUP_HOURS || 6), // بعد كم ساعة صمت نتابع
+    max: Number(process.env.FOLLOWUP_MAX || 2), // أقصى عدد رسائل متابعة
+    checkMs: Number(process.env.FOLLOWUP_CHECK_MS || 15 * 60 * 1000),
+  },
 };

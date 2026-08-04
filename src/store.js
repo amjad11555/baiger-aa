@@ -1,52 +1,57 @@
 import { config } from './config.js';
+import * as db from './db.js';
 
 /**
- * ذاكرة محادثات بسيطة في الذاكرة (in-memory) لكل رقم عميل.
- * لكل عميل:
- *  - history: سجل المحادثة [{ role, content }]
- *  - buffer:  الرسائل الواردة التي لم يُرد عليها بعد (تُجمَّع خلال نافذة الانتظار)
- *  - timer:   مؤقّت الانتظار قبل الرد
- *  - profile: اسم العميل إن توفر
- *
- * ملاحظة: عند إعادة تشغيل الخادم تُفقد الذاكرة. للإنتاج طويل الأمد يمكن استبدال
- * هذا الملف بقاعدة بيانات (Redis / SQLite / Postgres) بنفس الواجهة.
+ * الحالة اللحظية لكل عميل (buffers + timers) تبقى في الذاكرة،
+ * بينما سجل المحادثة والعملاء المحتملون يُحفظون بشكل دائم في SQLite (db.js).
  */
-const conversations = new Map();
+const runtime = new Map();
 
-export function getConversation(waId) {
-  let convo = conversations.get(waId);
-  if (!convo) {
-    convo = { history: [], buffer: [], timer: null, profile: {} };
-    conversations.set(waId, convo);
+function getRuntime(waId) {
+  let r = runtime.get(waId);
+  if (!r) {
+    r = { buffer: [], timer: null };
+    runtime.set(waId, r);
   }
-  return convo;
+  return r;
 }
 
-export function pushToBuffer(waId, text) {
-  const convo = getConversation(waId);
-  convo.buffer.push(text);
-  return convo;
+// ===== المخزن المؤقّت للرسائل الواردة (قبل الرد) =====
+// عناصر: { type: 'text', text } أو { type: 'image', mediaId, caption }
+export function pushToBuffer(waId, item) {
+  const r = getRuntime(waId);
+  r.buffer.push(item);
+  return r;
 }
+export function drainBuffer(waId) {
+  const r = getRuntime(waId);
+  const items = r.buffer;
+  r.buffer = [];
+  return items;
+}
+export function getTimerHolder(waId) {
+  return getRuntime(waId);
+}
+
+// ===== غلاف حول قاعدة البيانات =====
+export const ensureContact = (waId, name) => db.upsertContact(waId, name);
+export const setProfileName = (waId, name) => db.setContactName(waId, name);
+export const getContact = (waId) => db.getContact(waId);
+export const setContactStatus = (waId, status) =>
+  db.setContactStatus(waId, status);
 
 export function appendHistory(waId, role, content) {
-  const convo = getConversation(waId);
-  convo.history.push({ role, content });
-  // قصّ السجل للحفاظ على حدود السياق والتكلفة
-  const max = config.maxHistoryMessages;
-  if (convo.history.length > max) {
-    convo.history = convo.history.slice(convo.history.length - max);
-  }
+  db.addMessage(waId, role, content);
+  if (role === 'user') db.touchInbound(waId);
+  else if (role === 'assistant') db.touchOutbound(waId);
 }
 
-export function drainBuffer(waId) {
-  const convo = getConversation(waId);
-  const messages = convo.buffer;
-  convo.buffer = [];
-  return messages;
-}
+export const getHistory = (waId) =>
+  db.getRecentMessages(waId, config.maxHistoryMessages);
 
-export function setProfileName(waId, name) {
-  if (!name) return;
-  const convo = getConversation(waId);
-  if (!convo.profile.name) convo.profile.name = name;
-}
+export const isDuplicate = (msgId) => db.isProcessed(msgId);
+export const markSeen = (msgId) => db.markProcessed(msgId);
+
+export const getLead = (waId) => db.getLead(waId);
+export const upsertLead = (waId, fields) => db.upsertLead(waId, fields);
+export const addAlert = (waId, type, text) => db.addAlert(waId, type, text);
