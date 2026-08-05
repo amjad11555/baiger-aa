@@ -90,6 +90,7 @@ app.post('/webhook', async (req, res) => {
     return res.sendStatus(403);
   }
   res.sendStatus(200); // نردّ فورًا ثم نعالج
+  console.log('[Webhook] وصل حدث من Meta');
 
   try {
     for (const entry of req.body?.entry || []) {
@@ -121,6 +122,12 @@ async function handleIncomingMessage(msg, contacts) {
 
   const item = extractItem(msg);
   if (!item) return; // نوع غير مدعوم (صوت/موقع/ملف) — نتجاهله بصمت حاليًا
+  console.log(
+    '[وارد] رسالة من',
+    from,
+    '-',
+    item.type === 'text' ? item.text : `[${item.type}]`,
+  );
 
   markReadAndTyping(msg.id).catch(() => {});
 
@@ -218,6 +225,9 @@ async function respond(from) {
   if (text) {
     appendHistory(from, 'assistant', text);
     await sendText(from, text);
+    console.log('[صادر] تم إرسال رد إلى', from);
+  } else {
+    console.log('[respond] لم يُنتج النموذج ردًّا نصّيًا لـ', from);
   }
   for (const note of effects.notifyOwner || []) await notifyOwner(note);
 }
