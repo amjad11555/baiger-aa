@@ -26,7 +26,12 @@ import {
   getLead,
   isDuplicate,
   markSeen,
+  autoReplyEnabled,
+  setSetting,
+  conversations,
+  messagesFor,
 } from './store.js';
+import { dashboardHtml } from './dashboard.js';
 
 const app = express();
 // نلتقط الجسم الخام للتحقق من توقيع Meta
@@ -217,6 +222,12 @@ async function respond(from) {
     messages = [...history.slice(0, -1), { role: 'user', content: userBlocks }];
   }
 
+  // إيقاف الرد الآلي عالميًا من لوحة التحكم — نخزّن الرسالة بدون رد
+  if (!autoReplyEnabled()) {
+    console.log('[respond] الرد الآلي موقوف عالميًا — حُفظت الرسالة بدون رد لـ', from);
+    return;
+  }
+
   const { text, effects } = await generateReply(messages, {
     waId: from,
     contextNote,
@@ -302,7 +313,8 @@ function checkAdmin(req, res) {
     res.status(503).json({ error: 'ADMIN_KEY غير مضبوط' });
     return false;
   }
-  if (req.query.key !== config.adminKey) {
+  const key = req.query.key || req.body?.key;
+  if (key !== config.adminKey) {
     res.status(403).json({ error: 'مفتاح غير صحيح' });
     return false;
   }
@@ -321,6 +333,61 @@ app.get('/release', (req, res) => {
   if (!wa) return res.status(400).json({ error: 'wa مطلوب' });
   setContactStatus(wa, 'active');
   res.json({ ok: true, wa, status: 'active' });
+});
+
+// ===== لوحة التحكم =====
+app.get('/admin', (req, res) => {
+  if (!checkAdmin(req, res)) return;
+  res.type('html').send(dashboardHtml(config.adminKey));
+});
+
+app.get('/admin/api/state', (req, res) => {
+  if (!checkAdmin(req, res)) return;
+  res.json({ autoReply: autoReplyEnabled() });
+});
+
+app.post('/admin/api/global', (req, res) => {
+  if (!checkAdmin(req, res)) return;
+  setSetting('auto_reply_enabled', req.body?.enabled ? '1' : '0');
+  res.json({ ok: true, autoReply: autoReplyEnabled() });
+});
+
+app.get('/admin/api/conversations', (req, res) => {
+  if (!checkAdmin(req, res)) return;
+  res.json(conversations());
+});
+
+app.get('/admin/api/messages', (req, res) => {
+  if (!checkAdmin(req, res)) return;
+  const wa = req.query.wa;
+  if (!wa) return res.status(400).json({ error: 'wa مطلوب' });
+  const c = getContact(wa);
+  res.json({
+    name: c?.name || null,
+    status: c?.status || 'active',
+    messages: messagesFor(wa),
+  });
+});
+
+app.post('/admin/api/contact-status', (req, res) => {
+  if (!checkAdmin(req, res)) return;
+  const { wa, status } = req.body || {};
+  if (!wa || !['active', 'human', 'paused'].includes(status))
+    return res.status(400).json({ error: 'بيانات غير صحيحة' });
+  setContactStatus(wa, status);
+  res.json({ ok: true, wa, status });
+});
+
+// رد يدوي من المسؤول — يوقف البوت لهذا العميل ويرسل الرسالة بنفسه
+app.post('/admin/api/send', async (req, res) => {
+  if (!checkAdmin(req, res)) return;
+  const { wa, text } = req.body || {};
+  if (!wa || !text?.trim())
+    return res.status(400).json({ error: 'wa و text مطلوبان' });
+  setContactStatus(wa, 'human'); // يسكت البوت عند هذا العميل
+  appendHistory(wa, 'assistant', text.trim());
+  await sendText(wa, text.trim());
+  res.json({ ok: true });
 });
 
 app.listen(config.port, () => {

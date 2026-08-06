@@ -56,4 +56,11 @@ export const getLead = (waId) => db.getLead(waId);
 export const upsertLead = (waId, fields) => db.upsertLead(waId, fields);
 export const setAppointment = (waId, callAt, timeText) =>
   db.setAppointment(waId, callAt, timeText);
+
+// إعدادات عامة + لوحة التحكم
+export const getSetting = (key, def) => db.getSetting(key, def);
+export const setSetting = (key, value) => db.setSetting(key, value);
+export const conversations = () => db.conversations();
+export const messagesFor = (waId, limit) => db.messagesFor(waId, limit);
+export const autoReplyEnabled = () => db.getSetting('auto_reply_enabled', '1') === '1';
 export const addAlert = (waId, type, text) => db.addAlert(waId, type, text);

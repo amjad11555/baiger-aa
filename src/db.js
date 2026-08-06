@@ -213,6 +213,41 @@ const _addAlert = db.prepare(
 export const addAlert = (waId, type, text) =>
   _addAlert.run(waId, type, text, now());
 
+// ===== إعدادات عامة (مفتاح/قيمة) — مثل تشغيل/إيقاف الرد الآلي عالميًا =====
+db.exec(
+  'CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT)',
+);
+const _getSetting = db.prepare('SELECT value FROM settings WHERE key = ?');
+const _setSetting = db.prepare(
+  'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+);
+export function getSetting(key, def = null) {
+  const row = _getSetting.get(key);
+  return row ? row.value : def;
+}
+export const setSetting = (key, value) => _setSetting.run(key, String(value));
+
+// ===== لوحة التحكم =====
+const _conversations = db.prepare(`
+  SELECT c.wa_id, c.name, c.status, c.last_inbound_at, c.last_outbound_at,
+         l.stage,
+         (SELECT content FROM messages m WHERE m.wa_id = c.wa_id ORDER BY m.id DESC LIMIT 1) AS last_message,
+         (SELECT created_at FROM messages m WHERE m.wa_id = c.wa_id ORDER BY m.id DESC LIMIT 1) AS last_at
+  FROM contacts c
+  LEFT JOIN leads l ON l.wa_id = c.wa_id
+  ORDER BY COALESCE(
+    (SELECT created_at FROM messages m WHERE m.wa_id = c.wa_id ORDER BY m.id DESC LIMIT 1),
+    c.updated_at, 0
+  ) DESC
+  LIMIT 200
+`);
+export const conversations = () => _conversations.all();
+
+const _messagesFor = db.prepare(
+  'SELECT role, content, created_at FROM messages WHERE wa_id = ? ORDER BY id ASC LIMIT ?',
+);
+export const messagesFor = (waId, limit = 300) => _messagesFor.all(waId, limit);
+
 // ===== المتابعة التلقائية =====
 // عملاء نشطون، ضمن نافذة 24 ساعة، صمتوا فترة، ولم يُستنفد عدد المتابعات.
 const _followupCandidates = db.prepare(`
