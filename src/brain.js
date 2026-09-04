@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { config } from './config.js';
 import { buildSystemPrompt } from './prompt.js';
 import { TOOLS, runTool } from './tools.js';
+import { checkReply, sanitizeReply, correctionNote } from './guard.js';
 
 // تهيئة كسولة لعميل Claude — حتى يُقلع الخادم حتى لو لم يُضبط المفتاح بعد
 let _client;
@@ -74,10 +75,64 @@ export async function generateReply(messages, { waId, contextNote } = {}) {
       convo.push({ role: 'user', content: toolResults });
     }
 
-    const text = textParts.join('\n').trim() || null;
+    let text = textParts.join('\n').trim() || null;
+    if (!text) return { text, effects };
+
+    // ===== حارس الرد: فحص حتمي قبل الإرسال =====
+    let violations = checkReply(text);
+    if (violations.length) {
+      console.warn('[guard] مخالفات في الرد الأول:', violations.join(' | '));
+      // إعادة صياغة واحدة مع تسمية المخالفات
+      const fixed = await regenerate(system, convo, text, violations);
+      if (fixed) {
+        const v2 = checkReply(fixed);
+        if (!v2.length) {
+          text = fixed;
+          violations = [];
+        } else {
+          console.warn('[guard] المخالفات بعد الإعادة:', v2.join(' | '));
+          text = fixed;
+          violations = v2;
+        }
+      }
+    }
+    if (violations.length) {
+      // تصحيح ميكانيكي أخير — لا نرسل رداً مخالفاً أبداً
+      const before = text;
+      text = sanitizeReply(text);
+      console.warn('[guard] طُبّق تصحيح آلي.', { before: before.slice(0, 120), after: text.slice(0, 120) });
+    }
     return { text, effects };
   } catch (err) {
     console.error('[Claude] خطأ في توليد الرد:', err?.message || err);
     return { text: null, effects };
+  }
+}
+
+/**
+ * يطلب من النموذج إعادة صياغة رد مخالف، بلا أدوات، مرة واحدة.
+ * @returns {Promise<string|null>}
+ */
+async function regenerate(system, convo, badText, violations) {
+  try {
+    const response = await client().messages.create({
+      model: config.anthropic.model,
+      max_tokens: 400,
+      system,
+      messages: [
+        ...convo,
+        { role: 'assistant', content: badText },
+        { role: 'user', content: correctionNote(violations) },
+      ],
+    });
+    const out = response.content
+      .filter((b) => b.type === 'text')
+      .map((b) => b.text.trim())
+      .join(' ')
+      .trim();
+    return out || null;
+  } catch (err) {
+    console.error('[guard] فشلت إعادة الصياغة:', err?.message || err);
+    return null;
   }
 }
