@@ -9,8 +9,9 @@
 
 export const LIMITS = {
   maxQuestions: 1,
-  maxWords: 45, // التعليمات تقول ~25؛ هذا سقف صلب يترك هامشاً لرسائل التأكيد
-  maxLines: 4,
+  maxWords: 38, // التعليمات تقول ~25؛ هذا سقف صلب يترك هامشاً لرسائل التأكيد
+  maxLines: 3,
+  maxEnumeratedItems: 2, // «موقع فيه منيو وصور وحجز» = ثلاثة بنود = سرد
 };
 
 // الأرقام الوحيدة المسموح اقترانها بعملة: نطاق خدمة المواقع المعلن.
@@ -59,6 +60,28 @@ function countWords(text) {
     .filter(Boolean).length;
 }
 
+/**
+ * يكشف التعداد داخل جملة واحدة: «موقع فيه عرض ومنيو وصور وحجز ولوحة تحكم».
+ * لا تمسكه فحوص القوائم لأنه بلا شرطات، ولا فحص الطول لأنه قد يبقى قصيراً.
+ * نعدّ الأسماء المعطوفة بالواو أو المفصولة بفواصل بعد أداة تقديم للسرد.
+ */
+function enumerationViolation(text) {
+  // فواصل صريحة: ثلاثة عناصر أو أكثر مفصولة بفاصلة
+  const commaItems = text.split(/[،,]/).filter((x) => x.trim()).length;
+  if (commaItems > LIMITS.maxEnumeratedItems + 1) {
+    return `تعداد بفواصل (${commaItems} بنود) — لا تُعدَّد المزايا`;
+  }
+
+  // عطف متتابع: «... و... و... و...» داخل جملة واحدة
+  for (const sentence of text.split(/[.!؟?\n]/)) {
+    const ands = (sentence.match(/(?:^|\s)و[\u0621-\u064A]/g) || []).length;
+    if (ands > LIMITS.maxEnumeratedItems) {
+      return `تعداد بالعطف (${ands} بنود معطوفة) — لا تُعدَّد المزايا`;
+    }
+  }
+  return null;
+}
+
 function currencyViolations(text) {
   const found = [];
   const re = /([0-9٠-٩][0-9٠-٩,.]*)\s*(?:دولار|\$|USD|ريال|ليرة|درهم|جنيه|يورو|€)/g;
@@ -91,6 +114,9 @@ export function checkReply(text) {
   if (LIST_LINE.test(text)) v.push('يحتوي قائمة نقاط أو ترقيم — ممنوع السرد');
   if (MARKDOWN_STRUCT.test(text)) v.push('يحتوي عناوين أو جداول');
 
+  const enu = enumerationViolation(text);
+  if (enu) v.push(enu);
+
   for (const c of currencyViolations(text)) v.push(`رقم ممنوع: «${c}»`);
 
   for (const { re, why } of BANNED_PHRASES) {
@@ -106,7 +132,13 @@ export function checkReply(text) {
  */
 export function sanitizeReply(text) {
   // سرد طويل أو قائمة: قصّه يُبقيه سرداً. الرد الآمن أفضل.
-  if (countWords(text) > LIMITS.maxWords * 1.6 || LIST_LINE.test(text)) return SAFE_REPLY;
+  if (
+    countWords(text) > LIMITS.maxWords * 1.6 ||
+    LIST_LINE.test(text) ||
+    enumerationViolation(text)
+  ) {
+    return SAFE_REPLY;
+  }
 
   let t = text
     .split('\n')
