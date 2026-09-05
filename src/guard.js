@@ -66,10 +66,15 @@ function countWords(text) {
  * نعدّ الأسماء المعطوفة بالواو أو المفصولة بفواصل بعد أداة تقديم للسرد.
  */
 function enumerationViolation(text) {
-  // فواصل صريحة: ثلاثة عناصر أو أكثر مفصولة بفاصلة
-  const commaItems = text.split(/[،,]/).filter((x) => x.trim()).length;
-  if (commaItems > LIMITS.maxEnumeratedItems + 1) {
-    return `تعداد بفواصل (${commaItems} بنود) — لا تُعدَّد المزايا`;
+  // فواصل: تعداد فقط إن كانت البنود قصيرة ومتتابعة. الفاصلة بين جملتين
+  // كاملتين ترقيمٌ عادي لا سرد، فنشترط أن يكون البند أربع كلمات فأقل.
+  let run = 0;
+  for (const part of text.split(/[،,]/)) {
+    const n = countWords(part);
+    run = n > 0 && n <= 4 ? run + 1 : 0;
+    if (run > LIMITS.maxEnumeratedItems + 1) {
+      return `تعداد بفواصل (${run} بنود قصيرة) — لا تُعدَّد المزايا`;
+    }
   }
 
   // عطف متتابع: «... و... و... و...» داخل جملة واحدة
