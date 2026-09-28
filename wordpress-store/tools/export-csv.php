@@ -2,28 +2,28 @@
 /**
  * يولّد ملف CSV متوافق مع مستورد منتجات ووكومرس من كتالوج القالب.
  *
- * الاستخدام (داخل موقع ووردبريس فيه قالب ماريا مفعّل):
+ * الاستخدام (داخل موقع ووردبريس فيه قالب الشامي مفعّل):
  *   wp eval-file wordpress-store/tools/export-csv.php wordpress-store/products-ar.csv
  *
  * بعد تعديل الأسعار في Excel / Google Sheets:
  *   المنتجات ← استيراد ← اختر الملف ← فعّل «تحديث المنتجات الموجودة» (المطابقة بالـ SKU).
  *
- * @package Maria
+ * @package AlShami
  */
 
-if ( ! defined( 'ABSPATH' ) || ! function_exists( 'maria_seed_description' ) ) {
-	fwrite( STDERR, "شغّل الملف عبر wp eval-file مع تفعيل قالب ماريا.\n" );
+if ( ! defined( 'ABSPATH' ) || ! function_exists( 'shami_seed_description' ) ) {
+	fwrite( STDERR, "شغّل الملف عبر wp eval-file مع تفعيل قالب الشامي.\n" );
 	return;
 }
 
 $out  = isset( $args[0] ) ? $args[0] : 'products-ar.csv';
-$rows = include MARIA_DIR . '/inc/data/catalog.php';
-$cats = maria_categories();
+$rows = include SHAMI_DIR . '/inc/data/catalog.php';
+$cats = shami_categories();
 
 $fh = fopen( $out, 'w' );
 fwrite( $fh, "\xEF\xBB\xBF" ); // BOM ليعرض Excel الحروف العربية بشكل صحيح.
 
-$header = array( 'Type', 'SKU', 'Name', 'Published', 'Is featured?', 'Visibility in catalog', 'Short description', 'Description', 'Sale price', 'Regular price', 'Categories', 'In stock?', 'Meta: _maria_brand', 'Meta: _maria_line', 'Meta: _maria_tr', 'Meta: _maria_flavor', 'Meta: _maria_pack', 'Meta: _maria_units', 'Meta: _maria_bundle' );
+$header = array( 'Type', 'SKU', 'Name', 'Published', 'Is featured?', 'Visibility in catalog', 'Short description', 'Description', 'Sale price', 'Regular price', 'Categories', 'In stock?', 'Meta: _shami_brand', 'Meta: _shami_line', 'Meta: _shami_tr', 'Meta: _shami_flavor', 'Meta: _shami_pack', 'Meta: _shami_units', 'Meta: _shami_bundle' );
 fputcsv( $fh, $header, ',', '"', '\\' );
 
 foreach ( $rows as $row ) {
@@ -44,7 +44,7 @@ foreach ( $rows as $row ) {
 			$r['best'] ? 1 : 0,
 			'visible',
 			'<p>' . $r['desc'] . '. التعبئة: ' . $r['pack'] . '. متوفر بالجملة للبقالات بسعر الكرتونة مع توصيل سريع.</p>',
-			maria_seed_description( $r ),
+			shami_seed_description( $r ),
 			$r['sale'] ? $r['sale'] : '',
 			$r['price'],
 			implode( ', ', $categories ),
