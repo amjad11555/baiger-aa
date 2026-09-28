@@ -593,7 +593,8 @@ function lazza_seed_products() {
 
 		$product = new WC_Product_Simple();
 		$product->set_name( $r['name'] );
-		$product->set_slug( sanitize_title( $r['tr'] ) );
+		// إزالة % لأن ووردبريس يعامل %XX كترميز في الرابط (مثل «%54» في Karam %54).
+		$product->set_slug( sanitize_title( str_replace( '%', '', $r['tr'] ) ) );
 		$product->set_status( 'publish' );
 		$product->set_catalog_visibility( 'visible' );
 		$product->set_sku( $r['sku'] );
