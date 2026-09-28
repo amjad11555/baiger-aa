@@ -583,6 +583,15 @@ function lazza_seed_products() {
 
 	wp_defer_term_counting( true );
 
+	// منتجات من نسخة سابقة من الكتالوج لا تُباع بهذا الاسم فعلياً، واستُبدلت بمنتجات حقيقية: تُنقل إلى المهملات.
+	$retired = 0;
+	foreach ( array( 'ETI-TOP-RAI', 'ETI-TOP-CAR', 'ETI-TUT-MIN', 'ETI-FRM-WHL', 'ETI-NEG-MIN', 'ETI-HOS-MLK', 'ETI-CRX-SES', 'ULK-DAN-BOR', 'ULK-DAN-LBA', 'ULK-HAN-RAI', 'ULK-CRZ-SWT', 'ULK-ASK-CLS', 'ULK-GRS-SES', 'ULK-CMS-CLS' ) as $old_sku ) {
+		$old_id = wc_get_product_id_by_sku( $old_sku );
+		if ( $old_id && wp_trash_post( $old_id ) ) {
+			++$retired;
+		}
+	}
+
 	foreach ( $rows as $i => $row ) {
 		$r = array_combine( array( 'sku', 'brand', 'cat', 'line', 'name', 'tr', 'flavor', 'pack', 'units', 'price', 'sale', 'best', 'desc' ), $row );
 
@@ -640,7 +649,8 @@ function lazza_seed_products() {
 
 	wp_defer_term_counting( false );
 
-	return sprintf( 'أُضيف %d منتجاً، وتم تخطي %d موجود مسبقاً', $created, $skipped );
+	$msg = sprintf( 'أُضيف %d منتجاً، وتم تخطي %d موجود مسبقاً', $created, $skipped );
+	return $retired ? $msg . sprintf( '، ونُقل %d منتجاً قديماً إلى المهملات', $retired ) : $msg;
 }
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {

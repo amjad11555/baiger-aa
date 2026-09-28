@@ -3,9 +3,10 @@
  * استيراد صور المنتجات الرسمية من مواقع العلامات (إيتي، أولكر، بونوتشي).
  *
  * يعمل على استضافتك مباشرة:
- * 1) فهرسة صفحات كل موقع (خرائط الموقع sitemap أو زحف محدود للروابط).
- * 2) مطابقة كل منتج بصفحته الرسمية حسب الاسم التركي.
- * 3) استخراج صورة المنتج من الصفحة (og:image أو بيانات Product أو أنسب <img>).
+ * 1) صفحات مصدر محفوظة لكل منتج (inc/data/image-sources.php): وُجدت بالبحث عن اسم كل منتج،
+ *    الصفحة الرسمية أولاً ثم صفحته في متاجر تركية كبرى (A101، Migros).
+ * 2) للمنتجات غير المذكورة: فهرسة موقع العلامة (sitemap أو زحف محدود) ومطابقة الاسم التركي.
+ * 3) استخراج صورة المنتج من الصفحة (بيانات Product أو og:image أو أنسب <img>).
  * 4) مراجعة النتائج ثم تنزيل الصور وتعيينها صورة رئيسية للمنتج.
  *
  * لوحة التحكم: المنتجات ← الصور الرسمية   |   WP-CLI: wp lazza images
@@ -38,6 +39,21 @@ function lazza_image_sources() {
 			),
 		)
 	);
+}
+
+/**
+ * صفحات المصدر المحفوظة لمنتج (حسب SKU)، قابلة للتعديل عبر الفلتر lazza_image_hints.
+ *
+ * @param int $product_id رقم المنتج.
+ * @return array روابط مرتبة.
+ */
+function lazza_img_hints( $product_id ) {
+	static $map = null;
+	if ( null === $map ) {
+		$map = (array) apply_filters( 'lazza_image_hints', include LAZZA_DIR . '/inc/data/image-sources.php' );
+	}
+	$sku = (string) get_post_meta( $product_id, '_sku', true );
+	return ( $sku && ! empty( $map[ $sku ] ) ) ? array_values( (array) $map[ $sku ] ) : array();
 }
 
 /**
@@ -140,6 +156,47 @@ function lazza_img_token_match( $a, $b ) {
 		return substr( $a, 0, $n ) === substr( $b, 0, $n );
 	}
 	return false;
+}
+
+/**
+ * كلمات وصفية (نكهة/تغليف/نوع): لا تصلح اسماً للخط، وتعارضها في رابط الصفحة يُبطل المطابقة.
+ *
+ * @param string $t كلمة.
+ * @return bool
+ */
+function lazza_img_is_desc( $t ) {
+	static $descriptors = array( 'cikolatali', 'cikolata', 'kakaolu', 'kakao', 'muzlu', 'cilekli', 'cilek', 'limonlu', 'portakalli', 'portakal', 'findikli', 'findik', 'sutlu', 'sut', 'bitter', 'beyaz', 'meyveli', 'karamelli', 'kremali', 'dolgulu', 'kapli', 'kaplamali', 'mini', 'sade', 'acili', 'baharatli', 'peynirli', 'susamli', 'orijinal', 'soslu', 'joleli', 'antep', 'fistikli', 'fistigi', 'visneli', 'uzumlu', 'kayisili', 'frambuazli', 'mozaik', 'extra', 'ekstra', 'klasik', 'yulaf', 'kirmizi', 'tam', 'bugdayli', 'lifli', 'karisik', 'cokodamla', 'aromali', 'kek', 'biskuvi', 'gofret', 'kraker', 'cips', 'bar', 'tablet', 'jelibon', 'misir' );
+	foreach ( $descriptors as $d ) {
+		if ( lazza_img_token_match( $t, $d ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * كلمات الاسم التركي للمنتج بدون اسم العلامة وحروف الربط.
+ *
+ * @param string $tr الاسم التركي.
+ * @return array
+ */
+function lazza_img_product_tokens( $tr ) {
+	return array_values( array_diff( lazza_img_tokens( $tr ), array( 'eti', 'ulker', 'bonucci', 've', 'ile' ) ) );
+}
+
+/**
+ * اسم الخط: أول كلمة غير وصفية (مثل popkek، browni، crax، أو gofret عند غيابها).
+ *
+ * @param array $tokens كلمات المنتج.
+ * @return string
+ */
+function lazza_img_line_token( $tokens ) {
+	foreach ( $tokens as $t ) {
+		if ( strlen( $t ) >= 3 && ! lazza_img_is_desc( $t ) && ! ctype_digit( $t ) ) {
+			return $t;
+		}
+	}
+	return $tokens ? (string) end( $tokens ) : '';
 }
 
 /* -------------------------------------------------------------------------
@@ -265,31 +322,11 @@ function lazza_img_match_product( $product_id ) {
 	if ( ! $index || ! $info['tr'] ) {
 		return $none;
 	}
-	// كلمات وصفية (نكهة/تغليف): لا تصلح اسماً للخط، وتعارضها يُبطل المطابقة.
-	$descriptors = array( 'cikolatali', 'cikolata', 'kakaolu', 'kakao', 'muzlu', 'cilekli', 'cilek', 'limonlu', 'portakalli', 'portakal', 'findikli', 'findik', 'sutlu', 'sut', 'bitter', 'beyaz', 'meyveli', 'karamelli', 'kremali', 'dolgulu', 'kapli', 'kaplamali', 'mini', 'sade', 'acili', 'baharatli', 'peynirli', 'susamli', 'orijinal', 'soslu', 'joleli', 'antep', 'fistikli', 'fistigi', 'visneli', 'uzumlu', 'kayisili', 'frambuazli', 'mozaik', 'extra', 'ekstra', 'klasik', 'yulaf', 'kirmizi', 'tam', 'bugdayli', 'lifli', 'karisik', 'cokodamla', 'aromali', 'kek', 'biskuvi', 'gofret', 'kraker', 'cips', 'bar', 'tablet', 'jelibon', 'misir' );
-	$tokens      = array_values( array_diff( lazza_img_tokens( $info['tr'] ), array( 'eti', 'ulker', 'bonucci', 've', 'ile' ) ) );
+	$tokens = lazza_img_product_tokens( $info['tr'] );
 	if ( ! $tokens ) {
 		return $none;
 	}
-	$is_desc = static function ( $t ) use ( $descriptors ) {
-		foreach ( $descriptors as $d ) {
-			if ( lazza_img_token_match( $t, $d ) ) {
-				return true;
-			}
-		}
-		return false;
-	};
-	// اسم الخط: أول كلمة غير وصفية (مثل popkek، browni، crax، gofret عند غيابها).
-	$line = '';
-	foreach ( $tokens as $t ) {
-		if ( strlen( $t ) >= 3 && ! $is_desc( $t ) && ! ctype_digit( $t ) ) {
-			$line = $t;
-			break;
-		}
-	}
-	if ( ! $line ) {
-		$line = end( $tokens );
-	}
+	$line = lazza_img_line_token( $tokens );
 
 	$best = $none;
 	foreach ( $index as $url ) {
@@ -322,7 +359,7 @@ function lazza_img_match_product( $product_id ) {
 				continue;
 			}
 			// نكهة مختلفة في رابط الصفحة (مثل peynirli لمنتج acili) تعني منتجاً آخر.
-			$score -= ( $is_desc( $u ) && ! in_array( $u, array( 'kek', 'biskuvi', 'gofret', 'kraker', 'krakerler', 'cips' ), true ) ) ? 0.5 : 0.04;
+			$score -= ( lazza_img_is_desc( $u ) && ! in_array( $u, array( 'kek', 'biskuvi', 'gofret', 'kraker', 'krakerler', 'cips' ), true ) ) ? 0.5 : 0.04;
 		}
 		if ( $score > $best['score'] ) {
 			$best = array(
@@ -444,35 +481,108 @@ function lazza_img_extract( $html, $page, $tokens, $site_og = '' ) {
 }
 
 /**
- * البحث عن صورة منتج واحد (مطابقة + جلب الصفحة + استخراج).
+ * صورة المشاركة العامة لموقع (شعار المتجر غالباً) لاستبعادها من النتائج.
  *
- * @param int $product_id رقم المنتج.
- * @return array
+ * @param string $url   رابط صفحة في الموقع.
+ * @param string $brand علامة المنتج.
+ * @return string
  */
-function lazza_img_find( $product_id ) {
-	$page = (string) get_post_meta( $product_id, '_lazza_img_page', true );
-	if ( ! $page ) {
-		$match = lazza_img_match_product( $product_id );
-		$page  = $match['url'];
-		if ( $page ) {
-			update_post_meta( $product_id, '_lazza_img_page', $page );
+function lazza_img_site_og( $url, $brand ) {
+	$host    = lazza_img_host( $url );
+	$sources = lazza_image_sources();
+	if ( $brand && isset( $sources[ $brand ] ) && lazza_img_host( $sources[ $brand ]['base'] ) === $host && get_option( 'lazza_img_site_og_' . $brand ) ) {
+		return (string) get_option( 'lazza_img_site_og_' . $brand );
+	}
+	$parts = wp_parse_url( $url );
+	$home  = ( isset( $parts['scheme'] ) ? $parts['scheme'] : 'https' ) . '://' . ( isset( $parts['host'] ) ? $parts['host'] : '' ) . ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' ) . '/';
+	$key   = 'lazza_img_og_' . md5( $home );
+	$og    = get_transient( $key );
+	if ( false === $og ) {
+		$html = lazza_img_get( $home );
+		$og   = $html ? lazza_img_meta_image( $html, $home ) : '';
+		set_transient( $key, $og, $html ? WEEK_IN_SECONDS : HOUR_IN_SECONDS );
+	}
+	return (string) $og;
+}
+
+/**
+ * هل الصفحة التي وصلنا إليها ما زالت صفحة هذا المنتج؟
+ * إن حوّلنا المتجر إلى مسار آخر (منتج محذوف ← الرئيسية أو قسم) نشترط ظهور اسم الخط في الرابط أو العنوان.
+ *
+ * @param string $asked  الرابط المطلوب.
+ * @param string $final  الرابط بعد التحويلات.
+ * @param string $html   HTML.
+ * @param array  $tokens كلمات المنتج.
+ * @return bool
+ */
+function lazza_img_page_is_product( $asked, $final, $html, $tokens ) {
+	$path = static function ( $u ) {
+		return untrailingslashit( strtolower( (string) wp_parse_url( $u, PHP_URL_PATH ) ) );
+	};
+	if ( $path( $asked ) === $path( $final ) ) {
+		return true;
+	}
+	$line = lazza_img_line_token( $tokens );
+	if ( ! $line ) {
+		return false;
+	}
+	$title = preg_match( '#<title[^>]*>(.*?)</title>#is', $html, $m ) ? html_entity_decode( $m[1], ENT_QUOTES, 'UTF-8' ) : '';
+	foreach ( array_merge( lazza_img_tokens( $path( $final ) ), lazza_img_tokens( $title ) ) as $w ) {
+		if ( lazza_img_token_match( $line, $w ) ) {
+			return true;
 		}
 	}
-	$image = '';
-	if ( $page ) {
+	return false;
+}
+
+/**
+ * البحث عن صورة منتج واحد.
+ *
+ * ترتيب الصفحات المجرَّبة: الرابط اليدوي/المحفوظ ← صفحات المصدر المحفوظة للمنتج ← مطابقة فهرس موقع العلامة.
+ * تُستخدم أول صفحة تُرجع صورة منتج.
+ *
+ * @param int    $product_id رقم المنتج.
+ * @param string $only_page  تجربة هذه الصفحة وحدها (رابط يدوي).
+ * @return array ['page'=>string, 'image'=>string]
+ */
+function lazza_img_find( $product_id, $only_page = '' ) {
+	$info  = lazza_product_info( $product_id );
+	$saved = $only_page ? $only_page : (string) get_post_meta( $product_id, '_lazza_img_page', true );
+	$pages = array_merge( $saved ? array( $saved ) : array(), $only_page ? array() : lazza_img_hints( $product_id ) );
+	if ( ! $saved ) {
+		$match = lazza_img_match_product( $product_id );
+		if ( $match['url'] ) {
+			$pages[] = $match['url'];
+		}
+	}
+	$pages  = array_values( array_unique( array_filter( $pages ) ) );
+	$tokens = lazza_img_product_tokens( $info['tr'] );
+	$result = array(
+		'page'  => $pages ? $pages[0] : '',
+		'image' => '',
+	);
+
+	foreach ( array_slice( $pages, 0, 5 ) as $page ) {
 		$final = $page;
 		$html  = lazza_img_get( $page, $final );
-		if ( $html ) {
-			$page  = $final;
-			$info  = lazza_product_info( $product_id );
-			$image = lazza_img_extract( $html, $page, lazza_img_tokens( $info['tr'] ), (string) get_option( 'lazza_img_site_og_' . $info['brand'], '' ) );
+		if ( ! $html || ! lazza_img_page_is_product( $page, $final, $html, $tokens ) ) {
+			continue;
+		}
+		$image = lazza_img_extract( $html, $final, $tokens, lazza_img_site_og( $final, $info['brand'] ) );
+		if ( $image ) {
+			$result = array(
+				'page'  => $final,
+				'image' => $image,
+			);
+			break;
 		}
 	}
-	update_post_meta( $product_id, '_lazza_img_found', $image );
-	return array(
-		'page'  => $page,
-		'image' => $image,
-	);
+
+	if ( $result['page'] ) {
+		update_post_meta( $product_id, '_lazza_img_page', $result['page'] );
+	}
+	update_post_meta( $product_id, '_lazza_img_found', $result['image'] );
+	return $result;
 }
 
 /* -------------------------------------------------------------------------
@@ -579,23 +689,33 @@ function lazza_img_page() {
 	foreach ( array_keys( lazza_image_sources() ) as $b ) {
 		$counts[ $b ] = count( (array) get_option( 'lazza_img_index_' . $b, array() ) );
 	}
+	// تُفهرس فقط مواقع العلامات التي لها منتجات بلا صفحات مصدر محفوظة.
+	$hinted = 0;
+	$index  = array();
+	foreach ( $products as $p ) {
+		if ( lazza_img_hints( $p->get_id() ) ) {
+			++$hinted;
+		} elseif ( ! $p->get_image_id() ) {
+			$index[ lazza_product_brand( $p->get_id() ) ] = true;
+		}
+	}
 	$config = array(
 		'ajax'   => admin_url( 'admin-ajax.php' ),
 		'nonce'  => wp_create_nonce( 'lazza_img' ),
-		'brands' => array_keys( lazza_image_sources() ),
+		'brands' => array_values( array_intersect( array_keys( lazza_image_sources() ), array_keys( $index ) ) ),
 		'rows'   => $rows,
 	);
 	?>
 	<div class="wrap lz-img-wrap" dir="rtl">
 		<h1>الصور الرسمية للمنتجات</h1>
-		<p>تجلب هذه الأداة صور المنتجات من المواقع الرسمية (etietieti.com، ulker.com.tr، bonuccisweet.com) مباشرة من استضافتك، وتعيّنها صورةً رئيسية لكل منتج. راجع الصور قبل الاستيراد، وأدخل رابطاً يدوياً لأي منتج لم يُطابَق.</p>
+		<p>تجلب هذه الأداة صورة كل منتج مباشرة من استضافتك وتعيّنها صورةً رئيسية له. لكل منتج صفحات مصدر محفوظة مسبقاً (<strong><?php echo (int) $hinted; ?></strong> منتجاً): صفحته الرسمية على etietieti.com أو ulker.com.tr، أو صفحته في متاجر A101 وMigros، وللباقي تُفهرس المواقع الرسمية ويُطابَق الاسم. راجع الصور قبل الاستيراد، وأدخل رابطاً يدوياً لأي منتج لم تُوجد صورته.</p>
 		<p class="description">المنتجات المفهرسة حالياً:
 			<?php foreach ( $counts as $b => $n ) : ?>
 				<strong><?php echo esc_html( $b ); ?></strong>: <?php echo (int) $n; ?> رابط &nbsp;
 			<?php endforeach; ?>
 		</p>
 		<p class="lz-img-actions">
-			<button type="button" class="button button-primary button-hero" id="lz-img-auto">تشغيل الكل: فهرسة ← مطابقة ← بحث عن الصور</button>
+			<button type="button" class="button button-primary button-hero" id="lz-img-auto">البحث عن صور كل المنتجات</button>
 			<button type="button" class="button button-hero" id="lz-img-import" disabled>استيراد الصور المحددة</button>
 		</p>
 		<div class="lz-img-progress" hidden><div class="lz-img-bar"><span></span></div><p class="lz-img-status" aria-live="polite"></p></div>
@@ -660,7 +780,7 @@ function lazza_img_page() {
 				try { var r = await post('lazza_img_scan', {brand: C.brands[i]}); status('فهرسة ' + C.brands[i] + ': ' + r.count + ' رابط (' + r.method + ')'); } catch(e) { status('تعذّرت فهرسة ' + C.brands[i] + ': ' + e.message); }
 			}
 			var ids = C.rows.filter(function(r){ return !r.current; }).map(function(r){ return r.id; });
-			await batch('lazza_img_find', ids, 4, 'البحث عن الصور');
+			await batch('lazza_img_find', ids, 2, 'البحث عن الصور');
 			var found = C.rows.filter(function(r){ return r.found; }).length;
 			status('انتهى البحث: وُجدت صور ' + found + ' من أصل ' + C.rows.length + ' منتج. راجع الجدول ثم اضغط «استيراد الصور المحددة».', 100);
 			this.disabled = false;
@@ -785,7 +905,7 @@ add_action(
 			);
 		}
 		update_post_meta( $id, '_lazza_img_page', $url );
-		$r = lazza_img_find( $id );
+		$r = lazza_img_find( $id, $url );
 		if ( ! $r['image'] ) {
 			wp_send_json_error( 'لم نجد صورة منتج في هذه الصفحة. جرّب لصق رابط الصورة نفسها.' );
 		}
@@ -800,14 +920,14 @@ add_action(
 );
 
 /* -------------------------------------------------------------------------
- * WP-CLI: wp lazza images [--brand=eti] [--import] [--force]
+ * WP-CLI: wp lazza images [--brand=eti] [--import] [--force] [--skip-index]
  * ---------------------------------------------------------------------- */
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	WP_CLI::add_command(
 		'lazza images',
 		static function ( $args, $assoc ) {
 			$brands = isset( $assoc['brand'] ) ? array( sanitize_key( $assoc['brand'] ) ) : array_keys( lazza_image_sources() );
-			foreach ( $brands as $b ) {
+			foreach ( empty( $assoc['skip-index'] ) ? $brands : array() as $b ) {
 				$r = lazza_img_build_index( $b );
 				WP_CLI::log( sprintf( 'فهرسة %s: %d رابط (%s)', $b, $r['count'], $r['method'] ) );
 			}

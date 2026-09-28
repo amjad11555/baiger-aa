@@ -24,7 +24,7 @@ $fh = fopen( $out, 'w' );
 fwrite( $fh, "\xEF\xBB\xBF" ); // BOM ليعرض Excel الحروف العربية بشكل صحيح.
 
 $header = array( 'Type', 'SKU', 'Name', 'Published', 'Is featured?', 'Visibility in catalog', 'Short description', 'Description', 'Sale price', 'Regular price', 'Categories', 'In stock?', 'Meta: _lazza_brand', 'Meta: _lazza_line', 'Meta: _lazza_tr', 'Meta: _lazza_flavor', 'Meta: _lazza_pack', 'Meta: _lazza_units', 'Meta: _lazza_bundle' );
-fputcsv( $fh, $header );
+fputcsv( $fh, $header, ',', '"', '\\' );
 
 foreach ( $rows as $row ) {
 	$r = array_combine( array( 'sku', 'brand', 'cat', 'line', 'name', 'tr', 'flavor', 'pack', 'units', 'price', 'sale', 'best', 'desc' ), $row );
