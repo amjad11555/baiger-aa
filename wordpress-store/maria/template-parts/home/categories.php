@@ -11,10 +11,10 @@ defined( 'ABSPATH' ) || exit;
 	<div class="mr-container">
 		<div class="mr-section__head mr-section__head--row">
 			<div>
-				<span class="mr-kicker"><?php maria_the_icon( 'grid', '', 16 ); ?> الأقسام</span>
-				<h2 class="mr-section__title" id="mr-cats-title">تسوّق حسب القسم</h2>
+				<span class="mr-kicker">أقسام المتجر</span>
+				<h2 class="mr-section__title" id="mr-cats-title">كل ما يحتاجه رفّ الحلويات</h2>
 			</div>
-			<a class="mr-link" href="<?php echo esc_url( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' ) ); ?>">كل المنتجات <?php maria_the_icon( 'arrow-left', '', 16 ); ?></a>
+			<a class="mr-link" href="<?php echo esc_url( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' ) ); ?>">جميع المنتجات <?php maria_the_icon( 'arrow-left', '', 16 ); ?></a>
 		</div>
 		<div class="mr-cats__grid mr-scroller">
 			<?php foreach ( maria_categories() as $mr_slug => $mr_cat ) : ?>

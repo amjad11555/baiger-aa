@@ -132,7 +132,7 @@ function maria_art_sprite() {
 <svg xmlns="http://www.w3.org/2000/svg" class="mr-sprite" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
 	<symbol id="mr-bg" viewBox="0 0 400 400">
 		<rect width="400" height="400" style="fill:var(--t1)"/>
-		<circle cx="200" cy="196" r="148" style="fill:#fff;opacity:.55"/>
+		<circle cx="200" cy="196" r="148" style="fill:#FFFBF6;opacity:.6"/>
 		<ellipse cx="200" cy="332" rx="118" ry="12" style="fill:#13201F;opacity:.07"/>
 	</symbol>
 	<symbol id="mr-pack-cake" viewBox="0 0 400 400">
@@ -221,8 +221,8 @@ function maria_product_art( $product, $variant = 'card' ) {
 	$brand  = isset( $brands[ $info['brand'] ] ) ? $brands[ $info['brand'] ] : array(
 		'latin' => get_bloginfo( 'name' ),
 		'ar'    => '',
-		'c1'    => '#0F5C63',
-		'c2'    => '#F58A34',
+		'c1'    => '#8C4A36',
+		'c2'    => '#C9A27E',
 	);
 	$flv    = maria_flavor( $info['flavor'] ? $info['flavor'] : 'plain' );
 	$shapes = array(
@@ -250,7 +250,7 @@ function maria_product_art( $product, $variant = 'card' ) {
 		$brand['c2'],
 		$flv[1],
 		$flv[2],
-		maria_mix( $flv[1], '#F7F5F0', 0.9 )
+		maria_mix( $flv[1], '#F7ECDF', 0.88 )
 	);
 
 	$texts = '';

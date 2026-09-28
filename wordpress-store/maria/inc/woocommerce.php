@@ -86,7 +86,7 @@ add_action( 'woocommerce_no_products_found', 'maria_archive_seo_text', 30 );
  */
 function maria_no_products_cta() {
 	printf(
-		'<div class="mr-empty"><div class="mr-empty__icon">%1$s</div><h2>لم نجد المنتج الذي تبحث عنه؟</h2><p>لا تقلق — أخبرنا باسمه ونؤمّنه لبقالتك في أسرع وقت.</p><div class="mr-empty__actions"><a class="mr-btn mr-btn--primary" href="%2$s">اطلب منتجاً غير متوفر</a><a class="mr-btn mr-btn--ghost" href="%3$s">تصفّح كل المنتجات</a></div></div>',
+		'<div class="mr-empty"><div class="mr-empty__icon">%1$s</div><h2>لم نجد ما تبحث عنه</h2><p>جرّب كلمة أقصر أو اسم الشركة، أو أخبرنا باسم المنتج ونؤمّنه لبقالتك.</p><div class="mr-empty__actions"><a class="mr-btn mr-btn--primary" href="%2$s">اطلب منتجاً غير متوفر</a><a class="mr-btn mr-btn--ghost" href="%3$s">تصفّح كل المنتجات</a></div></div>',
 		maria_icon( 'search', '', 34 ), // phpcs:ignore WordPress.Security.EscapeOutput
 		esc_url( maria_page_url( 'special_request' ) ),
 		esc_url( wc_get_page_permalink( 'shop' ) )
@@ -407,10 +407,10 @@ add_action( 'woocommerce_single_product_summary', 'maria_single_extras', 35 );
  */
 function maria_trust_badges() {
 	$items = array(
-		array( 'truck', 'توصيل سريع', 'لباب محلّك' ),
-		array( 'wallet', 'الدفع عند الاستلام', 'نقداً أو تحويل' ),
-		array( 'shield', 'منتجات أصلية', 'من المصنع مباشرة' ),
-		array( 'box', 'البيع بالكرتونة', 'أسعار جملة' ),
+		array( 'truck', 'توصيل سريع', 'إلى باب محلّك' ),
+		array( 'wallet', 'الدفع عند الاستلام', 'نقداً أو بتحويل' ),
+		array( 'shield', 'منتجات أصلية', 'بصلاحية حديثة' ),
+		array( 'box', 'البيع بالكرتونة', 'من كرتونة واحدة' ),
 	);
 	echo '<ul class="mr-trust">';
 	foreach ( $items as $it ) {
@@ -456,11 +456,11 @@ function maria_wholesale_tab() {
 	if ( $info['pack'] ) {
 		printf( '<li>التعبئة: <strong>%s</strong></li>', esc_html( $info['pack'] ) );
 	}
-	echo '<li>وحدة البيع: <strong>كرتونة كاملة</strong> — يمكنك طلب كرتونة واحدة فقط.</li>';
+	echo '<li>وحدة البيع: <strong>كرتونة كاملة</strong>، ويمكنك طلب كرتونة واحدة فقط.</li>';
 	if ( $min > 0 ) {
 		printf( '<li>الحد الأدنى لقيمة الطلب: <strong>%s</strong></li>', wp_kses_post( wc_price( $min ) ) );
 	}
-	printf( '<li>التوصيل: داخل %s وإلى جميع الولايات التركية حسب الاتفاق.</li>', esc_html( maria_opt( 'city' ) ) );
+	printf( '<li>التوصيل: داخل %s وإلى جميع الولايات التركية حسب الموقع والكمية.</li>', esc_html( maria_opt( 'city' ) ) );
 	echo '<li>الدفع: عند الاستلام نقداً أو بالتحويل البنكي.</li>';
 	printf( '<li>تحتاج منتجاً غير موجود؟ <a href="%s">اطلبه من هنا</a> ونؤمّنه لك.</li>', esc_url( maria_page_url( 'special_request' ) ) );
 	printf( '<li>للجملة خارج تركيا (حاويات وشحن دولي): <a href="%s">قدّم طلب تصدير</a>.</li>', esc_url( maria_page_url( 'export' ) ) );
@@ -543,7 +543,7 @@ add_action( 'woocommerce_proceed_to_checkout', 'maria_cart_whatsapp_button', 30 
  * رابط متابعة التسوق أسفل السلة.
  */
 function maria_cart_continue() {
-	printf( '<a class="mr-link-more" href="%1$s">%2$s أضف المزيد من الطلب السريع</a>', esc_url( maria_page_url( 'quick_order' ) ), maria_icon( 'bolt', '', 16 ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+	printf( '<a class="mr-link-more" href="%1$s">%2$s أضف أصنافاً أخرى من قائمة الطلب السريع</a>', esc_url( maria_page_url( 'quick_order' ) ), maria_icon( 'bolt', '', 16 ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 }
 add_action( 'woocommerce_proceed_to_checkout', 'maria_cart_continue', 40 );
 
@@ -559,7 +559,7 @@ add_filter(
 add_filter(
 	'woocommerce_return_to_shop_text',
 	static function () {
-		return 'ابدأ الطلب الآن';
+		return 'ابدأ طلبك الآن';
 	}
 );
 
@@ -575,7 +575,7 @@ function maria_min_order_check() {
 	if ( $total < $min ) {
 		wc_add_notice(
 			sprintf(
-				'الحد الأدنى للطلب هو %1$s — أضف منتجات بقيمة %2$s لإتمام الطلب.',
+				'الحد الأدنى للطلب %1$s. أضف منتجات بقيمة %2$s لإتمام الطلب.',
 				wc_price( $min ),
 				wc_price( $min - $total )
 			),

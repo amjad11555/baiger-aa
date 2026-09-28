@@ -27,12 +27,12 @@ $mr_cat_colors = maria_categories();
 			<div class="mr-qo-hero__row">
 				<div>
 					<h1 class="mr-qo-hero__title"><?php the_title(); ?></h1>
-					<p class="mr-qo-hero__intro"><?php echo esc_html( maria_n_items( $mr_total ) ); ?> في قائمة واحدة. ابحث، اضغط <b>+</b> لعدد الكراتين، ثم أكمل الطلب.</p>
+					<p class="mr-qo-hero__intro"><?php echo esc_html( maria_n_items( $mr_total ) ); ?> في قائمة واحدة. ابحث، واضغط <b>+</b> لتحديد عدد الكراتين، ثم أكمل الطلب.</p>
 				</div>
 				<ol class="mr-qo-steps" aria-label="طريقة الطلب">
 					<li><span>1</span> ابحث أو اختر القسم</li>
 					<li><span>2</span> حدّد عدد الكراتين</li>
-					<li><span>3</span> أكمل الطلب أو أرسله واتساب</li>
+					<li><span>3</span> أكمل الطلب أو أرسله عبر واتساب</li>
 				</ol>
 			</div>
 		</div>
@@ -96,7 +96,7 @@ $mr_cat_colors = maria_categories();
 
 		<aside class="mr-qo-missing">
 			<?php maria_the_icon( 'sparkle', '', 22 ); ?>
-			<p><strong>تحتاج منتجاً غير موجود في القائمة؟</strong> مشروبات، مواد غذائية، منظفات أو أي علامة أخرى — <a href="<?php echo esc_url( maria_page_url( 'special_request' ) ); ?>">اطلبه من هنا</a> ونؤمّنه لك.</p>
+			<p><strong>تحتاج صنفاً غير موجود في القائمة؟</strong> مشروبات أو مواد غذائية أو منظفات أو أي علامة أخرى، <a href="<?php echo esc_url( maria_page_url( 'special_request' ) ); ?>">اطلبه من هنا</a> ونؤمّنه لك.</p>
 		</aside>
 	</div>
 
@@ -112,7 +112,7 @@ $mr_cat_colors = maria_categories();
 			<div class="mr-qo-summary__actions">
 				<button type="button" class="mr-icon-btn mr-qo-summary__clear" data-mr-qo-clear aria-label="تفريغ الكميات"><?php maria_the_icon( 'trash', '', 20 ); ?></button>
 				<?php if ( maria_wa_number() ) : ?>
-					<a class="mr-btn mr-btn--wa" href="<?php echo esc_url( maria_wa_link() ); ?>" target="_blank" rel="noopener" data-mr-qo-wa><?php maria_the_icon( 'whatsapp', '', 20 ); ?> <span>أرسل واتساب</span></a>
+					<a class="mr-btn mr-btn--wa" href="<?php echo esc_url( maria_wa_link() ); ?>" target="_blank" rel="noopener" data-mr-qo-wa><?php maria_the_icon( 'whatsapp', '', 20 ); ?> <span>أرسل عبر واتساب</span></a>
 				<?php endif; ?>
 				<a class="mr-btn mr-btn--primary" href="<?php echo esc_url( wc_get_checkout_url() ); ?>" data-mr-qo-checkout><span>أكمل الطلب</span> <?php maria_the_icon( 'arrow-left', '', 20 ); ?></a>
 			</div>

@@ -332,6 +332,19 @@ function maria_seed_pages() {
 		list( $slug, $template, $title ) = $page;
 		$existing = (int) get_option( 'maria_page_' . $key );
 		if ( $existing && get_post( $existing ) && 'trash' !== get_post_status( $existing ) ) {
+			// تحديث النص الافتراضي فقط إن لم يعدّله المدير منذ إنشائه.
+			$default = isset( $contents[ $key ] ) ? $contents[ $key ] : '';
+			$hash    = (string) get_post_meta( $existing, '_maria_default_hash', true );
+			$current = (string) get_post_field( 'post_content', $existing );
+			if ( $default && $hash && md5( $current ) === $hash && md5( $default ) !== $hash ) {
+				wp_update_post(
+					array(
+						'ID'           => $existing,
+						'post_content' => $default,
+					)
+				);
+				update_post_meta( $existing, '_maria_default_hash', md5( (string) get_post_field( 'post_content', $existing ) ) );
+			}
 			continue;
 		}
 		$found = get_page_by_path( $slug );
@@ -355,6 +368,7 @@ function maria_seed_pages() {
 			if ( $template ) {
 				update_post_meta( $id, '_wp_page_template', $template );
 			}
+			update_post_meta( $id, '_maria_default_hash', md5( (string) get_post_field( 'post_content', $id ) ) );
 			update_option( 'maria_page_' . $key, $id );
 			$created[] = $title;
 		}

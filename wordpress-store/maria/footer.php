@@ -19,11 +19,11 @@ $mr_lines    = $mr_has_wc && WC()->cart ? count( WC()->cart->get_cart() ) : 0;
 	<div class="mr-container">
 		<div class="mr-cta__box">
 			<div class="mr-cta__text">
-				<h2 id="mr-cta-title">جاهز تملأ رفوف بقالتك؟</h2>
-				<p>كل المنتجات في قائمة واحدة: ابحث، حدّد الكراتين، وأرسل الطلب خلال دقيقة.</p>
+				<h2 id="mr-cta-title">جاهز لطلبك القادم؟</h2>
+				<p>كل الأصناف في قائمة واحدة. حدّد الكراتين وأرسل الطلب في دقيقة، ونحن نوصله إلى محلّك.</p>
 			</div>
 			<div class="mr-cta__actions">
-				<a class="mr-btn mr-btn--accent mr-btn--lg" href="<?php echo esc_url( maria_page_url( 'quick_order' ) ); ?>"><?php maria_the_icon( 'list', '', 20 ); ?> ابدأ الطلب الآن</a>
+				<a class="mr-btn mr-btn--accent mr-btn--lg" href="<?php echo esc_url( maria_page_url( 'quick_order' ) ); ?>"><?php maria_the_icon( 'list', '', 20 ); ?> ابدأ طلبك الآن</a>
 				<?php if ( maria_wa_number() ) : ?>
 					<a class="mr-btn mr-btn--light mr-btn--lg" href="<?php echo esc_url( maria_wa_link( 'مرحباً، أرغب بالطلب من ' . get_bloginfo( 'name' ) ) ); ?>" target="_blank" rel="noopener"><?php maria_the_icon( 'whatsapp', '', 20 ); ?> اطلب عبر واتساب</a>
 				<?php endif; ?>
@@ -36,8 +36,9 @@ $mr_lines    = $mr_has_wc && WC()->cart ? count( WC()->cart->get_cart() ) : 0;
 <footer class="mr-footer">
 	<div class="mr-container mr-footer__grid">
 		<div class="mr-footer__brand">
+			<?php echo maria_ornaments_row( 'mr-footer__orns' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 			<?php maria_logo(); ?>
-			<p><?php echo esc_html( maria_opt( 'seo_tagline' ) ); ?>. نخدم البقالات والماركت والمقاصف في <?php echo esc_html( maria_opt( 'city' ) ); ?> وكل تركيا، ونصدّر إلى الخارج.</p>
+			<p>موزّع جملة للحلويات والتسالي التركية الأصلية. نخدم البقالات والماركت والمقاصف في <?php echo esc_html( maria_opt( 'city' ) ); ?> وكل تركيا، ونشحن إلى الخارج.</p>
 			<?php $mr_socials = maria_socials(); ?>
 			<?php if ( $mr_socials ) : ?>
 				<ul class="mr-socials">
@@ -105,8 +106,8 @@ $mr_lines    = $mr_has_wc && WC()->cart ? count( WC()->cart->get_cart() ) : 0;
 
 	<div class="mr-footer__bottom">
 		<div class="mr-container mr-footer__bottom-row">
-			<p>© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?> — جميع الحقوق محفوظة.</p>
-			<p class="mr-footer__legal">العلامات التجارية المعروضة مملوكة لأصحابها، وماريا موزّع جملة مستقل.</p>
+			<p>© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?>. جميع الحقوق محفوظة.</p>
+			<p class="mr-footer__legal">العلامات التجارية المعروضة ملك لأصحابها، وماريا موزّع جملة مستقل.</p>
 		</div>
 	</div>
 </footer>

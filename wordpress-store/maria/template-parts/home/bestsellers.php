@@ -13,8 +13,8 @@ $mr_tabs = array_intersect_key( maria_categories(), array_flip( array( 'cake', '
 	<div class="mr-container">
 		<div class="mr-section__head mr-section__head--row">
 			<div>
-				<span class="mr-kicker"><?php maria_the_icon( 'star', '', 16 ); ?> الأكثر دوراناً على الرفوف</span>
-				<h2 class="mr-section__title" id="mr-best-title">اطلب مباشرة من هنا</h2>
+				<span class="mr-kicker">الأكثر دوراناً على الرفوف</span>
+				<h2 class="mr-section__title" id="mr-best-title">أصناف تُباع بسرعة، اطلبها من هنا</h2>
 			</div>
 			<div class="mr-tabs" role="tablist" aria-label="الأقسام">
 				<?php $mr_first = true; ?>

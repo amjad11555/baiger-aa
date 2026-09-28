@@ -25,7 +25,7 @@ $mr_ex    = array(
 		<div class="mr-container mr-export-hero">
 			<div>
 				<?php maria_breadcrumbs(); ?>
-				<span class="mr-kicker"><?php maria_the_icon( 'globe', '', 16 ); ?> للمستوردين والموزعين وسلاسل السوبرماركت</span>
+				<span class="mr-kicker">للمستوردين والموزعين وسلاسل السوبرماركت</span>
 				<h1 class="mr-page-hero__title">تصدير الحلويات التركية <span class="mr-hl">بالجملة إلى بلدك</span></h1>
 				<p class="mr-page-hero__en" lang="en" dir="ltr">Turkish Biscuits, Cakes, Chips &amp; Chocolate — Wholesale Export · Eti · Ülker · Bonucci</p>
 				<div class="mr-page-hero__intro">
@@ -108,7 +108,7 @@ $mr_ex    = array(
 					<span class="mr-ship__tag">الأكثر طلباً</span>
 					<span class="mr-ship__icon"><?php maria_the_icon( 'ship', '', 30 ); ?></span>
 					<h3>حاوية 20 قدم</h3>
-					<p>حاوية مختلطة من علامات وأقسام متعددة — الخيار الأوفر للموزعين ومتاجر الجملة.</p>
+					<p>حاوية مختلطة من علامات وأقسام متعددة، وهي الخيار الأوفر للموزعين ومتاجر الجملة.</p>
 				</article>
 				<article class="mr-ship__card">
 					<span class="mr-ship__icon"><?php maria_the_icon( 'globe', '', 30 ); ?></span>

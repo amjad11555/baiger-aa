@@ -16,8 +16,8 @@ $mr_opts = maria_request_options();
 	<section class="mr-page-hero mr-page-hero--request">
 		<div class="mr-container">
 			<?php maria_breadcrumbs(); ?>
-			<span class="mr-kicker"><?php maria_the_icon( 'sparkle', '', 16 ); ?> كل احتياجات بقالتك من مكان واحد</span>
-			<h1 class="mr-page-hero__title">ما لقيت المنتج؟ <span class="mr-hl">نأمّنه لبقالتك</span></h1>
+			<span class="mr-kicker">كل احتياجات بقالتك من مكان واحد</span>
+			<h1 class="mr-page-hero__title">لم تجد المنتج؟ <span class="mr-hl">نؤمّنه لبقالتك</span></h1>
 			<div class="mr-page-hero__intro">
 				<?php
 				while ( have_posts() ) :
@@ -55,7 +55,7 @@ $mr_opts = maria_request_options();
 
 					<fieldset class="mr-form__section">
 						<legend><span>2</span> المنتجات التي تحتاجها</legend>
-						<p class="mr-form__hint">اكتب اسم المنتج كما تعرفه (بالعربي أو التركي)، ويمكنك إضافة حتى 30 منتجاً.</p>
+						<p class="mr-form__hint">اكتب اسم المنتج كما تعرفه، بالعربي أو التركي. يمكنك إضافة حتى 30 منتجاً في طلب واحد.</p>
 						<div class="mr-items" data-mr-items>
 							<div class="mr-items__head" aria-hidden="true"><span>المنتج</span><span>العلامة</span><span>الكمية</span><span>الوحدة</span><span></span></div>
 							<?php for ( $mr_i = 0; $mr_i < 3; $mr_i++ ) : ?>
@@ -116,7 +116,7 @@ $mr_opts = maria_request_options();
 				<ol class="mr-mini-steps">
 					<li><b>ترسل الطلب</b> باسم المنتج والكمية.</li>
 					<li><b>نبحث لك</b> لدى المصانع والموردين.</li>
-					<li><b>نرد عليك</b> بالتوفر والسعر عبر واتساب.</li>
+					<li><b>نرد عليك</b> بالسعر والتوفر عبر واتساب.</li>
 					<li><b>نوصله</b> مع طلبك القادم أو فوراً.</li>
 				</ol>
 			</div>
@@ -129,7 +129,7 @@ $mr_opts = maria_request_options();
 			<?php if ( maria_wa_number() ) : ?>
 				<div class="mr-aside-card mr-aside-card--wa">
 					<h2>تفضّل واتساب؟</h2>
-					<p>صوّر المنتج وأرسله لنا مباشرة، وسنرد عليك بالسعر.</p>
+					<p>صوّر المنتج وأرسل الصورة إلينا مباشرة، ونرد عليك بالسعر.</p>
 					<a class="mr-btn mr-btn--wa mr-btn--block" href="<?php echo esc_url( maria_wa_link( 'مرحباً، أبحث عن منتج غير موجود في المتجر:' ) ); ?>" target="_blank" rel="noopener"><?php maria_the_icon( 'whatsapp', '', 20 ); ?> أرسل صورة المنتج</a>
 				</div>
 			<?php endif; ?>

@@ -17,8 +17,8 @@ if ( ! $mr_ids ) {
 		<div class="mr-offers__box">
 			<div class="mr-offers__head">
 				<div>
-					<span class="mr-kicker--accent"><?php maria_the_icon( 'percent', '', 16 ); ?> عروض الأسبوع</span>
-					<h2 class="mr-section__title" id="mr-offers-title">خصومات على سعر الكرتونة</h2>
+					<span class="mr-kicker--accent">عروض الأسبوع</span>
+					<h2 class="mr-section__title" id="mr-offers-title">وفّر على سعر الكرتونة</h2>
 				</div>
 				<div class="mr-countdown" data-mr-countdown="<?php echo esc_attr( maria_offer_end_iso() ); ?>" aria-label="الوقت المتبقي على انتهاء العروض">
 					<span><b data-u="d">0</b><small>يوم</small></span>
@@ -26,7 +26,7 @@ if ( ! $mr_ids ) {
 					<span><b data-u="m">00</b><small>دقيقة</small></span>
 					<span><b data-u="s">00</b><small>ثانية</small></span>
 				</div>
-				<a class="mr-link" href="<?php echo esc_url( maria_cat_url( 'offers' ) ); ?>">كل العروض <?php maria_the_icon( 'arrow-left', '', 16 ); ?></a>
+				<a class="mr-link" href="<?php echo esc_url( maria_cat_url( 'offers' ) ); ?>">جميع العروض <?php maria_the_icon( 'arrow-left', '', 16 ); ?></a>
 			</div>
 			<?php
 			maria_product_grid(

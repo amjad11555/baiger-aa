@@ -21,8 +21,8 @@ if ( ! $mr_brands ) {
 	<div class="mr-container">
 		<div class="mr-section__head mr-section__head--row">
 			<div>
-				<span class="mr-kicker"><?php maria_the_icon( 'shield', '', 16 ); ?> منتجات أصلية</span>
-				<h2 class="mr-section__title" id="mr-brands-title">تسوّق حسب الشركة</h2>
+				<span class="mr-kicker">منتجات أصلية</span>
+				<h2 class="mr-section__title" id="mr-brands-title">علامات يعرفها زبائنك ويطلبونها</h2>
 			</div>
 			<a class="mr-link" href="<?php echo esc_url( maria_page_url( 'brands' ) ); ?>">كل الشركات <?php maria_the_icon( 'arrow-left', '', 16 ); ?></a>
 		</div>

@@ -129,7 +129,7 @@ function maria_assets() {
 			'added'        => 'تمت الإضافة إلى السلة',
 			'updated'      => 'تم تحديث الكمية',
 			'removed'      => 'تمت الإزالة من السلة',
-			'error'        => 'تعذّر تحديث السلة، حاول مرة أخرى',
+			'error'        => 'تعذّر تحديث السلة. تحقق من الاتصال وحاول مرة أخرى',
 			'carton'       => 'كرتونة',
 			'cartons'      => 'كرتونة',
 			'items'        => 'صنف',
@@ -137,9 +137,9 @@ function maria_assets() {
 			'waTotal'      => 'الإجمالي التقديري',
 			'waName'       => 'الاسم / اسم البقالة:',
 			'waAddress'    => 'العنوان:',
-			'empty'        => 'لم تحدّد أي منتج بعد — اضغط + لإضافة الكميات',
+			'empty'        => 'لم تحدّد أي صنف بعد. اضغط + بجانب الصنف لإضافة الكمية',
 			'confirmClear' => 'هل تريد تفريغ جميع الكميات من السلة؟',
-			'noResults'    => 'لا توجد نتائج مطابقة — يمكنك طلب المنتج من صفحة «اطلب منتجاً غير متوفر»',
+			'noResults'    => 'لا توجد نتائج مطابقة. جرّب كلمة أقصر، أو اطلب المنتج من صفحة «اطلب منتجاً غير متوفر»',
 			'searching'    => 'جارِ البحث…',
 			'viewAll'      => 'عرض كل النتائج',
 			'copied'       => 'تم نسخ الرابط ✓',
@@ -151,7 +151,7 @@ function maria_assets() {
 			'companies'    => 'الشركات',
 			'sections'     => 'الأقسام',
 			'products'     => 'المنتجات',
-			'popular'      => 'عمليات بحث شائعة',
+			'popular'      => 'يبحث عنها أصحاب البقالات',
 			'add'          => 'أضف',
 			'orderNow'     => 'أكمل الطلب',
 		),
@@ -184,7 +184,7 @@ add_action( 'wp_enqueue_scripts', 'maria_assets', 20 );
  * تحميل مسبق لملفي الخط العربي الأساسيين لتسريع ظهور النصوص.
  */
 function maria_preload_fonts() {
-	foreach ( array( 'alexandria-arabic.woff2', 'ibm-plex-sans-arabic-400-arabic.woff2' ) as $file ) {
+	foreach ( array( 'tajawal-400-arabic.woff2', 'tajawal-800-arabic.woff2', 'aref-ruqaa-700-arabic.woff2' ) as $file ) {
 		printf( '<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n", esc_url( MARIA_URI . '/assets/fonts/' . $file ) );
 	}
 }
@@ -270,11 +270,11 @@ add_action( 'wp_head', 'maria_js_class', 0 );
  * أيقونة الموقع من رمز الشعار (إن لم يرفع المدير أيقونة) + لون شريط المتصفح في الجوال.
  */
 function maria_head_icons() {
-	echo '<meta name="theme-color" content="#0F5C63">' . "\n";
+	echo '<meta name="theme-color" content="#FFFBF6">' . "\n";
 	if ( has_site_icon() ) {
 		return;
 	}
-	$svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="14" fill="#0F5C63"/><path d="M12.5 34V23.5a5.75 5.75 0 0 1 11.5 0V34M24 34V23.5a5.75 5.75 0 0 1 11.5 0V34" fill="none" stroke="#fff" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36.5" cy="12" r="4" fill="#F58A34"/></svg>';
+	$svg = str_replace( '<svg class="mr-logo__mark"', '<svg xmlns="http://www.w3.org/2000/svg"', maria_logo_mark() );
 	echo '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' . rawurlencode( $svg ) . '">' . "\n";
 }
 add_action( 'wp_head', 'maria_head_icons', 2 );

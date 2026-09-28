@@ -21,7 +21,7 @@ get_header();
 	get_template_part( 'template-parts/home/steps' );
 	get_template_part( 'template-parts/home/split' );
 	get_template_part( 'template-parts/home/why' );
-	maria_render_faqs( 'home', 'أسئلة يطرحها أصحاب البقالات' );
+	maria_render_faqs( 'home', 'أسئلة يطرحها أصحاب البقالات قبل الطلب' );
 	get_template_part( 'template-parts/home/seo' );
 	?>
 </main>

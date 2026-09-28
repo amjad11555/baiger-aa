@@ -13,7 +13,7 @@ get_header();
 	<section class="mr-page-hero mr-page-hero--contact">
 		<div class="mr-container">
 			<?php maria_breadcrumbs(); ?>
-			<span class="mr-kicker"><?php maria_the_icon( 'phone', '', 16 ); ?> نحن هنا لخدمة بقالتك</span>
+			<span class="mr-kicker">يسعدنا تواصلك</span>
 			<h1 class="mr-page-hero__title"><?php the_title(); ?></h1>
 			<div class="mr-page-hero__intro">
 				<?php
@@ -64,7 +64,7 @@ get_header();
 		<div class="mr-form-card" id="mr-form">
 			<div class="mr-form-card__head">
 				<h2>أرسل لنا رسالة</h2>
-				<p>للطلبات الكبيرة، الاستفسارات، أو الشراكات.</p>
+				<p>للطلبات الكبيرة والاستفسارات والشراكات، ونرد عليك في أقرب وقت.</p>
 			</div>
 			<?php if ( ! maria_form_feedback( 'contact' ) ) : ?>
 				<form class="mr-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" data-mr-form>
@@ -79,7 +79,7 @@ get_header();
 						maria_form_field( 'contact', 'message' );
 						?>
 					</div>
-					<button type="submit" class="mr-btn mr-btn--primary mr-btn--lg mr-btn--block"><?php maria_the_icon( 'send', '', 20 ); ?> إرسال</button>
+					<button type="submit" class="mr-btn mr-btn--primary mr-btn--lg mr-btn--block"><?php maria_the_icon( 'send', '', 20 ); ?> أرسل الرسالة</button>
 				</form>
 			<?php endif; ?>
 		</div>

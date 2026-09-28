@@ -37,7 +37,7 @@ $mr_map = maria_cart_qty_cached();
 <section class="mr-hero" aria-labelledby="mr-hero-title">
 	<div class="mr-container mr-hero__grid">
 		<div class="mr-hero__content">
-			<span class="mr-kicker"><?php maria_the_icon( 'store', '', 16 ); ?> <?php echo esc_html( maria_opt( 'hero_kicker' ) ); ?></span>
+			<span class="mr-kicker"><?php echo esc_html( maria_opt( 'hero_kicker' ) ); ?></span>
 			<h1 class="mr-hero__title" id="mr-hero-title">
 				<?php if ( count( $mr_parts ) > 1 ) : ?>
 					<?php echo esc_html( trim( $mr_parts[0] ) ); ?> <span class="mr-hl"><?php echo esc_html( trim( $mr_parts[1] ) ); ?></span>
@@ -47,21 +47,21 @@ $mr_map = maria_cart_qty_cached();
 			</h1>
 			<p class="mr-hero__text"><?php echo esc_html( maria_opt( 'hero_text' ) ); ?></p>
 			<div class="mr-hero__cta">
-				<a class="mr-btn mr-btn--primary mr-btn--lg" href="<?php echo esc_url( maria_page_url( 'quick_order' ) ); ?>"><?php maria_the_icon( 'list', '', 20 ); ?> ابدأ الطلب الآن</a>
-				<a class="mr-btn mr-btn--ghost mr-btn--lg" href="<?php echo esc_url( maria_page_url( 'brands' ) ); ?>">تسوّق حسب الشركة</a>
+				<a class="mr-btn mr-btn--primary mr-btn--lg" href="<?php echo esc_url( maria_page_url( 'quick_order' ) ); ?>"><?php maria_the_icon( 'list', '', 20 ); ?> ابدأ طلبك الآن</a>
+				<a class="mr-btn mr-btn--ghost mr-btn--lg" href="<?php echo esc_url( maria_page_url( 'brands' ) ); ?>">تصفّح حسب الشركة</a>
 			</div>
 			<dl class="mr-hero__stats">
-				<div><dt>صنف جاهز للطلب</dt><dd><?php echo esc_html( $mr_total ? $mr_total : '130' ); ?>+</dd></div>
-				<div><dt>شركات موثوقة</dt><dd><?php echo esc_html( max( 1, $mr_brandn ) ); ?></dd></div>
-				<div><dt>أقل كمية للطلب</dt><dd>كرتونة</dd></div>
+				<div><dt>صنفاً جاهزاً للطلب</dt><dd><?php echo esc_html( $mr_total ? $mr_total : '130' ); ?>+</dd></div>
+				<div><dt>علامات تركية أصلية</dt><dd><?php echo esc_html( max( 1, $mr_brandn ) ); ?></dd></div>
+				<div><dt>حدّ أدنى للطلب</dt><dd>كرتونة</dd></div>
 			</dl>
 		</div>
 
 		<?php if ( $mr_quick ) : ?>
 		<aside class="mr-hero__panel" aria-labelledby="mr-quick-title">
 			<div class="mr-hero__panel-head">
-				<h2 id="mr-quick-title"><?php maria_the_icon( 'fire', '', 18 ); ?> الأكثر طلباً الآن</h2>
-				<a href="<?php echo esc_url( maria_page_url( 'quick_order' ) ); ?>">كل الأصناف <?php maria_the_icon( 'arrow-left', '', 16 ); ?></a>
+				<h2 id="mr-quick-title"><?php echo maria_ornament( 'star', 18 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> الأكثر طلباً هذا الأسبوع</h2>
+				<a href="<?php echo esc_url( maria_page_url( 'quick_order' ) ); ?>">القائمة كاملة <?php maria_the_icon( 'arrow-left', '', 16 ); ?></a>
 			</div>
 			<ul class="mr-mini-list">
 				<?php foreach ( $mr_quick as $mr_p ) : ?>
@@ -77,7 +77,7 @@ $mr_map = maria_cart_qty_cached();
 				<?php endforeach; ?>
 			</ul>
 			<ul class="mr-hero__trust">
-				<li><?php maria_the_icon( 'truck', '', 18 ); ?> توصيل لباب المحل</li>
+				<li><?php maria_the_icon( 'truck', '', 18 ); ?> توصيل إلى محلّك</li>
 				<li><?php maria_the_icon( 'wallet', '', 18 ); ?> الدفع عند الاستلام</li>
 				<li><?php maria_the_icon( 'shield', '', 18 ); ?> منتجات أصلية</li>
 			</ul>
