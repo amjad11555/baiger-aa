@@ -2,28 +2,28 @@
 /**
  * يولّد ملف CSV متوافق مع مستورد منتجات ووكومرس من كتالوج القالب.
  *
- * الاستخدام (داخل موقع ووردبريس فيه قالب لذّة مفعّل):
+ * الاستخدام (داخل موقع ووردبريس فيه قالب ماريا مفعّل):
  *   wp eval-file wordpress-store/tools/export-csv.php wordpress-store/products-ar.csv
  *
  * بعد تعديل الأسعار في Excel / Google Sheets:
  *   المنتجات ← استيراد ← اختر الملف ← فعّل «تحديث المنتجات الموجودة» (المطابقة بالـ SKU).
  *
- * @package Lazza
+ * @package Maria
  */
 
-if ( ! defined( 'ABSPATH' ) || ! function_exists( 'lazza_seed_description' ) ) {
-	fwrite( STDERR, "شغّل الملف عبر wp eval-file مع تفعيل قالب لذّة.\n" );
+if ( ! defined( 'ABSPATH' ) || ! function_exists( 'maria_seed_description' ) ) {
+	fwrite( STDERR, "شغّل الملف عبر wp eval-file مع تفعيل قالب ماريا.\n" );
 	return;
 }
 
 $out  = isset( $args[0] ) ? $args[0] : 'products-ar.csv';
-$rows = include LAZZA_DIR . '/inc/data/catalog.php';
-$cats = lazza_categories();
+$rows = include MARIA_DIR . '/inc/data/catalog.php';
+$cats = maria_categories();
 
 $fh = fopen( $out, 'w' );
 fwrite( $fh, "\xEF\xBB\xBF" ); // BOM ليعرض Excel الحروف العربية بشكل صحيح.
 
-$header = array( 'Type', 'SKU', 'Name', 'Published', 'Is featured?', 'Visibility in catalog', 'Short description', 'Description', 'Sale price', 'Regular price', 'Categories', 'In stock?', 'Meta: _lazza_brand', 'Meta: _lazza_line', 'Meta: _lazza_tr', 'Meta: _lazza_flavor', 'Meta: _lazza_pack', 'Meta: _lazza_units', 'Meta: _lazza_bundle' );
+$header = array( 'Type', 'SKU', 'Name', 'Published', 'Is featured?', 'Visibility in catalog', 'Short description', 'Description', 'Sale price', 'Regular price', 'Categories', 'In stock?', 'Meta: _maria_brand', 'Meta: _maria_line', 'Meta: _maria_tr', 'Meta: _maria_flavor', 'Meta: _maria_pack', 'Meta: _maria_units', 'Meta: _maria_bundle' );
 fputcsv( $fh, $header, ',', '"', '\\' );
 
 foreach ( $rows as $row ) {
@@ -44,7 +44,7 @@ foreach ( $rows as $row ) {
 			$r['best'] ? 1 : 0,
 			'visible',
 			'<p>' . $r['desc'] . '. التعبئة: ' . $r['pack'] . '. متوفر بالجملة للبقالات بسعر الكرتونة مع توصيل سريع.</p>',
-			lazza_seed_description( $r ),
+			maria_seed_description( $r ),
 			$r['sale'] ? $r['sale'] : '',
 			$r['price'],
 			implode( ', ', $categories ),
@@ -56,7 +56,10 @@ foreach ( $rows as $row ) {
 			$r['pack'],
 			(int) $r['units'],
 			'offers' === $r['cat'] ? 1 : '',
-		)
+		),
+		',',
+		'"',
+		'\\'
 	);
 }
 fclose( $fh );
