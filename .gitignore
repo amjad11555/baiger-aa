@@ -3,3 +3,6 @@ node_modules/
 *.log
 .DS_Store
 data/
+
+# ملفات بيانات قالب ووردبريس (الكتالوج) — ليست بيانات البوت
+!/wordpress-store/lazza/inc/data/
