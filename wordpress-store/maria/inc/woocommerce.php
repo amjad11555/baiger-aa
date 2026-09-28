@@ -190,31 +190,52 @@ add_action( 'woocommerce_after_quantity_input_field', 'maria_qty_plus' );
  * ---------------------------------------------------------------------- */
 
 /**
- * شارات البطاقة.
+ * نسبة الخصم المئوية لمنتج (0 إن لم يكن عليه عرض).
+ *
+ * @param WC_Product $product المنتج.
+ * @return int
+ */
+function maria_discount_percent( $product ) {
+	if ( ! $product->is_on_sale() ) {
+		return 0;
+	}
+	$regular = (float) $product->get_regular_price();
+	$sale    = (float) $product->get_sale_price();
+	return ( $regular > 0 && $sale > 0 ) ? (int) round( ( 1 - $sale / $regular ) * 100 ) : 0;
+}
+
+/**
+ * شارات صورة البطاقة (أعلى الصورة): «مطلوب» و«نفدت الكمية».
  *
  * @param WC_Product $product المنتج.
  * @return string
  */
 function maria_card_badges( $product ) {
 	$out = '';
+	if ( ! $product->is_in_stock() ) {
+		$out .= '<span class="mr-badge mr-badge--muted">نفدت الكمية</span>';
+	} elseif ( $product->is_featured() ) {
+		$out .= '<span class="mr-badge mr-badge--hot">مطلوب</span>';
+	}
+	return $out ? '<div class="mr-card__badges">' . $out . '</div>' : '';
+}
+
+/**
+ * شارات أسفل السعر: نسبة الخصم والباقة الموفّرة.
+ *
+ * @param WC_Product $product المنتج.
+ * @return string
+ */
+function maria_card_tags( $product ) {
+	$out = '';
 	if ( $product->is_on_sale() && maria_show_prices() ) {
-		$regular = (float) $product->get_regular_price();
-		$sale    = (float) $product->get_sale_price();
-		if ( $regular > 0 && $sale > 0 ) {
-			$out .= sprintf( '<span class="mr-badge mr-badge--sale" dir="ltr">−%d%%</span>', (int) round( ( 1 - $sale / $regular ) * 100 ) );
-		} else {
-			$out .= '<span class="mr-badge mr-badge--sale">عرض</span>';
-		}
+		$pct  = maria_discount_percent( $product );
+		$out .= $pct ? sprintf( '<span class="mr-badge mr-badge--sale">خصم <bdi>%d%%</bdi></span>', $pct ) : '<span class="mr-badge mr-badge--sale">عرض</span>';
 	}
 	if ( get_post_meta( $product->get_id(), '_maria_bundle', true ) ) {
 		$out .= '<span class="mr-badge mr-badge--bundle">باقة موفّرة</span>';
-	} elseif ( $product->is_featured() ) {
-		$out .= '<span class="mr-badge mr-badge--hot">' . maria_icon( 'fire', '', 13 ) . ' مطلوب</span>';
 	}
-	if ( ! $product->is_in_stock() ) {
-		$out .= '<span class="mr-badge mr-badge--muted">نفدت الكمية</span>';
-	}
-	return $out ? '<div class="mr-card__badges">' . $out . '</div>' : '';
+	return $out ? '<div class="mr-card__tags">' . $out . '</div>' : '';
 }
 
 /**
@@ -234,7 +255,7 @@ function maria_cart_control( $product, $qty = 0, $context = 'card' ) {
 		return '<span class="mr-cart-ctl mr-cart-ctl--' . esc_attr( $context ) . ' is-disabled"><span class="mr-cart-ctl__na">غير متوفر حالياً</span></span>';
 	}
 	$price = (float) wc_get_price_to_display( $product );
-	$label = 'row' === $context ? '<span class="screen-reader-text">أضف</span>' : '<span>' . ( 'lg' === $context ? 'أضف إلى السلة' : 'أضف' ) . '</span>';
+	$label = 'row' === $context ? '<span class="screen-reader-text">أضف</span>' : '<span>أضف إلى السلة</span>';
 	return sprintf(
 		'<div class="mr-cart-ctl mr-cart-ctl--%11$s%1$s" data-id="%2$d" data-qty="%3$d" data-price="%4$s" data-name="%5$s">'
 		. '<button type="button" class="mr-cart-ctl__add" aria-label="%6$s">%7$s%12$s</button>'
@@ -249,7 +270,7 @@ function maria_cart_control( $product, $qty = 0, $context = 'card' ) {
 		esc_attr( $price ),
 		esc_attr( $name ),
 		esc_attr( 'أضف ' . $name . ' إلى السلة' ),
-		maria_icon( 'plus', '', 'row' === $context ? 20 : 18 ),
+		'row' === $context ? maria_icon( 'plus', '', 20 ) : maria_icon( 'cart', '', 22 ),
 		esc_attr( 'كمية ' . $name . ' بالكرتونة' ),
 		maria_icon( 'minus', '', 18 ),
 		maria_icon( 'plus', '', 18 ),
@@ -292,6 +313,20 @@ function maria_product_grid( $args, $class = '' ) {
 	$product = $prev_product; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
 	$post    = $prev_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
 	wp_reset_postdata();
+}
+
+/**
+ * شريط منتجات أفقي يُمرَّر باللمس مع نقاط تنقّل أسفله.
+ *
+ * @param array $args معايير wc_get_products.
+ */
+function maria_product_rail( $args ) {
+	ob_start();
+	maria_product_grid( $args, 'mr-grid--rail' );
+	$grid = ob_get_clean();
+	if ( $grid ) {
+		echo '<div class="mr-rail" data-mr-rail>' . $grid . '<div class="mr-dots" data-mr-rail-dots></div></div>'; // phpcs:ignore WordPress.Security.EscapeOutput
+	}
 }
 
 /* -------------------------------------------------------------------------

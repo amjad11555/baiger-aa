@@ -111,5 +111,52 @@ function maria_customize_register( $wp_customize ) {
 			)
 		);
 	}
+
+	// بنرات الرئيسية: صورة + رابط لكل شريحة (تحل محل الشرائح المصممة مسبقاً عند رفعها).
+	$wp_customize->add_section(
+		'maria_banners',
+		array(
+			'title'       => 'بنرات الرئيسية',
+			'description' => 'ارفع صور عروضك (يفضّل 1600×900 للكمبيوتر أو مربعة 1080×1080 للجوال). إن تركتها فارغة تظهر بنرات جاهزة بألوان المتجر.',
+			'panel'       => 'maria_panel',
+			'priority'    => 15,
+		)
+	);
+	for ( $i = 1; $i <= 3; $i++ ) {
+		$wp_customize->add_setting(
+			'maria_banner_' . $i,
+			array(
+				'default'           => '',
+				'sanitize_callback' => 'esc_url_raw',
+			)
+		);
+		$wp_customize->add_control(
+			new WP_Customize_Image_Control(
+				$wp_customize,
+				'maria_banner_' . $i,
+				array(
+					'section' => 'maria_banners',
+					/* translators: %d: رقم البنر. */
+					'label'   => sprintf( 'صورة البنر %d', $i ),
+				)
+			)
+		);
+		$wp_customize->add_setting(
+			'maria_banner_' . $i . '_link',
+			array(
+				'default'           => '',
+				'sanitize_callback' => 'esc_url_raw',
+			)
+		);
+		$wp_customize->add_control(
+			'maria_banner_' . $i . '_link',
+			array(
+				'section' => 'maria_banners',
+				'type'    => 'url',
+				/* translators: %d: رقم البنر. */
+				'label'   => sprintf( 'رابط البنر %d', $i ),
+			)
+		);
+	}
 }
 add_action( 'customize_register', 'maria_customize_register' );

@@ -179,36 +179,36 @@ function maria_categories() {
 		'cake'     => array(
 			'name'  => 'كيك',
 			'icon'  => 'cake',
-			'color' => '#8C4A36',
-			'tint'  => '#F6E7DA',
+			'color' => '#006C78',
+			'tint'  => '#E0F1F2',
 			'line'  => 'طري ومحشو، يُباع بسرعة',
 		),
 		'biscuits' => array(
 			'name'  => 'بسكويت',
 			'icon'  => 'cookie',
-			'color' => '#94662E',
-			'tint'  => '#F5EADA',
+			'color' => '#8C51FF',
+			'tint'  => '#EFE7FF',
 			'line'  => 'للشاي والضيافة والمدارس',
 		),
 		'chips'    => array(
 			'name'  => 'شيبسات',
 			'icon'  => 'chips',
-			'color' => '#8E6F2A',
-			'tint'  => '#F4EDD9',
+			'color' => '#FF863B',
+			'tint'  => '#FFEDE1',
 			'line'  => 'تسالي مالحة للسهرة',
 		),
 		'snacks'   => array(
 			'name'  => 'تسالي',
 			'icon'  => 'candy',
-			'color' => '#5E3A2E',
-			'tint'  => '#F0E4DC',
+			'color' => '#1CB3D2',
+			'tint'  => '#E1F5FA',
 			'line'  => 'شوكولاتة وحلوى للكاشير',
 		),
 		'offers'   => array(
 			'name'  => 'عروض',
 			'icon'  => 'percent',
-			'color' => '#A4442C',
-			'tint'  => '#F8E3D8',
+			'color' => '#EB1C24',
+			'tint'  => '#FDE4E5',
 			'line'  => 'خصومات وباقات موفّرة',
 		),
 	);
@@ -380,7 +380,7 @@ function maria_offer_end_iso() {
 }
 
 /**
- * الشعار: كلمة «ماريا» بخط الرقعة + اسم لاتيني بمسافات واسعة (من دليل الهوية).
+ * الشعار: شارة حمراء بكلمة «ماريا» بخط عريض + اسم لاتيني صغير.
  */
 function maria_logo() {
 	if ( has_custom_logo() ) {
@@ -398,58 +398,16 @@ function maria_logo() {
 }
 
 /**
- * مسارات زخارف الهوية داخل مربع 48×48.
- *
- * @param string $name tulip|fleur|star.
- * @return string
- */
-function maria_ornament_paths( $name ) {
-	$paths = array(
-		'tulip' => '<path d="M24 2.5C29.5 8 30.5 14.5 24 21.5 17.5 14.5 18.5 8 24 2.5Z"/><path d="M23 31.5C13.5 31.5 6 25 4.5 13.5 14.5 14.5 21.5 20.5 23 31.5Z"/><path d="M25 31.5C34.5 31.5 42 25 43.5 13.5 33.5 14.5 26.5 20.5 25 31.5Z"/><path d="M24 34C27.2 38 27.2 41.5 24 46 20.8 41.5 20.8 38 24 34Z"/>',
-		'fleur' => '<path d="M24 1.5C29 7.5 30 14.5 24 23 18 14.5 19 7.5 24 1.5Z"/><path d="M21.8 25.5C13 26.5 6.5 21.5 5.5 12.5 10 16 15.5 18 21.8 20.2Z"/><path d="M26.2 25.5C35 26.5 41.5 21.5 42.5 12.5 38 16 32.5 18 26.2 20.2Z"/><path d="M22.2 28.2C16.2 29 11.8 33.6 11 40 16.8 38.3 21 34.2 22.2 28.2Z"/><path d="M25.8 28.2C31.8 29 36.2 33.6 37 40 31.2 38.3 27 34.2 25.8 28.2Z"/><path d="M24 31.5C26.8 35 26.8 38.5 24 42.5 21.2 38.5 21.2 35 24 31.5Z"/>',
-		'star'  => '<path d="M24 2C28.6 7.5 29 12.8 24 19 19 12.8 19.4 7.5 24 2Z"/><path d="M24 2C28.6 7.5 29 12.8 24 19 19 12.8 19.4 7.5 24 2Z" transform="rotate(90 24 24)"/><path d="M24 2C28.6 7.5 29 12.8 24 19 19 12.8 19.4 7.5 24 2Z" transform="rotate(180 24 24)"/><path d="M24 2C28.6 7.5 29 12.8 24 19 19 12.8 19.4 7.5 24 2Z" transform="rotate(270 24 24)"/><circle cx="31.8" cy="16.2" r="2.1"/><circle cx="31.8" cy="31.8" r="2.1"/><circle cx="16.2" cy="31.8" r="2.1"/><circle cx="16.2" cy="16.2" r="2.1"/>',
-	);
-	return isset( $paths[ $name ] ) ? $paths[ $name ] : $paths['tulip'];
-}
-
-/**
- * زخرفة واحدة من الهوية.
- *
- * @param string $name  tulip|fleur|star.
- * @param int    $size  الحجم.
- * @param string $class كلاس إضافي.
- * @return string
- */
-function maria_ornament( $name = 'tulip', $size = 24, $class = '' ) {
-	return sprintf(
-		'<svg class="mr-orn mr-orn--%1$s %2$s" viewBox="0 0 48 48" width="%3$d" height="%3$d" fill="currentColor" aria-hidden="true" focusable="false">%4$s</svg>',
-		esc_attr( $name ),
-		esc_attr( $class ),
-		(int) $size,
-		maria_ornament_paths( $name )
-	);
-}
-
-/**
- * صف الزخارف الثلاث (كما في دليل الهوية).
- *
- * @param string $class كلاس إضافي.
- * @return string
- */
-function maria_ornaments_row( $class = '' ) {
-	return '<div class="mr-orns ' . esc_attr( $class ) . '" aria-hidden="true">' . maria_ornament( 'fleur', 22 ) . maria_ornament( 'star', 22 ) . maria_ornament( 'tulip', 22 ) . '</div>';
-}
-
-/**
- * رمز الشعار: زهرة التوليب على مربع طيني (للأيقونة وصفحة 404).
+ * رمز الموقع: حلوى مغلّفة بيضاء على مربع أحمر (للأيقونة وصفحة 404).
  *
  * @param string $class كلاس إضافي.
  * @return string
  */
 function maria_logo_mark( $class = 'mr-logo__mark' ) {
 	return '<svg class="' . esc_attr( $class ) . '" viewBox="0 0 48 48" width="40" height="40" aria-hidden="true" focusable="false">'
-		. '<rect width="48" height="48" rx="14" fill="#8C4A36"/>'
-		. '<g fill="#F5E5CE" transform="translate(9.6 9.6) scale(.6)">' . maria_ornament_paths( 'tulip' ) . '</g></svg>';
+		. '<rect width="48" height="48" rx="12" fill="#EB1C24"/>'
+		. '<g fill="#fff"><ellipse cx="24" cy="24" rx="9.5" ry="8"/><path d="M15.5 24 6 16.5l2.4 7.5L6 31.5Z"/><path d="M32.5 24 42 16.5 39.6 24 42 31.5Z"/></g>'
+		. '<path d="M21.5 16.8c-2.6 4.6-2.6 9.8 0 14.4M26.5 16.8c2.6 4.6 2.6 9.8 0 14.4" fill="none" stroke="#EB1C24" stroke-width="2.2" stroke-linecap="round"/></svg>';
 }
 
 /**
@@ -551,8 +509,8 @@ function maria_all_brands() {
 				'ar'    => $t->name,
 				'alt'   => $t->name,
 				'latin' => $t->name,
-				'c1'    => '#8C4A36',
-				'c2'    => '#C9A27E',
+				'c1'    => '#EB1C24',
+				'c2'    => '#500878',
 				'about' => wp_strip_all_tags( $t->description ),
 			);
 		}

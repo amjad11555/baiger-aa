@@ -1,6 +1,6 @@
 <?php
 /**
- * الواجهة الرئيسية: لماذا نحن.
+ * الواجهة الرئيسية: مزايا الطلب من ماريا (قائمة بطاقات بأيقونات ملوّنة).
  *
  * @package Maria
  */
@@ -8,26 +8,24 @@
 defined( 'ABSPATH' ) || exit;
 
 $mr_items = array(
-	array( 'tag', 'سعر جملة واضح', 'ترى سعر الكرتونة وسعر القطعة قبل أن تطلب، دون مفاجآت.' ),
-	array( 'box', 'ابدأ بكرتونة واحدة', 'جرّب صنفاً جديداً دون مخاطرة، ونوّع رفّك كما تشاء.' ),
-	array( 'truck', 'توصيل إلى محلّك', sprintf( 'نوصل طلبك في %s خلال يوم أو يومين، وإلى باقي الولايات حسب الموقع.', maria_opt( 'city' ) ) ),
-	array( 'wallet', 'الدفع عند الاستلام', 'ادفع نقداً عند وصول البضاعة، دون الحاجة إلى بطاقة بنكية.' ),
-	array( 'shield', 'أصلي وصلاحيته حديثة', 'نختار دفعات إنتاج حديثة تناسب مدة العرض على الرف.' ),
-	array( 'whatsapp', 'فريق يرد عليك', 'اسأل، عدّل طلبك، أو اطلب صنفاً جديداً برسالة واتساب.' ),
+	array( 'truck', '#EB1C24', 'توصيل إلى باب محلّك', sprintf( 'نوصل طلبك في %s خلال يوم أو يومين من تأكيده، وإلى باقي الولايات حسب الموقع والكمية.', maria_opt( 'city' ) ) ),
+	array( 'wallet', '#FF7B19', 'الدفع عند الاستلام', 'ادفع نقداً عند وصول البضاعة، أو بتحويل بنكي للعملاء الدائمين. لا تحتاج إلى بطاقة بنكية.' ),
+	array( 'box', '#8C51FF', 'ابدأ من كرتونة واحدة', 'جرّب أصنافاً جديدة دون مخاطرة، واطلب كرتونة واحدة فقط من كل صنف.' ),
+	array( 'shield', '#006C78', 'منتجات أصلية بصلاحية حديثة', 'كل المنتجات أصلية من إيتي وأولكر وبونوتشي، ونختار دفعات حديثة تناسب مدة العرض على الرف.' ),
+	array( 'whatsapp', '#1E7B3C', 'فريق يرد عليك', 'اسأل، أو عدّل طلبك، أو اطلب صنفاً جديداً برسالة واتساب خلال ساعات العمل.' ),
 );
 ?>
-<section class="mr-section mr-why" aria-labelledby="mr-why-title">
+<section class="mr-section mr-section--white mr-why" aria-labelledby="mr-why-title">
 	<div class="mr-container">
-		<div class="mr-section__head">
-			<span class="mr-kicker">لماذا ماريا؟</span>
-			<h2 class="mr-section__title" id="mr-why-title">شريك يفهم عمل البقالة</h2>
-		</div>
-		<ul class="mr-why__grid">
+		<h2 class="screen-reader-text" id="mr-why-title">لماذا تطلب من ماريا؟</h2>
+		<ul class="mr-feats">
 			<?php foreach ( $mr_items as $mr_it ) : ?>
-				<li class="mr-why__item">
-					<span class="mr-why__icon"><?php maria_the_icon( $mr_it[0], '', 26 ); ?></span>
-					<h3><?php echo esc_html( $mr_it[1] ); ?></h3>
-					<p><?php echo esc_html( $mr_it[2] ); ?></p>
+				<li class="mr-feat" style="--c:<?php echo esc_attr( $mr_it[1] ); ?>">
+					<span class="mr-feat__icon" aria-hidden="true"><?php maria_the_icon( $mr_it[0], '', 34 ); ?></span>
+					<span class="mr-feat__text">
+						<strong class="mr-feat__title"><?php echo esc_html( $mr_it[2] ); ?></strong>
+						<span class="mr-feat__desc"><?php echo esc_html( $mr_it[3] ); ?></span>
+					</span>
 				</li>
 			<?php endforeach; ?>
 		</ul>

@@ -57,6 +57,7 @@ $mr_cat_colors = maria_categories();
 				<?php endforeach; ?>
 				<button type="button" class="mr-qo-filter mr-qo-filter--sale" data-filter="sale" aria-pressed="false"><?php maria_the_icon( 'percent', '', 16 ); ?> عليها عرض</button>
 				<button type="button" class="mr-qo-filter mr-qo-filter--selected" data-filter="selected" aria-pressed="false"><?php maria_the_icon( 'check', '', 16 ); ?> المحدد <span class="mr-qo-filter__count" data-mr-qo-lines-badge>0</span></button>
+				<button type="button" class="mr-qo-filter mr-qo-filter--favs" data-filter="favs" aria-pressed="false"><?php maria_the_icon( 'heart', '', 16 ); ?> المفضلة <span class="mr-qo-filter__count" data-mr-fav-count hidden>0</span></button>
 			</div>
 			<div class="mr-qo-brandfilter" role="group" aria-label="تصفية حسب العلامة">
 				<button type="button" class="mr-qo-brand is-active" data-brand="all" aria-pressed="true">كل الشركات</button>

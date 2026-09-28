@@ -154,6 +154,10 @@ function maria_assets() {
 			'popular'      => 'يبحث عنها أصحاب البقالات',
 			'add'          => 'أضف',
 			'orderNow'     => 'أكمل الطلب',
+			'favAdded'     => 'أُضيف إلى المفضلة ♥',
+			'favRemoved'   => 'أُزيل من المفضلة',
+			'favEmpty'     => 'قائمة المفضلة فارغة. اضغط ♡ على أي منتج لإضافته.',
+			'page'         => 'الصفحة',
 		),
 	);
 
@@ -184,7 +188,7 @@ add_action( 'wp_enqueue_scripts', 'maria_assets', 20 );
  * تحميل مسبق لملفي الخط العربي الأساسيين لتسريع ظهور النصوص.
  */
 function maria_preload_fonts() {
-	foreach ( array( 'tajawal-400-arabic.woff2', 'tajawal-800-arabic.woff2', 'aref-ruqaa-700-arabic.woff2' ) as $file ) {
+	foreach ( array( 'readex-pro-arabic.woff2', 'lalezar-arabic.woff2' ) as $file ) {
 		printf( '<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n", esc_url( MARIA_URI . '/assets/fonts/' . $file ) );
 	}
 }
@@ -270,7 +274,7 @@ add_action( 'wp_head', 'maria_js_class', 0 );
  * أيقونة الموقع من رمز الشعار (إن لم يرفع المدير أيقونة) + لون شريط المتصفح في الجوال.
  */
 function maria_head_icons() {
-	echo '<meta name="theme-color" content="#FFFBF6">' . "\n";
+	echo '<meta name="theme-color" content="#FFFFFF">' . "\n";
 	if ( has_site_icon() ) {
 		return;
 	}

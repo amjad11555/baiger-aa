@@ -69,27 +69,6 @@ function maria_flavor( $key ) {
 }
 
 /**
- * مزج لونين.
- *
- * @param string $hex1 اللون الأول.
- * @param string $hex2 اللون الثاني.
- * @param float  $w    نسبة اللون الثاني.
- * @return string
- */
-function maria_mix( $hex1, $hex2, $w ) {
-	$a = sscanf( ltrim( $hex1, '#' ), '%02x%02x%02x' );
-	$b = sscanf( ltrim( $hex2, '#' ), '%02x%02x%02x' );
-	if ( count( $a ) < 3 || count( $b ) < 3 ) {
-		return $hex1;
-	}
-	$out = '#';
-	for ( $i = 0; $i < 3; $i++ ) {
-		$out .= sprintf( '%02X', (int) round( $a[ $i ] * ( 1 - $w ) + $b[ $i ] * $w ) );
-	}
-	return $out;
-}
-
-/**
  * نقاط حافة مسننة (للأطراف المضغوطة في الأغلفة).
  *
  * @param float $x1 بداية.
@@ -132,7 +111,7 @@ function maria_art_sprite() {
 <svg xmlns="http://www.w3.org/2000/svg" class="mr-sprite" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
 	<symbol id="mr-bg" viewBox="0 0 400 400">
 		<rect width="400" height="400" style="fill:var(--t1)"/>
-		<circle cx="200" cy="196" r="148" style="fill:#FFFBF6;opacity:.6"/>
+		<circle cx="200" cy="196" r="148" style="fill:#F4F4F4"/>
 		<ellipse cx="200" cy="332" rx="118" ry="12" style="fill:#13201F;opacity:.07"/>
 	</symbol>
 	<symbol id="mr-pack-cake" viewBox="0 0 400 400">
@@ -221,8 +200,8 @@ function maria_product_art( $product, $variant = 'card' ) {
 	$brand  = isset( $brands[ $info['brand'] ] ) ? $brands[ $info['brand'] ] : array(
 		'latin' => get_bloginfo( 'name' ),
 		'ar'    => '',
-		'c1'    => '#8C4A36',
-		'c2'    => '#C9A27E',
+		'c1'    => '#EB1C24',
+		'c2'    => '#500878',
 	);
 	$flv    = maria_flavor( $info['flavor'] ? $info['flavor'] : 'plain' );
 	$shapes = array(
@@ -250,7 +229,7 @@ function maria_product_art( $product, $variant = 'card' ) {
 		$brand['c2'],
 		$flv[1],
 		$flv[2],
-		maria_mix( $flv[1], '#F7ECDF', 0.88 )
+		'#FFFFFF'
 	);
 
 	$texts = '';

@@ -625,11 +625,132 @@
 	});
 
 	/* ------------------------------------------------------------------
+	 * المفضلة (تُحفظ في متصفح الزائر)
+	 * ---------------------------------------------------------------- */
+	var FAV_KEY = 'maria_favs';
+	var favs = (function () {
+		try {
+			var v = JSON.parse(window.localStorage.getItem(FAV_KEY) || '[]');
+			return Array.isArray(v) ? v.map(String) : [];
+		} catch (e) { return []; }
+	})();
+	function favPaint() {
+		$$('[data-mr-fav]').forEach(function (b) {
+			var on = favs.indexOf(b.getAttribute('data-mr-fav')) > -1;
+			b.classList.toggle('is-on', on);
+			b.setAttribute('aria-pressed', on ? 'true' : 'false');
+		});
+		$$('[data-mr-fav-count]').forEach(function (el) {
+			el.textContent = favs.length;
+			el.hidden = !favs.length;
+		});
+	}
+	doc.addEventListener('click', function (e) {
+		var b = e.target.closest('[data-mr-fav]');
+		if (!b) { return; }
+		e.preventDefault();
+		var id = b.getAttribute('data-mr-fav');
+		var i = favs.indexOf(id);
+		if (i > -1) { favs.splice(i, 1); toast(T.favRemoved); } else { favs.push(id); toast(T.favAdded, 'ok'); }
+		try { window.localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch (err) { /* التخزين غير متاح */ }
+		favPaint();
+		if (typeof qoState !== 'undefined' && qoState.favs) { applyQoFilter(); }
+	});
+	favPaint();
+
+	/* ------------------------------------------------------------------
+	 * الشرائط الأفقية والبنرات: نقاط التنقل + التشغيل التلقائي
+	 * ---------------------------------------------------------------- */
+	$$('[data-mr-rail]').forEach(function (rail) {
+		var track = $('[data-mr-rail-track]', rail) || $('.mr-grid--rail', rail);
+		var dots = $('[data-mr-rail-dots]', rail);
+		if (!track || !dots) { return; }
+		var rtl = window.getComputedStyle(track).direction === 'rtl';
+		var delay = parseInt(rail.getAttribute('data-mr-autoplay'), 10) || 0;
+		var pages = 0, current = 0, timer = null;
+
+		function update() {
+			var w = track.clientWidth;
+			if (!w || !pages) { return; }
+			var pos = Math.abs(track.scrollLeft);
+			current = pos > 4 && pos >= track.scrollWidth - w - 4 ? pages - 1 : Math.round(pos / w);
+			$$('.mr-dot', dots).forEach(function (d, k) {
+				d.classList.toggle('is-active', k === current);
+				d.setAttribute('aria-current', k === current ? 'true' : 'false');
+			});
+		}
+		function build() {
+			var w = track.clientWidth;
+			if (!w) { return; }
+			var n = Math.max(1, Math.ceil((track.scrollWidth - 4) / w));
+			if (n !== pages) {
+				pages = n;
+				dots.innerHTML = '';
+				for (var i = 0; i < n; i++) {
+					var d = doc.createElement('button');
+					d.type = 'button';
+					d.className = 'mr-dot';
+					d.setAttribute('data-i', i);
+					d.setAttribute('aria-label', (T.page || 'الصفحة') + ' ' + (i + 1));
+					dots.appendChild(d);
+				}
+				dots.hidden = n < 2;
+			}
+			update();
+		}
+		function go(i) {
+			var w = track.clientWidth;
+			var left = Math.min(i * w, track.scrollWidth - w);
+			track.scrollTo({ left: rtl ? -left : left, behavior: reduceMotion ? 'auto' : 'smooth' });
+		}
+		function stop() { clearInterval(timer); timer = null; }
+		function play() {
+			if (!delay || reduceMotion) { return; }
+			stop();
+			timer = setInterval(function () {
+				if (!doc.hidden && pages > 1) { go((current + 1) % pages); }
+			}, delay);
+		}
+
+		dots.addEventListener('click', function (e) {
+			var d = e.target.closest('.mr-dot');
+			if (d) { go(parseInt(d.getAttribute('data-i'), 10)); play(); }
+		});
+		track.addEventListener('scroll', debounce(update, 60), { passive: true });
+		if ('ResizeObserver' in window) {
+			new ResizeObserver(debounce(build, 80)).observe(track);
+		} else {
+			window.addEventListener('resize', debounce(build, 120));
+		}
+		build();
+		if (delay) {
+			play();
+			rail.addEventListener('pointerdown', stop);
+			rail.addEventListener('focusin', stop);
+			rail.addEventListener('mouseenter', stop);
+			rail.addEventListener('mouseleave', play);
+		}
+	});
+
+	/* ------------------------------------------------------------------
+	 * زر العودة إلى الأعلى
+	 * ---------------------------------------------------------------- */
+	var toTop = $('[data-mr-totop]');
+	if (toTop) {
+		var topCheck = function () { toTop.hidden = window.scrollY < 700; };
+		window.addEventListener('scroll', debounce(topCheck, 80), { passive: true });
+		topCheck();
+		toTop.addEventListener('click', function () {
+			window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+		});
+	}
+
+	/* ------------------------------------------------------------------
 	 * صفحة الطلب السريع
 	 * ---------------------------------------------------------------- */
 	var qo = $('[data-mr-qo]');
 	var qoRows = qo ? $$('.mr-qo-row', qo) : [];
-	var qoState = { cat: 'all', brand: 'all', sale: false, selected: false, q: '' };
+	var qoState = { cat: 'all', brand: 'all', sale: false, selected: false, favs: false, q: '' };
 
 	qoRows.forEach(function (row) { row._s = normalize(row.getAttribute('data-search')); });
 
@@ -643,6 +764,7 @@
 			if (ok && qoState.brand !== 'all' && row.getAttribute('data-brand') !== qoState.brand) { ok = false; }
 			if (ok && qoState.sale && row.getAttribute('data-sale') !== '1') { ok = false; }
 			if (ok && qoState.selected && !row.classList.contains('is-selected')) { ok = false; }
+			if (ok && qoState.favs && favs.indexOf(row.getAttribute('data-id')) === -1) { ok = false; }
 			if (ok && tokens.length) {
 				for (var i = 0; i < tokens.length; i++) {
 					if (row._s.indexOf(tokens[i]) === -1) { ok = false; break; }
@@ -720,7 +842,7 @@
 			btn.addEventListener('click', function () {
 				var f = btn.getAttribute('data-filter');
 				if (f === 'all') {
-					qoState.cat = 'all'; qoState.sale = false; qoState.selected = false;
+					qoState.cat = 'all'; qoState.sale = false; qoState.selected = false; qoState.favs = false;
 				} else if (f.indexOf('cat:') === 0) {
 					var cat = f.slice(4);
 					qoState.cat = qoState.cat === cat ? 'all' : cat;
@@ -728,11 +850,14 @@
 					qoState.sale = !qoState.sale;
 				} else if (f === 'selected') {
 					qoState.selected = !qoState.selected;
+				} else if (f === 'favs') {
+					qoState.favs = !qoState.favs;
+					if (qoState.favs && !favs.length) { toast(T.favEmpty); }
 				}
 				$$('.mr-qo-filter', qo).forEach(function (b) {
 					var bf = b.getAttribute('data-filter');
-					var on = (bf === 'all' && qoState.cat === 'all' && !qoState.sale && !qoState.selected) ||
-						(bf === 'cat:' + qoState.cat) || (bf === 'sale' && qoState.sale) || (bf === 'selected' && qoState.selected);
+					var on = (bf === 'all' && qoState.cat === 'all' && !qoState.sale && !qoState.selected && !qoState.favs) ||
+						(bf === 'cat:' + qoState.cat) || (bf === 'sale' && qoState.sale) || (bf === 'selected' && qoState.selected) || (bf === 'favs' && qoState.favs);
 					b.classList.toggle('is-active', on);
 					b.setAttribute('aria-pressed', on ? 'true' : 'false');
 				});
@@ -793,6 +918,14 @@
 		}
 
 		updateSummary();
+
+		// رابط «المفضلة» في الشريط السفلي يفتح هذه الصفحة على قائمة المفضلة.
+		var showFavs = function () {
+			var favBtn = $('.mr-qo-filter[data-filter="favs"]', qo);
+			if (window.location.hash === '#favorites' && favBtn && !qoState.favs) { favBtn.click(); }
+		};
+		showFavs();
+		window.addEventListener('hashchange', showFavs);
 	}
 
 	// حفظ أي تغييرات معلّقة قبل مغادرة الصفحة.

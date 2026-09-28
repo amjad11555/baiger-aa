@@ -36,7 +36,6 @@ $mr_lines    = $mr_has_wc && WC()->cart ? count( WC()->cart->get_cart() ) : 0;
 <footer class="mr-footer">
 	<div class="mr-container mr-footer__grid">
 		<div class="mr-footer__brand">
-			<?php echo maria_ornaments_row( 'mr-footer__orns' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 			<?php maria_logo(); ?>
 			<p>موزّع جملة للحلويات والتسالي التركية الأصلية. نخدم البقالات والماركت والمقاصف في <?php echo esc_html( maria_opt( 'city' ) ); ?> وكل تركيا، ونشحن إلى الخارج.</p>
 			<?php $mr_socials = maria_socials(); ?>
@@ -128,22 +127,21 @@ $mr_lines    = $mr_has_wc && WC()->cart ? count( WC()->cart->get_cart() ) : 0;
 <?php endif; ?>
 
 <nav class="mr-bottom-nav" aria-label="تنقل سريع">
-	<a href="<?php echo esc_url( home_url( '/' ) ); ?>"<?php echo is_front_page() ? ' aria-current="page"' : ''; ?>><?php maria_the_icon( 'home', '', 22 ); ?><span>الرئيسية</span></a>
-	<button type="button" data-mr-open="mr-drawer" aria-controls="mr-drawer"><?php maria_the_icon( 'grid', '', 22 ); ?><span>الأقسام</span></button>
-	<a class="mr-bottom-nav__main" href="<?php echo esc_url( maria_page_url( 'quick_order' ) ); ?>"<?php echo $mr_is_qo ? ' aria-current="page"' : ''; ?>><span class="mr-bottom-nav__bubble"><?php maria_the_icon( 'list', '', 24 ); ?></span><span>اطلب الآن</span></a>
+	<a href="<?php echo esc_url( home_url( '/' ) ); ?>"<?php echo is_front_page() ? ' aria-current="page"' : ''; ?>><?php maria_the_icon( 'home', '', 24 ); ?><span>الرئيسية</span></a>
+	<button type="button" data-mr-open="mr-drawer" aria-controls="mr-drawer"><?php maria_the_icon( 'menu', '', 24 ); ?><span>الأقسام</span></button>
+	<a href="<?php echo esc_url( maria_page_url( 'quick_order' ) ); ?>"<?php echo $mr_is_qo ? ' aria-current="page"' : ''; ?>><?php maria_the_icon( 'list', '', 24 ); ?><span>الطلب السريع</span></a>
+	<a href="<?php echo esc_url( maria_page_url( 'quick_order' ) . '#favorites' ); ?>" data-mr-favs-link><span class="mr-bottom-nav__ico"><?php maria_the_icon( 'heart', '', 24 ); ?><span class="mr-fav-count" data-mr-fav-count hidden>0</span></span><span>المفضلة</span></a>
 	<?php if ( $mr_has_wc ) : ?>
-		<button type="button" data-mr-open="mr-cart-drawer" aria-controls="mr-cart-drawer"><span class="mr-bottom-nav__cart"><?php maria_the_icon( 'cart', '', 22 ); ?><span class="mr-cart-count" data-count="<?php echo (int) $mr_count; ?>"><?php echo (int) $mr_count; ?></span></span><span>السلة</span></button>
-	<?php endif; ?>
-	<?php if ( maria_wa_number() ) : ?>
-		<a href="<?php echo esc_url( maria_wa_link( 'مرحباً، أرغب بالطلب' ) ); ?>" target="_blank" rel="noopener"><?php maria_the_icon( 'whatsapp', '', 22 ); ?><span>واتساب</span></a>
-	<?php elseif ( $mr_has_wc ) : ?>
-		<a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>"><?php maria_the_icon( 'user', '', 22 ); ?><span>حسابي</span></a>
+		<button type="button" data-mr-open="mr-cart-drawer" aria-controls="mr-cart-drawer"><span class="mr-bottom-nav__ico"><?php maria_the_icon( 'cart', '', 24 ); ?><span class="mr-cart-count" data-count="<?php echo (int) $mr_count; ?>"><?php echo (int) $mr_count; ?></span></span><span>سلتي</span></button>
 	<?php endif; ?>
 </nav>
 
-<?php if ( maria_wa_number() ) : ?>
-	<a class="mr-wa-float" href="<?php echo esc_url( maria_wa_link( 'مرحباً، أرغب بالطلب من ' . get_bloginfo( 'name' ) ) ); ?>" target="_blank" rel="noopener" aria-label="اطلب عبر واتساب"><?php maria_the_icon( 'whatsapp', '', 26 ); ?></a>
-<?php endif; ?>
+<div class="mr-floats">
+	<?php if ( maria_wa_number() ) : ?>
+		<a class="mr-wa-float" href="<?php echo esc_url( maria_wa_link( 'مرحباً، أرغب بالطلب من ' . get_bloginfo( 'name' ) ) ); ?>" target="_blank" rel="noopener" aria-label="اطلب عبر واتساب"><?php maria_the_icon( 'whatsapp', '', 34 ); ?></a>
+	<?php endif; ?>
+	<button type="button" class="mr-totop" data-mr-totop aria-label="العودة إلى أعلى الصفحة" hidden><?php maria_the_icon( 'arrow-up', '', 28 ); ?></button>
+</div>
 
 <div class="mr-toast" role="status" aria-live="polite" aria-atomic="true"></div>
 

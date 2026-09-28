@@ -1,6 +1,5 @@
-Fonts: Tajawal (Boutros Fonts, Mourad Boutros, Soulaf Khalifeh, Arlette Boutros),
-Aref Ruqaa (Abdullah Aref, Khaled Hosny) and Belleza (Eduardo Tunni).
-Source: Google Fonts — https://fonts.google.com/specimen/Tajawal ,
-https://fonts.google.com/specimen/Aref+Ruqaa , https://fonts.google.com/specimen/Belleza
-All three are licensed under the SIL Open Font License, Version 1.1 — https://openfontlicense.org
+Fonts: Readex Pro (Thomas Jockin, Nadine Chahine, Bonnie Shaver-Troup, Santiago Orozco, Héctor Gómez)
+and Lalezar (Borna Izadpanah).
+Source: Google Fonts — https://fonts.google.com/specimen/Readex+Pro , https://fonts.google.com/specimen/Lalezar
+Both are licensed under the SIL Open Font License, Version 1.1 — https://openfontlicense.org
 They may be used, bundled and redistributed freely with this theme; they may not be sold by themselves.
