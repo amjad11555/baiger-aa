@@ -1,7 +1,0 @@
-الخطوط المضمّنة في هذا القالب مرخّصة بموجب SIL Open Font License 1.1
-https://openfontlicense.org
-
-- Alexandria — Copyright 2022 The Alexandria Project Authors (Mohamed Gaber)
-- IBM Plex Sans Arabic — Copyright © 2017 IBM Corp. with Reserved Font Name "Plex"
-
-يُسمح باستخدامها وتضمينها وإعادة توزيعها مع القالب وفق شروط الرخصة.

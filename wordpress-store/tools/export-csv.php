@@ -2,28 +2,28 @@
 /**
  * يولّد ملف CSV متوافق مع مستورد منتجات ووكومرس من كتالوج القالب.
  *
- * الاستخدام (داخل موقع ووردبريس فيه قالب الشامي مفعّل):
+ * الاستخدام (داخل موقع ووردبريس فيه قالب زاد مفعّل):
  *   wp eval-file wordpress-store/tools/export-csv.php wordpress-store/products-ar.csv
  *
  * بعد تعديل الأسعار في Excel / Google Sheets:
  *   المنتجات ← استيراد ← اختر الملف ← فعّل «تحديث المنتجات الموجودة» (المطابقة بالـ SKU).
  *
- * @package AlShami
+ * @package Zad
  */
 
-if ( ! defined( 'ABSPATH' ) || ! function_exists( 'shami_seed_description' ) ) {
-	fwrite( STDERR, "شغّل الملف عبر wp eval-file مع تفعيل قالب الشامي.\n" );
+if ( ! defined( 'ABSPATH' ) || ! function_exists( 'zad_seed_description' ) ) {
+	fwrite( STDERR, "شغّل الملف عبر wp eval-file مع تفعيل قالب زاد.\n" );
 	return;
 }
 
 $out  = isset( $args[0] ) ? $args[0] : 'products-ar.csv';
-$rows = include SHAMI_DIR . '/inc/data/catalog.php';
-$cats = shami_categories();
+$rows = include ZAD_DIR . '/inc/data/catalog.php';
+$cats = zad_categories();
 
 $fh = fopen( $out, 'w' );
 fwrite( $fh, "\xEF\xBB\xBF" ); // BOM ليعرض Excel الحروف العربية بشكل صحيح.
 
-$header = array( 'Type', 'SKU', 'Name', 'Published', 'Is featured?', 'Visibility in catalog', 'Short description', 'Description', 'Sale price', 'Regular price', 'Categories', 'In stock?', 'Meta: _shami_brand', 'Meta: _shami_line', 'Meta: _shami_tr', 'Meta: _shami_flavor', 'Meta: _shami_pack', 'Meta: _shami_units', 'Meta: _shami_bundle' );
+$header = array( 'Type', 'SKU', 'Name', 'Published', 'Is featured?', 'Visibility in catalog', 'Short description', 'Description', 'Sale price', 'Regular price', 'Categories', 'In stock?', 'Meta: _zad_brand', 'Meta: _zad_line', 'Meta: _zad_tr', 'Meta: _zad_flavor', 'Meta: _zad_pack', 'Meta: _zad_units', 'Meta: _zad_bundle' );
 fputcsv( $fh, $header, ',', '"', '\\' );
 
 foreach ( $rows as $row ) {
@@ -44,7 +44,7 @@ foreach ( $rows as $row ) {
 			$r['best'] ? 1 : 0,
 			'visible',
 			'<p>' . $r['desc'] . '. التعبئة: ' . $r['pack'] . '. متوفر بالجملة للبقالات بسعر الكرتونة مع توصيل سريع.</p>',
-			shami_seed_description( $r ),
+			zad_seed_description( $r ),
 			$r['sale'] ? $r['sale'] : '',
 			$r['price'],
 			implode( ', ', $categories ),
