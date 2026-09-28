@@ -24,4 +24,5 @@ if ( class_exists( 'WooCommerce' ) ) {
 	require LAZZA_DIR . '/inc/woocommerce.php';
 	require LAZZA_DIR . '/inc/quick-order.php';
 	require LAZZA_DIR . '/inc/i18n-fallback.php';
+	require LAZZA_DIR . '/inc/image-import.php';
 }

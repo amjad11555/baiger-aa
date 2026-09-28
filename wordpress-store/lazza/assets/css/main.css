@@ -1028,6 +1028,16 @@ button { cursor: pointer; }
 .lz-post-card__title a { color: var(--lz-ink); }
 .lz-post-card__excerpt { padding: 0 16px; color: var(--lz-ink-2); font-size: 15px; }
 
+/* ---------- صور المنتجات الحقيقية (صور العبوات الرسمية) ---------- */
+.lz-card__media img, .lz-qo-row__art img, .lz-float img, .lz-cat-tile__art img, .lz-excat__art img, .lz-sr__art img,
+.woocommerce-mini-cart-item img, .lz table.shop_table .product-thumbnail img {
+	object-fit: contain !important; background: #fff;
+}
+.lz-card__media img { padding: 7%; }
+.lz-qo-row__art img, .lz-sr__art img, .woocommerce-mini-cart-item img, .lz table.shop_table .product-thumbnail img { padding: 3px; }
+.lz-float img, .lz-cat-tile__art img, .lz-excat__art img { padding: 8%; }
+.lz .woocommerce-product-gallery__image img { background: #fff; }
+
 /* ---------- رسم العبوات ---------- */
 .lz-art { display: block; width: 100%; height: auto; aspect-ratio: 1; }
 .lz-art__brand { font-family: var(--lz-font); font-weight: 900; }
