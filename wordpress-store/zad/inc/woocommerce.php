@@ -281,8 +281,19 @@ function zad_card_badges( $product ) {
 		$out .= '<span class="zd-badge zd-badge--muted">نفدت الكمية</span>';
 	} else {
 		if ( $product->is_on_sale() && zad_show_prices() ) {
-			$pct  = zad_discount_percent( $product );
-			$out .= $pct ? sprintf( '<span class="zd-badge zd-badge--sale"><bdi dir="ltr">−%d%%</bdi></span>', $pct ) : '<span class="zd-badge zd-badge--sale">عرض</span>';
+			$pct = zad_discount_percent( $product );
+			// عرض بمبلغ ثابت: «−10 ₺» أوضح لصاحب المحل من «−2%».
+			$off = function_exists( 'zad_promo_price_for' ) && null !== zad_promo_price_for( $product ) && 'fixed' === zad_promo()['type']
+				? (float) $product->get_regular_price() - (float) $product->get_price()
+				: 0;
+			if ( $off > 0 ) {
+				$out .= sprintf( '<span class="zd-badge zd-badge--sale"><bdi dir="ltr">−%s</bdi></span>', esc_html( zad_money_plain( $off ) ) );
+			} else {
+				$out .= $pct ? sprintf( '<span class="zd-badge zd-badge--sale"><bdi dir="ltr">−%d%%</bdi></span>', $pct ) : '<span class="zd-badge zd-badge--sale">عرض</span>';
+			}
+		}
+		if ( function_exists( 'zad_is_new' ) && zad_engage( 'news' )['badge'] && zad_is_new( $product ) ) {
+			$out .= '<span class="zd-badge zd-badge--new">جديد</span>';
 		}
 		if ( get_post_meta( $product->get_id(), '_zad_bundle', true ) ) {
 			$out .= '<span class="zd-badge zd-badge--bundle">باقة</span>';

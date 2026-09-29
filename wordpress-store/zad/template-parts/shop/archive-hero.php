@@ -49,6 +49,11 @@ if ( is_search() ) {
 	$zd_term  = get_queried_object();
 	$zd_title = $zd_term->name;
 	$zd_desc  = $zd_term->description;
+} elseif ( function_exists( 'zad_is_new_view' ) && zad_is_new_view() ) {
+	$zd_title   = 'الأصناف الجديدة';
+	$zd_eyebrow = 'وصل حديثاً';
+	$zd_desc    = sprintf( 'كل ما وصل إلى التشكيلة خلال آخر %d يوماً، من الأحدث. تابع هذه الصفحة أو جرس الإشعارات لتعرف بالأصناف الجديدة فور وصولها.', zad_new_days() );
+	$zd_scope   = array( 'ids' => array_flip( zad_new_product_ids( 500 ) ) );
 } else {
 	$zd_title = 'كل الأصناف بأسعار الجملة';
 	$zd_desc  = 'الكيك والبسكويت والشيبس والشوكولاتة التركية بسعر الكرتونة لتجار التجزئة. صفِّ الأصناف حسب القسم أو العلامة، وأضف الكميات مباشرة إلى الطلبية.';

@@ -15,12 +15,16 @@ get_header();
 	get_template_part( 'template-parts/home/services' );
 	get_template_part( 'template-parts/home/categories' );
 	if ( class_exists( 'WooCommerce' ) ) {
+		get_template_part( 'template-parts/home/new-arrivals' );
 		get_template_part( 'template-parts/home/products' );
 	}
 	get_template_part( 'template-parts/home/banners' );
 	get_template_part( 'template-parts/home/segments' );
 	if ( class_exists( 'WooCommerce' ) ) {
 		get_template_part( 'template-parts/home/offers' );
+	}
+	if ( class_exists( 'WooCommerce' ) ) {
+		get_template_part( 'template-parts/home/pitch' );
 	}
 	get_template_part( 'template-parts/home/process' );
 	get_template_part( 'template-parts/home/brandbar' );

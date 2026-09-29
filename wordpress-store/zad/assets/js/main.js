@@ -614,7 +614,7 @@
 	 * ---------------------------------------------------------------- */
 	var qo = $('[data-zd-qo]');
 	var qoRows = qo ? $$('.zd-qo-row', qo) : [];
-	var qoState = { cat: 'all', brand: 'all', sale: false, selected: false, q: '' };
+	var qoState = { cat: 'all', brand: 'all', sale: false, fresh: false, selected: false, q: '' };
 
 	qoRows.forEach(function (row) { row._s = normalize(row.getAttribute('data-search')); });
 
@@ -627,6 +627,7 @@
 			if (qoState.cat !== 'all' && row.getAttribute('data-cat') !== qoState.cat) { ok = false; }
 			if (ok && qoState.brand !== 'all' && row.getAttribute('data-brand') !== qoState.brand) { ok = false; }
 			if (ok && qoState.sale && row.getAttribute('data-sale') !== '1') { ok = false; }
+			if (ok && qoState.fresh && row.getAttribute('data-new') !== '1') { ok = false; }
 			if (ok && qoState.selected && !row.classList.contains('is-selected')) { ok = false; }
 			if (ok && tokens.length) {
 				for (var i = 0; i < tokens.length; i++) {
@@ -711,19 +712,21 @@
 			btn.addEventListener('click', function () {
 				var f = btn.getAttribute('data-filter');
 				if (f === 'all') {
-					qoState.cat = 'all'; qoState.sale = false; qoState.selected = false;
+					qoState.cat = 'all'; qoState.sale = false; qoState.fresh = false; qoState.selected = false;
 				} else if (f.indexOf('cat:') === 0) {
 					var cat = f.slice(4);
 					qoState.cat = qoState.cat === cat ? 'all' : cat;
 				} else if (f === 'sale') {
 					qoState.sale = !qoState.sale;
+				} else if (f === 'new') {
+					qoState.fresh = !qoState.fresh;
 				} else if (f === 'selected') {
 					qoState.selected = !qoState.selected;
 				}
 				$$('.zd-qo-filter', qo).forEach(function (b) {
 					var bf = b.getAttribute('data-filter');
-					var on = (bf === 'all' && qoState.cat === 'all' && !qoState.sale && !qoState.selected) ||
-						(bf === 'cat:' + qoState.cat) || (bf === 'sale' && qoState.sale) || (bf === 'selected' && qoState.selected);
+					var on = (bf === 'all' && qoState.cat === 'all' && !qoState.sale && !qoState.fresh && !qoState.selected) ||
+						(bf === 'cat:' + qoState.cat) || (bf === 'sale' && qoState.sale) || (bf === 'new' && qoState.fresh) || (bf === 'selected' && qoState.selected);
 					b.classList.toggle('is-active', on);
 					b.setAttribute('aria-pressed', on ? 'true' : 'false');
 				});

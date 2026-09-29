@@ -55,6 +55,17 @@ foreach ( $zd_groups as $zd_g ) {
 				<?php foreach ( $zd_groups as $zd_slug => $zd_g ) : ?>
 					<button type="button" class="zd-qo-filter" data-filter="cat:<?php echo esc_attr( $zd_slug ); ?>" aria-pressed="false"><?php echo esc_html( $zd_g['name'] ); ?></button>
 				<?php endforeach; ?>
+				<?php
+				$zd_new_n = 0;
+				foreach ( $zd_groups as $zd_g ) {
+					foreach ( $zd_g['rows'] as $zd_r ) {
+						$zd_new_n += empty( $zd_r['new'] ) ? 0 : 1;
+					}
+				}
+				?>
+				<?php if ( $zd_new_n ) : ?>
+					<button type="button" class="zd-qo-filter zd-qo-filter--new" data-filter="new" aria-pressed="false">جديد <span class="zd-qo-filter__count"><?php echo (int) $zd_new_n; ?></span></button>
+				<?php endif; ?>
 				<button type="button" class="zd-qo-filter zd-qo-filter--sale" data-filter="sale" aria-pressed="false">عليها عرض</button>
 				<button type="button" class="zd-qo-filter zd-qo-filter--selected" data-filter="selected" aria-pressed="false">المحدد <span class="zd-qo-filter__count" data-zd-qo-lines-badge>0</span></button>
 			</div>

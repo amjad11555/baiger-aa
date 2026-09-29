@@ -34,10 +34,13 @@ $zd_shop    = $zd_has_wc ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 <?php wp_body_open(); ?>
 <a class="zd-skip" href="#main">تخطَّ إلى المحتوى</a>
 
-<?php if ( zad_opt( 'announcement' ) ) : ?>
+<?php
+$zd_bar = function_exists( 'zad_announce_bar' ) ? zad_announce_bar() : ( zad_opt( 'announcement' ) ? array( zad_opt( 'announcement' ), zad_page_url( 'quick_order' ), 'افتح قائمة الأسعار' ) : null );
+?>
+<?php if ( $zd_bar ) : ?>
 <div class="zd-announce" role="region" aria-label="إعلان" data-zd-announce>
 	<div class="zd-container zd-announce__row">
-		<p class="zd-announce__text"><?php echo esc_html( zad_opt( 'announcement' ) ); ?> <a href="<?php echo esc_url( zad_page_url( 'quick_order' ) ); ?>">افتح قائمة الأسعار</a></p>
+		<p class="zd-announce__text"><?php echo esc_html( $zd_bar[0] ); ?> <a href="<?php echo esc_url( $zd_bar[1] ); ?>"><?php echo esc_html( $zd_bar[2] ); ?></a></p>
 		<button type="button" class="zd-announce__close" data-zd-announce-close aria-label="إغلاق الإعلان"><?php zad_the_icon( 'close', '', 16 ); ?></button>
 	</div>
 </div>
@@ -108,6 +111,9 @@ $zd_shop    = $zd_has_wc ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 			<button type="button" class="zd-icon-btn" data-zd-open="zd-search-panel" aria-controls="zd-search-panel" aria-expanded="false" aria-label="البحث"><?php zad_the_icon( 'search', '', 22 ); ?></button>
 			<a class="zd-icon-btn zd-header__account" href="<?php echo esc_url( $zd_account ); ?>" aria-label="حسابي"><?php zad_the_icon( 'user', '', 22 ); ?></a>
 			<button type="button" class="zd-icon-btn zd-header__wish" data-zd-open="zd-wish-drawer" aria-controls="zd-wish-drawer" aria-expanded="false" aria-label="الأصناف المحفوظة"><?php zad_the_icon( 'heart', '', 22 ); ?><span class="zd-bubble" data-zd-wish-count hidden>0</span></button>
+			<?php if ( $zd_has_wc && function_exists( 'zad_notif_button' ) ) : ?>
+				<?php zad_notif_button(); ?>
+			<?php endif; ?>
 			<?php if ( $zd_has_wc ) : ?>
 				<button type="button" class="zd-icon-btn zd-header__cart" data-zd-open="zd-cart-drawer" aria-controls="zd-cart-drawer" aria-expanded="false" aria-label="الطلبية"><?php zad_the_icon( 'bag', '', 22 ); ?><span class="zd-bubble zd-cart-count" data-count="<?php echo (int) $zd_count; ?>"><?php echo (int) $zd_count; ?></span></button>
 			<?php endif; ?>

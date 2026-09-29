@@ -775,6 +775,17 @@ function zad_account_dashboard() {
 				<a class="zd-btn zd-btn--dark" href="<?php echo esc_url( $edit ); ?>">أكمل البيانات</a>
 			</div>
 		<?php endif; ?>
+		<?php
+		$zd_promo = function_exists( 'zad_promo' ) ? zad_promo() : null;
+		if ( $zd_promo && $zd_promo['active'] ) :
+			?>
+			<a class="zd-acc__promo" href="<?php echo esc_url( $zd_promo['href'] ); ?>">
+				<span class="zd-acc__promo-kicker"><?php zad_the_icon( 'percent', '', 16 ); ?> عرض فعّال<?php echo zad_promo_ends_text() ? ' · ' . esc_html( zad_promo_ends_text() ) : ''; ?></span>
+				<strong><?php echo esc_html( $zd_promo['title'] ); ?><?php echo zad_promo_discount_label() ? ' — ' . esc_html( zad_promo_discount_label() ) : ''; ?></strong>
+				<span><?php echo esc_html( $zd_promo['text'] ); ?></span>
+				<span class="zd-acc__promo-go"><?php echo esc_html( $zd_promo['button'] ? $zd_promo['button'] : 'تسوّق العرض' ); ?> <?php zad_the_icon( 'arrow-left', '', 16 ); ?></span>
+			</a>
+		<?php endif; ?>
 		<div class="zd-acc__grid">
 			<section class="zd-acc__card" aria-labelledby="zd-acc-shop">
 				<h3 id="zd-acc-shop">بيانات المحل</h3>
@@ -817,6 +828,19 @@ function zad_account_dashboard() {
 				<?php endif; ?>
 			</section>
 		</div>
+		<?php
+		$zd_new = function_exists( 'zad_new_product_ids' ) ? zad_new_product_ids( 4 ) : array();
+		if ( $zd_new ) :
+			?>
+			<section class="zd-acc__new" aria-labelledby="zd-acc-new">
+				<div class="zd-acc__new-head">
+					<h3 id="zd-acc-new">وصل حديثاً</h3>
+					<a class="zd-link" href="<?php echo esc_url( zad_new_url() ); ?>">كل الأصناف الجديدة</a>
+				</div>
+				<?php zad_product_grid( array( 'include' => $zd_new, 'limit' => 4, 'orderby' => 'date', 'order' => 'DESC' ), 'zd-grid--acc' ); ?>
+			</section>
+		<?php endif; ?>
+		<?php echo function_exists( 'zad_pitch_html' ) ? zad_pitch_html( 'account' ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput ?>
 		<div class="zd-acc__quick">
 			<a class="zd-btn zd-btn--primary zd-btn--lg" href="<?php echo esc_url( zad_page_url( 'quick_order' ) ); ?>">افتح قائمة الأسعار</a>
 			<?php if ( zad_wa_number() ) : ?>

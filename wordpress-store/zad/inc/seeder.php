@@ -670,6 +670,9 @@ function zad_seed_products() {
 		if ( 'offers' === $r['cat'] ) {
 			$product->update_meta_data( '_zad_bundle', 1 );
 		}
+		// الكتالوج الأولي ليس «وصل حديثاً»: تاريخ سابق وعلامة، حتى تظهر الأصناف التي تضيفها أنت لاحقاً كجديدة.
+		$product->update_meta_data( '_zad_seeded', 1 );
+		$product->set_date_created( time() - 120 * DAY_IN_SECONDS + $i * MINUTE_IN_SECONDS );
 		$id = $product->save();
 
 		if ( $id && $r['brand'] && taxonomy_exists( 'product_brand' ) ) {

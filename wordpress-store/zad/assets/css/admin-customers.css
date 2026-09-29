@@ -78,3 +78,24 @@
 .zd-cus__empty h2 { margin-top: 0; }
 .zd-cus__list { margin-bottom: 24px; }
 .zd-cus__place a, .zd-kpi__sub .button-link, .zd-cus__place .button-link { text-decoration: underline; text-underline-offset: 2px; }
+
+/* «العروض والإشعارات» */
+.zd-eng__form { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+.zd-eng__card { max-width: 980px; }
+.zd-eng__help { margin: -4px 0 4px; color: var(--zc-ink-2); font-size: 13.5px; line-height: 1.7; }
+.zd-eng .form-table th { width: 170px; }
+.zd-eng__state { padding: 2px 10px; border-radius: 99px; font-size: 12.5px; font-weight: 600; }
+.zd-eng__state.is-on { background: #E7F5EC; color: #0E7A43; }
+.zd-eng__state.is-wait { background: #FFF5DA; color: #7A5700; }
+.zd-eng__state.is-off { background: var(--zc-soft); color: var(--zc-muted); }
+.zd-eng__cats { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; }
+.zd-eng__sample { margin-top: 8px; padding: 12px 14px; border-radius: 6px; background: var(--zc-soft); }
+.zd-eng__sample ul { margin: 6px 0 0; }
+.zd-eng__sample del { color: var(--zc-muted); }
+.zd-eng__msgtabs { display: flex; gap: 6px; margin-bottom: 8px; }
+.zd-eng__wa textarea { font-size: 14px; line-height: 1.7; }
+.zd-eng__list { max-height: 420px; margin: 10px 0 0; padding: 0; overflow-y: auto; border: 1px solid var(--zc-line); border-radius: 6px; list-style: none; }
+.zd-eng__list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0; padding: 8px 12px; border-bottom: 1px solid #f0f0f1; }
+.zd-eng__list li:last-child { border-bottom: 0; }
+.zd-eng__list .button.is-sent { color: #0E7A43; border-color: #0E7A43; }
+.zd-eng .submit { max-width: 980px; margin: 0; padding: 0; text-align: right; }
