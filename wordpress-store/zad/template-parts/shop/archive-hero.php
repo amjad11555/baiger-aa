@@ -69,7 +69,7 @@ $zd_cat_counts  = $zd_show_cats ? zad_facet_counts( 'cat', $zd_scope + ( $zd_fil
 $zd_br_counts   = $zd_show_brands ? zad_facet_counts( 'brand', $zd_scope + ( $zd_filters['section'] ? array( 'cat' => $zd_filters['section'] ) : array() ) ) : array();
 $zd_active = ( $zd_filters['section'] ? 1 : 0 ) + ( $zd_filters['company'] ? 1 : 0 );
 ?>
-<header class="zd-archive-hero<?php echo ( $zd_brand && ! empty( $zd_brands[ $zd_brand ]['hero'] ) ) ? ' zd-archive-hero--soft' : ''; ?>">
+<header class="zd-archive-hero<?php echo ( $zd_brand && ! empty( $zd_brands[ $zd_brand ]['hero'] ) ) ? ' zd-archive-hero--brand' : ''; ?>">
 	<div class="zd-archive-hero__media"><?php echo zad_img( $zd_image, '', array( 'sizes' => '100vw', 'loading' => 'eager' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 	<div class="zd-container zd-archive-hero__text">
 		<h1 class="zd-archive-hero__title">

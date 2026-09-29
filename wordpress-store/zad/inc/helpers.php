@@ -190,8 +190,8 @@ function zad_brands() {
 			'c1'       => '#CE0006',
 			'c2'       => '#EFB455',
 			'about'    => 'علامة تركية عريقة تأسست عام 1962 في مدينة إسكي شهير، ومن أشهر منتجاتها براوني وبوب كيك وتوب كيك وتوتكو وجين وكراكس.',
-			// الشعار واللافتات من صور العلامة (assets/img/brands و assets/img/site).
-			'logo'     => array( 'eti.png', 84, 54 ),
+			// الشعار (SVG) واللافتات (1600×1740) من صور العلامة بعد رفع جودتها.
+			'logo'     => array( 'eti.svg', 840, 540 ),
 			'hero'     => 'eti-cikolata',
 			'showcase' => array(
 				array( 'eti-hosbes', 'ويفر مقرمش', 'هوشبيش', 'بالشوكولاتة الداكنة، والفراولة، والحليب والكاكاو.', array( 'q' => 'هوشبيش' ), 'عبوات ويفر إيتي هوشبيش على خلفية حمراء' ),
@@ -378,9 +378,9 @@ function zad_img_meta( $name ) {
 		'cta-docks'       => array( 2400, 1018 ),
 		'texture'         => array( 1600, 893 ),
 		'flatlay'         => array( 1800, 1005 ),
-		'eti-cikolata'    => array( 800, 870 ),
-		'eti-benimo'      => array( 800, 870 ),
-		'eti-hosbes'      => array( 800, 870 ),
+		'eti-cikolata'    => array( 1600, 1740 ),
+		'eti-benimo'      => array( 1600, 1740 ),
+		'eti-hosbes'      => array( 1600, 1740 ),
 	);
 	$stored = function_exists( 'zad_site_images_stored' ) ? zad_site_images_stored() : array();
 	if ( ! empty( $stored[ $name ]['w'] ) ) {
