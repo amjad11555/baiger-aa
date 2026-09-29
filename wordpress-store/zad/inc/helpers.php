@@ -14,30 +14,32 @@ defined( 'ABSPATH' ) || exit;
  */
 function zad_defaults() {
 	return array(
-		'whatsapp'      => '',
-		'phone'         => '',
-		'email'         => '',
-		'address'       => '',
-		'city'          => 'إسطنبول',
-		'hours'         => 'السبت – الخميس · 9:00 – 19:00',
-		'announcement'  => 'أسعار جملة للحسابات التجارية · توريد إلى جميع الولايات التركية · تصدير بالحاويات',
-		'show_prices'   => true,
-		'min_order'     => 0,
-		'free_delivery' => 0,
-		'show_profit'   => true,
-		'retail_margin' => 25,
-		'cod_card'      => true,
-		'hero_kicker'   => 'زاد للتجارة · جملة وتوزيع',
-		'hero_title'    => 'مورّدك الثابت للحلويات والتسالي التركية بالجملة',
-		'hero_text'     => 'نوفّر لمتجرك أكثر من 130 صنفاً من إيتي وأولكر وبونوتشي بأسعار الجملة، مع توريد منتظم إلى كل الولايات وتصدير بالحاويات. اطلب بالكرتونة أو بالطبلية، ونتولى نحن التجهيز والتوصيل.',
-		'hero_image'    => '',
-		'force_rtl'     => true,
-		'instagram'     => '',
-		'facebook'      => '',
-		'tiktok'        => '',
-		'telegram'      => '',
-		'youtube'       => '',
-		'seo_tagline'   => 'جملة وتوزيع الحلويات والتسالي التركية لتجار التجزئة والموزعين',
+		'whatsapp'        => '',
+		'phone'           => '',
+		'email'           => '',
+		'address'         => '',
+		'city'            => 'إسطنبول',
+		'hours'           => 'السبت – الخميس · 9:00 – 19:00',
+		'announcement'    => 'أسعار جملة للحسابات التجارية · توريد إلى جميع الولايات التركية · تصدير بالحاويات',
+		'show_prices'     => true,
+		'min_order'       => 0,
+		'free_delivery'   => 0,
+		'show_profit'     => true,
+		'retail_margin'   => 25,
+		'cod_card'        => true,
+		'require_account' => true,
+		'members_prices'  => false,
+		'hero_kicker'     => 'زاد للتجارة · جملة وتوزيع',
+		'hero_title'      => 'مورّدك الثابت للحلويات والتسالي التركية بالجملة',
+		'hero_text'       => 'نوفّر لمتجرك أكثر من 130 صنفاً من إيتي وأولكر وبونوتشي بأسعار الجملة، مع توريد منتظم إلى كل الولايات وتصدير بالحاويات. اطلب بالكرتونة أو بالطبلية، ونتولى نحن التجهيز والتوصيل.',
+		'hero_image'      => '',
+		'force_rtl'       => true,
+		'instagram'       => '',
+		'facebook'        => '',
+		'tiktok'          => '',
+		'telegram'        => '',
+		'youtube'         => '',
+		'seo_tagline'     => 'جملة وتوزيع الحلويات والتسالي التركية لتجار التجزئة والموزعين',
 	);
 }
 
@@ -487,12 +489,26 @@ function zad_money_plain( $amount ) {
 }
 
 /**
- * هل الأسعار ظاهرة للزوار؟
+ * هل الأسعار ظاهرة للزائر الحالي؟
+ *
+ * مخفية للجميع إن أُلغي «إظهار الأسعار»، أو لغير المسجلين إن فُعّل «إخفاء الأسعار عن غير المسجلين».
  *
  * @return bool
  */
 function zad_show_prices() {
-	return (bool) zad_opt( 'show_prices' );
+	if ( ! zad_opt( 'show_prices' ) ) {
+		return false;
+	}
+	return ! ( zad_opt( 'members_prices' ) && ! is_user_logged_in() );
+}
+
+/**
+ * هل الأسعار مخفية لأن الزائر لم يسجّل دخوله فقط؟
+ *
+ * @return bool
+ */
+function zad_prices_need_login() {
+	return zad_opt( 'show_prices' ) && zad_opt( 'members_prices' ) && ! is_user_logged_in();
 }
 
 /**

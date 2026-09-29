@@ -518,7 +518,7 @@
 			if (box.hidden) { box.innerHTML = '<div class="zd-sr__msg">' + escapeHtml(T.searching || '') + '</div>'; open(); }
 			form.classList.add('is-loading');
 			var url = C.searchUrl + (C.searchUrl.indexOf('?') > -1 ? '&' : '?') + 'q=' + encodeURIComponent(q);
-			fetch(url, { signal: ctrl ? ctrl.signal : undefined, credentials: 'same-origin' })
+			fetch(url, { signal: ctrl ? ctrl.signal : undefined, credentials: 'same-origin', headers: C.restNonce ? { 'X-WP-Nonce': C.restNonce } : {} })
 				.then(function (r) { return r.json(); })
 				.then(function (data) { cache[q] = data; if (input.value.trim() === q) { render(data); } })
 				.catch(function () {})

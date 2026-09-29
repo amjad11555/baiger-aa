@@ -122,6 +122,8 @@ function zad_assets() {
 		'shopUrl'    => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' ),
 		'quickOrderUrl' => zad_page_url( 'quick_order' ),
 		'searchUrl'  => esc_url_raw( rest_url( 'zad/v1/search' ) ),
+		// يعرّف البحث الفوري بالزبون المسجّل (لازم لوضع «الأسعار للأعضاء»).
+		'restNonce'  => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : '',
 		'popular'    => array( 'بسكريم', 'براوني', 'شيبس', 'ويفر', 'شوكولاتة دبي', 'كراكرز' ),
 		'wa'         => zad_wa_number(),
 		'storeName'  => get_bloginfo( 'name' ),

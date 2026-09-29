@@ -231,6 +231,7 @@ function zad_seed_settings() {
 		'woocommerce_store_pages_only'                  => 'no',
 		'woocommerce_weight_unit'                       => 'kg',
 		'woocommerce_manage_stock'                      => 'no',
+		'woocommerce_enable_myaccount_registration'     => 'yes',
 	);
 	foreach ( $opts as $k => $v ) {
 		update_option( $k, $v );

@@ -165,6 +165,9 @@ function zad_price_html( $html, $product ) {
 	if ( is_admin() && ! wp_doing_ajax() ) {
 		return $html;
 	}
+	if ( zad_prices_need_login() && function_exists( 'wc_get_page_permalink' ) ) {
+		return sprintf( '<a class="zd-price-request zd-price-login" href="%s">سجّل دخولك لرؤية السعر</a>', esc_url( wc_get_page_permalink( 'myaccount' ) ) );
+	}
 	if ( ! zad_show_prices() ) {
 		return '<span class="zd-price-request">السعر عند الطلب</span>';
 	}

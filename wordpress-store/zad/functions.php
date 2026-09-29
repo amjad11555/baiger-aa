@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ZAD_VERSION', '3.2.0' );
+define( 'ZAD_VERSION', '3.3.0' );
 define( 'ZAD_DIR', get_template_directory() );
 define( 'ZAD_URI', get_template_directory_uri() );
 
@@ -27,6 +27,10 @@ if ( class_exists( 'WooCommerce' ) ) {
 	require ZAD_DIR . '/inc/quick-order.php';
 	require ZAD_DIR . '/inc/profit.php';
 	require ZAD_DIR . '/inc/cod.php';
+	require ZAD_DIR . '/inc/customers.php';
+	if ( is_admin() ) {
+		require ZAD_DIR . '/inc/customers-admin.php';
+	}
 	require ZAD_DIR . '/inc/i18n-fallback.php';
 	require ZAD_DIR . '/inc/image-import.php';
 }

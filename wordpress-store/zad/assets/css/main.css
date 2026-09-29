@@ -1081,6 +1081,7 @@ body:has(.zd-orderbar.is-visible) .zd-wa-float { bottom: calc(var(--zd-mbar-h) +
 .zd-prose h3 { font-size: 18px; margin-top: 1.3em; }
 .zd-prose ul:not([class]), .zd-prose ol:not([class]) { padding-inline-start: 1.4em; margin-bottom: 1em; }
 .zd-prose a { text-decoration: underline; text-decoration-color: var(--zd-brass); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.zd-prose :is(.zd-btn, .button, .zd-link, .zd-auth__tab, .woocommerce-MyAccount-navigation a) { text-decoration: none; }
 .zd-checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; margin: 0 0 1.2em; }
 .zd-checklist li { position: relative; padding-inline-start: 26px; }
 .zd-checklist li::before { content: ""; position: absolute; inset-inline-start: 0; top: .78em; width: 12px; height: 2px; background: var(--zd-brass); }
@@ -1365,6 +1366,78 @@ form.checkout { display: grid; gap: 24px; }
 .show-password-input { position: absolute; inset-inline-end: 5px; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--zd-muted); }
 .show-password-input:hover { color: var(--zd-ink); background: var(--zd-sand); }
 .show-password-input::before { content: ""; width: 20px; height: 20px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat; }
+/* حساب التاجر: التسجيل والدخول */
+.woocommerce-account:not(.logged-in) .woocommerce { display: block; }
+.zd-auth { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 1024px) { .zd-auth { grid-template-columns: 340px minmax(0, 1fr); gap: 40px; } }
+@media (max-width: 1023px) { .zd-auth__card { order: -1; } .zd-auth__intro h2 { font-size: 19px; } }
+.zd-auth__intro { padding: 26px; border-radius: var(--zd-r-lg); background: var(--zd-sand); }
+@media (min-width: 1024px) { .zd-auth__intro { position: sticky; top: calc(var(--zd-header-h) + 20px); } }
+.zd-auth__intro h2 { font-size: 21px; line-height: 1.5; margin-bottom: 16px; }
+.zd-auth__perks { display: flex; flex-direction: column; gap: 12px; list-style: none; margin: 0; }
+.zd-auth__perks li { display: flex; align-items: flex-start; gap: 10px; font-size: 14.5px; color: var(--zd-ink-2); line-height: 1.6; }
+.zd-auth__perks svg { flex: none; margin-top: 2px; color: var(--zd-brass-ink); }
+.zd-auth__help { margin: 18px 0 0; padding-top: 16px; border-top: 1px solid var(--zd-line-2); font-size: 14px; color: var(--zd-ink-2); }
+.zd-auth__help a, .zd-auth__lost a, .zd-form__privacy a, .zd-acc a:not(.zd-btn) { text-decoration: underline; text-underline-offset: 3px; }
+.zd-auth__card { min-width: 0; padding: clamp(20px, 3.2vw, 34px); border-radius: var(--zd-r-lg); background: var(--zd-paper); border: 1px solid var(--zd-line); }
+.zd-auth__tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 24px; padding: 4px; border-radius: var(--zd-pill); background: var(--zd-sand); }
+.zd-auth__tab { display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: var(--zd-pill); color: var(--zd-ink-2); font-weight: 600; font-size: 15px; text-decoration: none; transition: background .2s, color .2s; }
+.zd-auth__tab:hover { color: var(--zd-ink); }
+.zd-auth__tab.is-active { background: var(--zd-ink); color: #fff; }
+.zd-auth__title { font-size: 21px; margin: 0 0 4px; }
+.zd-auth__sub { margin: 0 0 20px; color: var(--zd-muted); font-size: 14px; }
+.zd-auth__panel .woocommerce-form-login { max-width: none; padding: 0; border: 0; border-radius: 0; margin-top: 16px; }
+.zd-auth__panel .woocommerce-form-login .zd-field { max-width: 460px; }
+.zd-auth__panel .woocommerce-form-login__submit { max-width: 460px; }
+.zd-auth__lost { margin: 0; font-size: 14px; color: var(--zd-ink-2); }
+.zd-field__hint { font-size: 12.5px; color: var(--zd-muted); line-height: 1.5; }
+.zd-field__opt { font-weight: 400; color: var(--zd-muted); }
+.zd-field [dir="ltr"]::placeholder { text-align: right; }
+.zd-field input[dir="ltr"] { text-align: right; }
+.zd-field input[dir="ltr"]:not(:placeholder-shown) { text-align: left; }
+
+/* تحديد موقع المحل */
+.zd-locate { margin: 0; padding: 0; border: 0; min-width: 0; }
+.zd-locate legend { padding: 0; margin-bottom: 4px; font-size: 14px; font-weight: 600; color: var(--zd-ink-2); }
+.zd-locate__hint { margin: 0 0 10px; font-size: 13px; color: var(--zd-muted); line-height: 1.6; }
+.zd-locate__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 10px; }
+.zd-locate__gps { min-height: 42px; padding: 8px 20px; }
+.zd-locate__status { margin: 0; font-size: 13.5px; color: var(--zd-muted); }
+.zd-locate__status.is-ok { color: var(--zd-success); font-weight: 600; }
+.zd-locate__status.is-error { color: var(--zd-danger); font-weight: 600; }
+.zd-locate__map { position: relative; z-index: 0; height: 280px; border-radius: var(--zd-r-lg); border: 1px solid var(--zd-line-2); background: var(--zd-sand); overflow: hidden; }
+@media (min-width: 768px) { .zd-locate__map { height: 320px; } }
+.zd-locate.has-error .zd-locate__map { border-color: var(--zd-danger); box-shadow: 0 0 0 3px var(--zd-danger-50); }
+.zd-pin { background: none; border: 0; }
+.zd-pin span { position: absolute; left: 3px; top: 0; width: 24px; height: 24px; border-radius: 50% 50% 50% 0; background: var(--zd-ink); border: 3px solid #fff; transform: rotate(-45deg); box-shadow: 0 3px 8px rgba(0, 0, 0, .35); }
+.zd-pin span::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--zd-brass); }
+.leaflet-container { font-family: var(--zd-ff); }
+.leaflet-container a { color: var(--zd-ink); }
+
+/* لوحة «حسابي» */
+.zd-acc { display: flex; flex-direction: column; gap: 18px; }
+.zd-acc__hello h2 { font-size: 24px; margin: 0 0 4px; }
+.zd-acc__hello p:last-child { margin: 0; color: var(--zd-ink-2); }
+.zd-acc__warn { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 16px 18px; border-radius: var(--zd-r-lg); border: 1px solid #F2D8A7; background: #FFF8EA; }
+.zd-acc__warn span { flex: 1 1 260px; font-size: 14px; color: var(--zd-ink-2); }
+.zd-acc__grid { display: grid; gap: 16px; }
+@media (min-width: 900px) { .zd-acc__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.zd-acc__card { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: var(--zd-r-lg); border: 1px solid var(--zd-line); }
+.zd-acc__card h3 { font-size: 17px; margin: 0; }
+.zd-acc__dl { display: grid; gap: 8px; margin: 0; }
+.zd-acc__dl > div { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; font-size: 14.5px; }
+.zd-acc__dl dt { color: var(--zd-muted); }
+.zd-acc__dl dd { margin: 0; color: var(--zd-ink); font-weight: 500; overflow-wrap: anywhere; }
+.zd-acc__dl dd[dir="ltr"] { text-align: right; }
+.zd-acc__stat { margin: 0; font-size: 15px; }
+.zd-acc__stat b { font-size: 26px; font-weight: 600; }
+.zd-acc__last { margin: 0; font-size: 14px; color: var(--zd-ink-2); }
+.zd-acc__actions, .zd-acc__quick { display: flex; flex-wrap: wrap; gap: 10px; }
+.zd-acc__quick .zd-btn { flex: 1 1 220px; }
+.woocommerce-EditAccountForm { gap: 28px; }
+.woocommerce-EditAccountForm .zd-form__section + .zd-form__section { padding-top: 24px; border-top: 1px solid var(--zd-line); }
+.zd-price-login { color: var(--zd-brass-ink); text-decoration: underline; text-underline-offset: 3px; }
+
 .u-columns.col2-set { display: grid; gap: 24px; }
 @media (min-width: 900px) { .u-columns.col2-set { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
