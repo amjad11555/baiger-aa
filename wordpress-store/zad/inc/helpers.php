@@ -187,9 +187,17 @@ function zad_brands() {
 			'ar'    => 'إيتي',
 			'alt'   => 'ايتي',
 			'latin' => 'Eti',
-			'c1'    => '#CE0006',
-			'c2'    => '#EFB455',
-			'about' => 'علامة تركية عريقة تأسست عام 1962 في مدينة إسكي شهير، ومن أشهر منتجاتها براوني وبوب كيك وتوب كيك وتوتكو وجين وكراكس.',
+			'c1'       => '#CE0006',
+			'c2'       => '#EFB455',
+			'about'    => 'علامة تركية عريقة تأسست عام 1962 في مدينة إسكي شهير، ومن أشهر منتجاتها براوني وبوب كيك وتوب كيك وتوتكو وجين وكراكس.',
+			// الشعار واللافتات من صور العلامة (assets/img/brands و assets/img/site).
+			'logo'     => array( 'eti.png', 84, 54 ),
+			'hero'     => 'eti-cikolata',
+			'showcase' => array(
+				array( 'eti-hosbes', 'ويفر مقرمش', 'هوشبيش', 'بالشوكولاتة الداكنة، والفراولة، والحليب والكاكاو.', array( 'q' => 'هوشبيش' ), 'عبوات ويفر إيتي هوشبيش على خلفية حمراء' ),
+				array( 'eti-benimo', 'بسكويت طري بالشوكولاتة', 'بينيمو', 'من الأصناف التي يطلبها زبائن البقالة كل أسبوع.', array( 'q' => 'بينيمو' ), 'عبوات إيتي بينيمو على خلفية برتقالية' ),
+				array( 'eti-cikolata', 'شوكولاتة', 'شوكولاتة إيتي', 'كارام، وبيتيتو، وجانغا، ووانتد، وبوف.', array( 'section' => 'snacks' ), 'مربعات شوكولاتة إيتي بنكهات مختلفة' ),
+			),
 		),
 		'ulker'   => array(
 			'ar'    => 'أولكر',
@@ -208,6 +216,52 @@ function zad_brands() {
 			'about' => 'علامة تركية متخصصة في الكيك المحشو والشوكولاتة الفاخرة، ومن منتجاتها كيك شوكيكس ورول كريموسو وشوكولاتة دبي بالكنافة.',
 		),
 	);
+}
+
+/**
+ * شعار العلامة إن توفّر (وإلا نص فارغ ليُعرض الاسم بدلاً منه).
+ *
+ * @param array  $brand  بيانات العلامة من zad_all_brands().
+ * @param int    $height الارتفاع بالبكسل.
+ * @param string $class  صنف إضافي.
+ * @return string
+ */
+function zad_brand_logo( $brand, $height = 36, $class = '' ) {
+	if ( empty( $brand['logo'] ) ) {
+		return '';
+	}
+	list( $file, $w, $h ) = $brand['logo'];
+	return sprintf(
+		'<img class="zd-brand-logo%1$s" src="%2$s" width="%3$d" height="%4$d" alt="%5$s" loading="lazy" decoding="async">',
+		$class ? ' ' . esc_attr( $class ) : '',
+		esc_url( ZAD_URI . '/assets/img/brands/' . $file ),
+		(int) round( $w * $height / $h ),
+		(int) $height,
+		esc_attr( 'شعار ' . $brand['ar'] . ' ' . $brand['latin'] )
+	);
+}
+
+/**
+ * رابط لافتة من لافتات العلامة: بحث باسم الصنف، أو صفحة العلامة مصفّاة بقسم.
+ *
+ * @param array $brand  العلامة.
+ * @param array $target ['q' => …] أو ['section' => …].
+ * @return string
+ */
+function zad_showcase_url( $brand, $target ) {
+	if ( ! empty( $target['q'] ) ) {
+		return add_query_arg(
+			array(
+				's'         => $target['q'],
+				'post_type' => 'product',
+			),
+			home_url( '/' )
+		);
+	}
+	if ( ! empty( $target['section'] ) && ! empty( $brand['url'] ) ) {
+		return add_query_arg( 'section', $target['section'], $brand['url'] );
+	}
+	return ! empty( $brand['url'] ) ? $brand['url'] : home_url( '/' );
 }
 
 /**
@@ -324,6 +378,9 @@ function zad_img_meta( $name ) {
 		'cta-docks'       => array( 2400, 1018 ),
 		'texture'         => array( 1600, 893 ),
 		'flatlay'         => array( 1800, 1005 ),
+		'eti-cikolata'    => array( 800, 870 ),
+		'eti-benimo'      => array( 800, 870 ),
+		'eti-hosbes'      => array( 800, 870 ),
 	);
 	$stored = function_exists( 'zad_site_images_stored' ) ? zad_site_images_stored() : array();
 	if ( ! empty( $stored[ $name ]['w'] ) ) {

@@ -400,11 +400,14 @@ function zad_single_brand() {
 	if ( isset( $brands[ $info['brand'] ] ) ) {
 		$b    = $brands[ $info['brand'] ];
 		$link = taxonomy_exists( 'product_brand' ) ? get_term_link( $info['brand'], 'product_brand' ) : '';
+		$logo = zad_brand_logo( $b, 20 );
 		printf(
-			'<a class="zd-chip zd-chip--brand" href="%1$s">%2$s <span lang="tr">%3$s</span></a>',
+			'<a class="zd-chip zd-chip--brand" href="%1$s">%4$s%2$s%5$s</a>',
 			esc_url( is_wp_error( $link ) ? '' : $link ),
 			esc_html( $b['ar'] ),
-			esc_html( $b['latin'] )
+			esc_html( $b['latin'] ),
+			$logo, // phpcs:ignore WordPress.Security.EscapeOutput
+			$logo ? '' : ' <span lang="tr">' . esc_html( $b['latin'] ) . '</span>'
 		);
 	}
 	$cats = zad_categories();

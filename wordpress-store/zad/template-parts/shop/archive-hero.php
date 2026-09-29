@@ -43,7 +43,7 @@ if ( is_search() ) {
 	$zd_eyebrow = 'العلامات';
 	$zd_title   = 'منتجات ' . $zd_term->name . ' بالجملة';
 	$zd_desc    = $zd_term->description ? $zd_term->description : ( isset( $zd_brands[ $zd_brand ] ) ? $zd_brands[ $zd_brand ]['about'] : '' );
-	$zd_image   = 'seg-supermarket';
+	$zd_image   = ! empty( $zd_brands[ $zd_brand ]['hero'] ) ? $zd_brands[ $zd_brand ]['hero'] : 'seg-supermarket';
 	$zd_scope   = array( 'brand' => $zd_brand );
 } elseif ( is_product_taxonomy() ) {
 	$zd_term  = get_queried_object();
@@ -69,12 +69,17 @@ $zd_cat_counts  = $zd_show_cats ? zad_facet_counts( 'cat', $zd_scope + ( $zd_fil
 $zd_br_counts   = $zd_show_brands ? zad_facet_counts( 'brand', $zd_scope + ( $zd_filters['section'] ? array( 'cat' => $zd_filters['section'] ) : array() ) ) : array();
 $zd_active = ( $zd_filters['section'] ? 1 : 0 ) + ( $zd_filters['company'] ? 1 : 0 );
 ?>
-<header class="zd-archive-hero">
+<header class="zd-archive-hero<?php echo ( $zd_brand && ! empty( $zd_brands[ $zd_brand ]['hero'] ) ) ? ' zd-archive-hero--soft' : ''; ?>">
 	<div class="zd-archive-hero__media"><?php echo zad_img( $zd_image, '', array( 'sizes' => '100vw', 'loading' => 'eager' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 	<div class="zd-container zd-archive-hero__text">
 		<h1 class="zd-archive-hero__title">
 			<?php if ( $zd_brand && isset( $zd_brands[ $zd_brand ] ) ) : ?>
-				<span class="zd-archive-hero__word" lang="tr"><?php echo esc_html( $zd_brands[ $zd_brand ]['latin'] ); ?></span>
+				<?php $zd_logo = zad_brand_logo( $zd_brands[ $zd_brand ], 48 ); ?>
+				<?php if ( $zd_logo ) : ?>
+					<span class="zd-archive-hero__logo"><?php echo $zd_logo; // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+				<?php else : ?>
+					<span class="zd-archive-hero__word" lang="tr"><?php echo esc_html( $zd_brands[ $zd_brand ]['latin'] ); ?></span>
+				<?php endif; ?>
 			<?php endif; ?>
 			<?php echo esc_html( $zd_title ); ?>
 		</h1>

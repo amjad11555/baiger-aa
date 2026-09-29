@@ -1,6 +1,6 @@
 <?php
 /**
- * الواجهة الرئيسية: شريط العلامات بأسلوب Kalles (أسماء مكتوبة رمادية تصبح سوداء عند المرور، دون شعارات).
+ * الواجهة الرئيسية: شريط العلامات بأسلوب Kalles (الشعار إن توفّر، وإلا الاسم مكتوباً بالرمادي ويصبح أسود عند المرور).
  *
  * @package Zad
  */
@@ -21,7 +21,8 @@ if ( ! $zd_brands ) {
 	<div class="zd-container">
 		<ul class="zd-brandbar__list">
 			<?php foreach ( $zd_brands as $zd_b ) : ?>
-				<li><a href="<?php echo esc_url( $zd_b['url'] ); ?>"><span class="zd-brandbar__word" lang="tr"><?php echo esc_html( $zd_b['latin'] ); ?></span><span class="zd-brandbar__meta"><?php echo esc_html( $zd_b['ar'] . ' · ' . zad_n_items( $zd_b['count'] ) ); ?></span></a></li>
+				<?php $zd_logo = zad_brand_logo( $zd_b, 40 ); ?>
+				<li><a href="<?php echo esc_url( $zd_b['url'] ); ?>"><?php if ( $zd_logo ) : ?><span class="zd-brandbar__logo"><?php echo $zd_logo; // phpcs:ignore WordPress.Security.EscapeOutput ?></span><?php else : ?><span class="zd-brandbar__word" lang="tr"><?php echo esc_html( $zd_b['latin'] ); ?></span><?php endif; ?><span class="zd-brandbar__meta"><?php echo esc_html( $zd_b['ar'] . ' · ' . zad_n_items( $zd_b['count'] ) ); ?></span></a></li>
 			<?php endforeach; ?>
 			<li><a href="<?php echo esc_url( zad_page_url( 'brands' ) ); ?>"><span class="zd-brandbar__word">+</span><span class="zd-brandbar__meta">كل العلامات</span></a></li>
 		</ul>

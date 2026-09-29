@@ -17,7 +17,8 @@ $zd_facets = function_exists( 'zad_facet_counts' ) ? zad_facet_counts( 'cat', ar
 ?>
 <article class="zd-brand-card">
 	<a class="zd-brand-card__link" href="<?php echo esc_url( $zd_b['url'] ); ?>">
-		<span class="zd-brand-card__logo" lang="tr"><?php echo esc_html( $zd_b['latin'] ); ?></span>
+		<?php $zd_logo = zad_brand_logo( $zd_b, 54 ); ?>
+		<span class="zd-brand-card__logo<?php echo $zd_logo ? ' zd-brand-card__logo--img' : ''; ?>" lang="tr"><?php echo $zd_logo ? $zd_logo : esc_html( $zd_b['latin'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 		<span class="zd-brand-card__name"><?php echo esc_html( $zd_b['ar'] ); ?> <small><?php echo esc_html( zad_n_items( $zd_b['count'] ) ); ?></small></span>
 	</a>
 	<?php if ( ! empty( $zd_b['about'] ) ) : ?>
