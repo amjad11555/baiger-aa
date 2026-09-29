@@ -169,7 +169,8 @@ function zad_seed_run( $mode = 'all' ) {
 		$report['المنتجات'] = zad_seed_products();
 	}
 	if ( 'all' === $mode ) {
-		$report['الشحن'] = zad_seed_shipping();
+		$report['الشحن']          = zad_seed_shipping();
+		$report['المحتوى التجريبي'] = zad_seed_trash_samples();
 	}
 	update_option( 'zad_seeded', time() );
 	delete_option( 'zad_show_setup_notice' );
@@ -178,6 +179,24 @@ function zad_seed_run( $mode = 'all' ) {
 		wc_delete_product_transients();
 	}
 	return $report;
+}
+
+/**
+ * نقل محتوى ووردبريس التجريبي إلى سلة المهملات («أهلاً بالعالم» و«صفحة نموذجية»)
+ * إن لم يُعدَّل منذ التثبيت، حتى لا يظهر في خريطة الموقع ونتائج جوجل.
+ *
+ * @return string
+ */
+function zad_seed_trash_samples() {
+	$done = 0;
+	foreach ( array( 1 => 'post', 2 => 'page' ) as $id => $type ) {
+		$post = get_post( $id );
+		if ( $post && $type === $post->post_type && 'publish' === $post->post_status && $post->post_modified_gmt === $post->post_date_gmt && (int) get_option( 'page_on_front' ) !== $id ) {
+			wp_trash_post( $id );
+			++$done;
+		}
+	}
+	return $done ? sprintf( 'نُقل %d عنصر تجريبي إلى سلة المهملات.', $done ) : 'لا يوجد محتوى تجريبي.';
 }
 
 /**

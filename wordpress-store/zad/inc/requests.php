@@ -39,7 +39,8 @@ function zad_register_request_cpt() {
 			'menu_position'       => 56,
 			'menu_icon'           => 'dashicons-clipboard',
 			'supports'            => array( 'title' ),
-			'capability_type'     => 'post',
+			// بيانات العملاء (جوالات وعناوين) لمدير المتجر والمدير فقط، لا لكل من يكتب مقالات.
+			'capability_type'     => class_exists( 'WooCommerce' ) ? 'shop_order' : 'post',
 			'capabilities'        => array( 'create_posts' => 'do_not_allow' ),
 			'map_meta_cap'        => true,
 		)

@@ -161,7 +161,7 @@ $zd_ex    = array(
 					</form>
 				<?php endif; ?>
 			</div>
-			<aside class="zd-req__aside">
+			<div class="zd-req__aside">
 				<div class="zd-aside-card">
 					<h2>المستندات التي نجهزها</h2>
 					<ul class="zd-checklist">
@@ -178,7 +178,7 @@ $zd_ex    = array(
 						<li>دول الخليج العربي</li><li>العراق</li><li>الأردن وفلسطين</li><li>لبنان وسوريا</li><li>ليبيا وشمال أفريقيا</li><li>أوروبا</li><li>آسيا الوسطى والقوقاز</li><li>أفريقيا</li>
 					</ul>
 				</div>
-			</aside>
+			</div>
 		</div>
 	</section>
 

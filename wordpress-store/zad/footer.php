@@ -98,6 +98,11 @@ $zd_account  = $zd_has_wc ? wc_get_page_permalink( 'myaccount' ) : wp_login_url(
 			<span class="zd-orderbar__lines">الطلبية: <b data-zd-lines><?php echo (int) $zd_lines; ?></b> صنف · <b data-zd-cartons><?php echo (int) $zd_count; ?></b> كرتونة</span>
 			<?php if ( zad_show_prices() ) : ?>
 				<span class="zd-orderbar__total"><span class="zd-cart-total"><?php echo wp_kses_post( WC()->cart ? WC()->cart->get_cart_subtotal() : '' ); ?></span></span>
+				<?php
+				$zd_min  = (float) zad_opt( 'min_order' );
+				$zd_left = $zd_min > 0 && WC()->cart ? $zd_min - ( (float) WC()->cart->get_subtotal() + (float) WC()->cart->get_subtotal_tax() ) : 0;
+				?>
+				<span class="zd-orderbar__min" data-zd-min<?php echo $zd_left > 0 && $zd_count ? '' : ' hidden'; ?>>باقي <b data-zd-min-left><?php echo wp_kses_post( $zd_left > 0 ? wc_price( $zd_left ) : '' ); ?></b> للحد الأدنى</span>
 			<?php endif; ?>
 		</span>
 	</button>
@@ -115,10 +120,12 @@ $zd_account  = $zd_has_wc ? wc_get_page_permalink( 'myaccount' ) : wp_login_url(
 	<a href="<?php echo esc_url( $zd_account ); ?>"><?php zad_the_icon( 'user', '', 22 ); ?><span>حسابي</span></a>
 </nav>
 
-<?php if ( zad_wa_number() && ! $zd_is_qo && ! $zd_checkout ) : ?>
-	<a class="zd-wa-float" href="<?php echo esc_url( zad_wa_link( 'مرحباً، أرغب بالتواصل مع قسم المبيعات في ' . get_bloginfo( 'name' ) ) ); ?>" target="_blank" rel="noopener" aria-label="تحدث مع المبيعات عبر واتساب"><?php zad_the_icon( 'whatsapp', '', 26 ); ?></a>
-<?php endif; ?>
-<button type="button" class="zd-totop" data-zd-totop aria-label="العودة إلى أعلى الصفحة" hidden></button>
+<aside class="zd-floats" aria-label="اختصارات">
+	<?php if ( zad_wa_number() && ! $zd_is_qo && ! $zd_checkout ) : ?>
+		<a class="zd-wa-float" href="<?php echo esc_url( zad_wa_link( 'مرحباً، أرغب بالتواصل مع قسم المبيعات في ' . get_bloginfo( 'name' ) ) ); ?>" target="_blank" rel="noopener" aria-label="تحدث مع المبيعات عبر واتساب"><?php zad_the_icon( 'whatsapp', '', 26 ); ?></a>
+	<?php endif; ?>
+	<button type="button" class="zd-totop" data-zd-totop aria-label="العودة إلى أعلى الصفحة" hidden></button>
+</aside>
 
 <div class="zd-toast" role="status" aria-live="polite" aria-atomic="true"></div>
 

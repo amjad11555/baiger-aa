@@ -176,6 +176,38 @@ function zad_price_html( $html, $product ) {
 add_filter( 'woocommerce_get_price_html', 'zad_price_html', 20, 2 );
 
 /**
+ * وضع «السعر عند الطلب»: لا تظهر المبالغ في الطلبية والدفع أيضاً، وإلا كفى إضافة صنف لقراءة السعر.
+ * يؤكد قسم المبيعات السعر عند الاتصال، ويظهر في تفاصيل الطلب بعد إرساله.
+ *
+ * @param string $html المبلغ.
+ * @return string
+ */
+function zad_hide_cart_amount( $html ) {
+	if ( zad_show_prices() || ( is_admin() && ! wp_doing_ajax() ) ) {
+		return $html;
+	}
+	return '<span class="zd-price-request">يُؤكَّد عند الاتصال</span>';
+}
+foreach ( array( 'woocommerce_cart_item_price', 'woocommerce_cart_item_subtotal', 'woocommerce_cart_subtotal', 'woocommerce_cart_totals_order_total_html', 'woocommerce_cart_totals_taxes_total_html' ) as $zad_hook ) {
+	add_filter( $zad_hook, 'zad_hide_cart_amount', 99 );
+}
+
+/**
+ * سطر الكمية في الطلبية المصغّرة: «3 × كرتونة» بدل «3 × السعر» حين تكون الأسعار مخفية.
+ *
+ * @param string $html     السطر.
+ * @param array  $item     عنصر السلة.
+ * @return string
+ */
+function zad_hide_mini_cart_price( $html, $item ) {
+	if ( zad_show_prices() ) {
+		return $html;
+	}
+	return sprintf( '<span class="quantity">%d × كرتونة</span>', (int) $item['quantity'] );
+}
+add_filter( 'woocommerce_widget_cart_item_quantity', 'zad_hide_mini_cart_price', 99, 2 );
+
+/**
  * سعر القطعة الواحدة داخل الكرتونة.
  *
  * @param WC_Product $product المنتج.

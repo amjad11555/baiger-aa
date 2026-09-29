@@ -74,7 +74,11 @@ function zad_title_parts( $parts ) {
 		);
 	}
 
-	if ( function_exists( 'is_product' ) && is_product() ) {
+	if ( is_search() ) {
+		$parts['title'] = sprintf( 'نتائج البحث عن «%s»', get_search_query( false ) );
+	} elseif ( function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
+		$parts['title'] = 'إتمام الطلبية';
+	} elseif ( function_exists( 'is_product' ) && is_product() ) {
 		$parts['title'] = single_post_title( '', false ) . ' بالجملة';
 	} elseif ( function_exists( 'is_product_category' ) && is_product_category() ) {
 		$term = get_queried_object();
@@ -327,6 +331,93 @@ function zad_sitemap_providers( $provider, $name ) {
 	return 'users' === $name ? false : $provider;
 }
 add_filter( 'wp_sitemaps_add_provider', 'zad_sitemap_providers', 10, 2 );
+
+/**
+ * هل في الموقع مقالات حقيقية؟ (مقال «أهلاً بالعالم» الافتراضي لا يُحتسب).
+ *
+ * @return bool
+ */
+function zad_has_blog() {
+	static $has = null;
+	if ( null === $has ) {
+		$ids = get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'publish',
+				'posts_per_page' => 2,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			)
+		);
+		$has = count( array_diff( $ids, array( 1 ) ) ) > 0;
+	}
+	return $has;
+}
+
+/**
+ * متجر بلا مدونة: لا ترسل إلى جوجل مقالات وتصنيفات فارغة أو افتراضية.
+ *
+ * @param array $types الأنواع.
+ * @return array
+ */
+function zad_sitemap_post_types( $types ) {
+	if ( ! zad_has_blog() ) {
+		unset( $types['post'] );
+	}
+	return $types;
+}
+add_filter( 'wp_sitemaps_post_types', 'zad_sitemap_post_types' );
+
+/**
+ * التصنيفات في خريطة الموقع.
+ *
+ * @param array $taxonomies التصنيفات.
+ * @return array
+ */
+function zad_sitemap_taxonomies( $taxonomies ) {
+	if ( ! zad_has_blog() ) {
+		unset( $taxonomies['category'], $taxonomies['post_tag'] );
+	}
+	return $taxonomies;
+}
+add_filter( 'wp_sitemaps_taxonomies', 'zad_sitemap_taxonomies' );
+
+/**
+ * إخفاء اسم مستخدم المدير عن الزوار: مسار المستخدمين في REST وصفحات الكاتب.
+ *
+ * @param array $endpoints المسارات.
+ * @return array
+ */
+function zad_hide_user_endpoints( $endpoints ) {
+	if ( ! is_user_logged_in() ) {
+		unset( $endpoints['/wp/v2/users'], $endpoints['/wp/v2/users/(?P<id>[\d]+)'] );
+	}
+	return $endpoints;
+}
+add_filter( 'rest_endpoints', 'zad_hide_user_endpoints' );
+
+/**
+ * صفحات الكاتب (/author/…) لا معنى لها في متجر جملة، وتكشف اسم الدخول.
+ */
+function zad_no_author_archives() {
+	if ( is_author() ) {
+		wp_safe_redirect( home_url( '/' ), 301 );
+		exit;
+	}
+}
+add_action( 'template_redirect', 'zad_no_author_archives' );
+
+/**
+ * بيانات oEmbed دون اسم الكاتب.
+ *
+ * @param array $data البيانات.
+ * @return array
+ */
+function zad_oembed_no_author( $data ) {
+	unset( $data['author_name'], $data['author_url'] );
+	return $data;
+}
+add_filter( 'oembed_response_data', 'zad_oembed_no_author' );
 
 /* -------------------------------------------------------------------------
  * الأسئلة الشائعة (تُعرض في الصفحات وتُضاف كبيانات FAQPage)

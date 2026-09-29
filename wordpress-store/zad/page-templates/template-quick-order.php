@@ -104,7 +104,7 @@ foreach ( $zd_groups as $zd_g ) {
 				<span class="zd-qo-summary__stat"><b data-zd-qo-lines>0</b> صنف</span>
 				<span class="zd-qo-summary__stat"><b data-zd-qo-cartons>0</b> كرتونة</span>
 				<?php if ( zad_show_prices() ) : ?>
-					<span class="zd-qo-summary__total"><small>الإجمالي التقديري</small><b data-zd-qo-total>0</b></span>
+					<span class="zd-qo-summary__total"><small>الإجمالي التقديري</small><b data-zd-qo-total>0</b><small class="zd-qo-summary__min" data-zd-qo-min hidden></small></span>
 				<?php endif; ?>
 			</div>
 			<div class="zd-qo-summary__actions">

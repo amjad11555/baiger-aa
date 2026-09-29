@@ -86,7 +86,7 @@ $zd_slides = array(
 	</div>
 	<button type="button" class="zd-hero__arrow zd-hero__arrow--prev" data-zd-slide="prev" aria-label="الشريحة السابقة"></button>
 	<button type="button" class="zd-hero__arrow zd-hero__arrow--next" data-zd-slide="next" aria-label="الشريحة التالية"></button>
-	<div class="zd-hero__dots" role="tablist" aria-label="اختر شريحة">
+	<div class="zd-hero__dots" role="group" aria-label="اختر شريحة">
 		<?php foreach ( $zd_slides as $zd_i => $zd_s ) : ?>
 			<button type="button" class="zd-hero__dot<?php echo 0 === $zd_i ? ' is-active' : ''; ?>" data-zd-slide="<?php echo (int) $zd_i; ?>" aria-label="<?php echo esc_attr( 'الشريحة ' . ( $zd_i + 1 ) ); ?>"<?php echo 0 === $zd_i ? ' aria-current="true"' : ''; ?>></button>
 		<?php endforeach; ?>

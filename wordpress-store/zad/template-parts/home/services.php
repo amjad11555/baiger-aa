@@ -20,7 +20,7 @@ $zd_items = array(
 			<?php foreach ( $zd_items as $zd_it ) : ?>
 				<li class="zd-service">
 					<p class="zd-service__big"><?php echo esc_html( $zd_it[0] ); ?></p>
-					<h3 class="zd-service__title"><?php echo esc_html( $zd_it[1] ); ?></h3>
+					<p class="zd-service__title"><?php echo esc_html( $zd_it[1] ); ?></p>
 					<p class="zd-service__text"><?php echo esc_html( $zd_it[2] ); ?></p>
 				</li>
 			<?php endforeach; ?>

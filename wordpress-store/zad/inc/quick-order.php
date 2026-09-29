@@ -121,6 +121,8 @@ function zad_qo_row_html( $r, $slug ) {
  * العملية تخص سلة الزائر نفسه فقط، ونتجنب بذلك مشاكل الصفحات المخزنة مؤقتاً.
  */
 function zad_ajax_sync_cart() {
+	// أي مخرجات عارضة (تنبيهات PHP من إضافات أخرى) تُحتجز ثم تُحذف قبل إرسال JSON.
+	$ob_level = ob_get_level();
 	ob_start();
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -157,6 +159,16 @@ function zad_ajax_sync_cart() {
 		if ( ! $product || 'publish' !== $product->get_status() || ! $product->is_type( 'simple' ) ) {
 			continue;
 		}
+		// عند تفعيل إدارة المخزون: لا تتجاوز الكمية المتاحة (set_quantity لا يتحقق من المخزون).
+		$max = (int) $product->get_max_purchase_quantity();
+		if ( $qty > 0 && $max > 0 && $qty > $max ) {
+			$qty      = $max;
+			$errors[] = sprintf( 'المتوفر من %1$s حالياً %2$d كرتونة فقط.', $product->get_name(), $max );
+		}
+		if ( $qty > 0 && ! $product->is_in_stock() ) {
+			$qty      = 0;
+			$errors[] = sprintf( '%s غير متوفر حالياً.', $product->get_name() );
+		}
 		if ( isset( $keys[ $pid ] ) ) {
 			if ( 0 === $qty ) {
 				$cart->remove_cart_item( $keys[ $pid ] );
@@ -188,12 +200,17 @@ function zad_ajax_sync_cart() {
 		array( 'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini . '</div>' )
 	);
 
+	while ( ob_get_level() > $ob_level ) {
+		ob_end_clean();
+	}
+
 	wp_send_json(
 		array(
 			'ok'        => true,
 			'count'     => $cart->get_cart_contents_count(),
 			'lines'     => count( $cart->get_cart() ),
 			'subtotal'  => $cart->get_cart_subtotal(),
+			'total_raw' => (float) $cart->get_subtotal() + (float) $cart->get_subtotal_tax(),
 			'items'     => zad_cart_qty_map(),
 			'fragments' => $fragments,
 			'cart_hash' => $cart->get_cart_hash(),

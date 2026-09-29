@@ -163,17 +163,6 @@ function zad_site_images_reset() {
 	delete_option( 'zad_site_images' );
 }
 
-/**
- * خلفية التذييل تُقرأ من CSS، فنستبدلها عند وجود النسخة المستوردة.
- */
-function zad_site_images_inline_css() {
-	$url = zad_site_image_imported_url( 'texture', true );
-	if ( $url ) {
-		wp_add_inline_style( 'zad-main', '.zd-footer::before{background-image:url("' . esc_url_raw( $url ) . '")}' );
-	}
-}
-add_action( 'wp_enqueue_scripts', 'zad_site_images_inline_css', 20 );
-
 /* -------------------------------------------------------------------------
  * لوحة التحكم: المظهر ← صور موقع زاد
  * ---------------------------------------------------------------------- */

@@ -471,6 +471,9 @@ function zad_search_products_only( $qv ) {
 }
 add_filter( 'request', 'zad_search_products_only' );
 
+// نتيجة بحث واحدة تبقى في صفحة النتائج (مع زر الطلبية) بدل القفز إلى صفحة الصنف، خاصة مع الفلاتر.
+add_filter( 'woocommerce_redirect_single_search_result', '__return_false' );
+
 /**
  * تعطيل مطابقة LIKE الافتراضية حين يتولى البحث الذكي النتائج.
  *
@@ -493,7 +496,8 @@ add_filter( 'posts_search', 'zad_disable_like_search', 50, 2 );
 function zad_facet_counts( $field, $scope = array() ) {
 	$out = array();
 	foreach ( zad_search_index() as $id => $row ) {
-		if ( ! empty( $scope['ids'] ) && ! isset( $scope['ids'][ $id ] ) ) {
+		// نطاق البحث الفارغ يعني «لا نتائج»، لا «كل الكتالوج».
+		if ( isset( $scope['ids'] ) && ! isset( $scope['ids'][ $id ] ) ) {
 			continue;
 		}
 		if ( ! empty( $scope['brand'] ) && $row['brand'] !== $scope['brand'] ) {

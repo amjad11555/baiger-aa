@@ -35,7 +35,7 @@ $zd_shop    = $zd_has_wc ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 <a class="zd-skip" href="#main">تخطَّ إلى المحتوى</a>
 
 <?php if ( zad_opt( 'announcement' ) ) : ?>
-<div class="zd-announce" data-zd-announce>
+<div class="zd-announce" role="region" aria-label="إعلان" data-zd-announce>
 	<div class="zd-container zd-announce__row">
 		<p class="zd-announce__text"><?php echo esc_html( zad_opt( 'announcement' ) ); ?> <a href="<?php echo esc_url( zad_page_url( 'quick_order' ) ); ?>">افتح قائمة الأسعار</a></p>
 		<button type="button" class="zd-announce__close" data-zd-announce-close aria-label="إغلاق الإعلان"><?php zad_the_icon( 'close', '', 16 ); ?></button>

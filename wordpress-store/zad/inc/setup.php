@@ -126,6 +126,7 @@ function zad_assets() {
 		'wa'         => zad_wa_number(),
 		'storeName'  => get_bloginfo( 'name' ),
 		'showPrices' => zad_show_prices(),
+		'minOrder'   => zad_show_prices() ? (float) zad_opt( 'min_order' ) : 0,
 		'i18n'       => array(
 			'added'        => 'أُضيف إلى الطلبية',
 			'updated'      => 'تم تحديث الكمية',
@@ -272,6 +273,62 @@ function zad_migrate_legacy_data() {
 }
 add_action( 'after_switch_theme', 'zad_migrate_legacy_data' );
 add_action( 'admin_init', 'zad_migrate_legacy_data' );
+
+/**
+ * ترحيل مكمّل: حالة «تم الإعداد» وصور الموقع المجلوبة في قالب «الشامي».
+ * بدونه يظهر تنبيه «ابدأ الإعداد» لمتجر مُعدّ فعلاً، وتعود الواجهة إلى الصور المؤقتة.
+ */
+function zad_migrate_legacy_extra() {
+	if ( get_option( 'zad_migrated_v4' ) ) {
+		return;
+	}
+	foreach ( array( 'shami', 'maria' ) as $old ) {
+		$seeded = get_option( $old . '_seeded' );
+		if ( $seeded && ! get_option( 'zad_seeded' ) ) {
+			update_option( 'zad_seeded', $seeded );
+		}
+	}
+
+	$old_images = get_option( 'shami_site_images' );
+	if ( is_array( $old_images ) && $old_images && ! get_option( 'zad_site_images' ) ) {
+		$up      = wp_upload_dir( null, false );
+		$old_dir = trailingslashit( $up['basedir'] ) . 'alshami-site';
+		$new_dir = trailingslashit( $up['basedir'] ) . 'zad-site';
+		if ( is_dir( $old_dir ) && wp_mkdir_p( $new_dir ) ) {
+			$moved = array();
+			foreach ( $old_images as $name => $meta ) {
+				$ok = true;
+				foreach ( array( '', '-sm' ) as $suffix ) {
+					$file = '/' . sanitize_file_name( $name . $suffix . '.' . $meta['ext'] );
+					if ( file_exists( $old_dir . $file ) && ! file_exists( $new_dir . $file ) ) {
+						$ok = copy( $old_dir . $file, $new_dir . $file ) && $ok;
+					}
+				}
+				if ( $ok ) {
+					$moved[ $name ] = $meta;
+				}
+			}
+			if ( $moved ) {
+				update_option( 'zad_site_images', $moved, false );
+			}
+		}
+	}
+	update_option( 'zad_migrated_v4', 1, false );
+}
+add_action( 'after_switch_theme', 'zad_migrate_legacy_extra', 11 );
+add_action( 'admin_init', 'zad_migrate_legacy_extra', 11 );
+
+/**
+ * jquery-migrate غير مطلوب في الواجهة (لا القالب ولا ووكومرس يعتمد عليه): 10 كيلوبايت أقل في كل صفحة.
+ *
+ * @param WP_Scripts $scripts السكربتات.
+ */
+function zad_drop_jquery_migrate( $scripts ) {
+	if ( ! is_admin() && ! empty( $scripts->registered['jquery'] ) ) {
+		$scripts->registered['jquery']->deps = array_diff( $scripts->registered['jquery']->deps, array( 'jquery-migrate' ) );
+	}
+}
+add_action( 'wp_default_scripts', 'zad_drop_jquery_migrate' );
 
 /**
  * طول المقتطف.

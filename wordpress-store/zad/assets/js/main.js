@@ -312,6 +312,12 @@
 		var set = function (sel, v) { var el = $(sel, orderbar); if (el) { el.textContent = v; } };
 		set('[data-zd-lines]', data.lines || 0);
 		set('[data-zd-cartons]', data.count || 0);
+		var minEl = $('[data-zd-min]', orderbar);
+		if (minEl && C.minOrder > 0 && typeof data.total_raw === 'number') {
+			var left = C.minOrder - data.total_raw;
+			minEl.hidden = !(left > 0 && data.count > 0);
+			set('[data-zd-min-left]', money(left));
+		}
 		var had = orderbar.classList.contains('is-visible');
 		orderbar.classList.toggle('is-visible', (data.count || 0) > 0);
 		if (!had && data.count > 0 && !reduceMotion) {
@@ -677,6 +683,12 @@
 		set('[data-zd-qo-lines-badge]', sel.length);
 		set('[data-zd-qo-cartons]', cartons);
 		set('[data-zd-qo-total]', money(total));
+		var qoMin = $('[data-zd-qo-min]');
+		if (qoMin && C.minOrder > 0) {
+			var need = C.minOrder - total;
+			qoMin.hidden = !(need > 0 && sel.length > 0);
+			qoMin.textContent = need > 0 ? 'باقي ' + money(need) + ' للحد الأدنى' : '';
+		}
 		var summary = $('[data-zd-qo-summary]');
 		if (summary) { summary.classList.toggle('has-items', sel.length > 0); }
 		var wa = $('[data-zd-qo-wa]');
@@ -936,12 +948,14 @@
 	function wishData(btn) {
 		if (btn.getAttribute('data-name')) {
 			var img = $('.woocommerce-product-gallery img, .zd-gallery-art', doc);
-			return { n: btn.getAttribute('data-name'), u: btn.getAttribute('data-url'), p: escapeHtml(btn.getAttribute('data-price') || ''), i: img ? img.outerHTML : '' };
+			var pack = $('.zd-specs dd', doc);
+			return { n: btn.getAttribute('data-name'), u: btn.getAttribute('data-url'), s: pack ? pack.textContent.trim() : '', i: img ? img.outerHTML : '' };
 		}
 		var card = btn.closest('.zd-card');
 		if (!card) { return null; }
-		var a = $('.zd-card__title a', card), price = $('.zd-card__price .price', card), media = $('.zd-card__img', card);
-		return { n: a ? a.textContent.trim() : '', u: a ? a.href : '#', p: price ? price.innerHTML : '', i: media ? media.innerHTML : '' };
+		// لا نحفظ السعر: الأسعار تتغير أسبوعياً، والسعر الحالي يظهر في صفحة الصنف وقائمة الأسعار.
+		var a = $('.zd-card__title a', card), spec = $('.zd-card__spec', card), media = $('.zd-card__img', card);
+		return { n: a ? a.textContent.trim() : '', u: a ? a.href : '#', s: spec ? spec.textContent.trim() : '', i: media ? media.innerHTML : '' };
 	}
 	function paintWish() {
 		var ids = Object.keys(wish);
@@ -961,16 +975,27 @@
 		ids.forEach(function (id) {
 			var w = wish[id];
 			html += '<li class="zd-wish-item"><a class="zd-wish-item__img" href="' + escapeAttr(w.u) + '">' + (w.i || '') + '</a>' +
-				'<div class="zd-wish-item__info"><a class="zd-wish-item__name" href="' + escapeAttr(w.u) + '">' + escapeHtml(w.n) + '</a><span class="zd-wish-item__price">' + (w.p || '') + '</span></div>' +
+				'<div class="zd-wish-item__info"><a class="zd-wish-item__name" href="' + escapeAttr(w.u) + '">' + escapeHtml(w.n) + '</a><span class="zd-wish-item__price">' + escapeHtml(w.s || '') + '</span></div>' +
 				'<button type="button" class="zd-wish-item__rm" data-zd-wish-rm="' + escapeAttr(id) + '" aria-label="إزالة ' + escapeAttr(w.n) + '">×</button></li>';
 		});
-		html += '</ul><a class="zd-btn zd-btn--dark zd-btn--block" href="' + escapeAttr(C.quickOrderUrl || '#') + '">اطلبها من قائمة الأسعار</a>';
+		html += '</ul><button type="button" class="zd-btn zd-btn--dark zd-btn--block" data-zd-wish-all>أضف الكل إلى الطلبية (كرتونة من كل صنف)</button>' +
+			'<a class="zd-btn zd-btn--outline zd-btn--block" href="' + escapeAttr(C.quickOrderUrl || '#') + '">حدّد الكميات من قائمة الأسعار</a>';
 		list.innerHTML = html;
 	}
 	doc.addEventListener('click', function (e) {
 		var b = e.target.closest('[data-zd-wish]');
 		var rm = e.target.closest('[data-zd-wish-rm]');
 		if (rm) { delete wish[rm.getAttribute('data-zd-wish-rm')]; store(WKEY, wish); paintWish(); return; }
+		if (e.target.closest('[data-zd-wish-all]')) {
+			// «قائمتي الثابتة»: كرتونة من كل صنف محفوظ غير موجود في الطلبية، ثم تعديل الكميات لاحقاً.
+			var added = 0;
+			Object.keys(wish).forEach(function (id) {
+				if (!(parseInt(cartMap[id], 10) > 0)) { changeQty(id, 1, wish[id].n); added++; }
+			});
+			lastMsg = added ? ('✓ أُضيف ' + added + ' صنف إلى الطلبية') : 'كل الأصناف المحفوظة موجودة في طلبيتك';
+			if (!added) { toast(lastMsg, 'ok'); }
+			return;
+		}
 		if (!b) { return; }
 		e.preventDefault();
 		var id = b.getAttribute('data-zd-wish');
@@ -1029,7 +1054,18 @@
 		requestAnimationFrame(function () { qv.classList.add('is-open'); });
 		setTimeout(function () { var c = $('.zd-modal__close', qv); if (c) { c.focus({ preventScroll: true }); } }, 60);
 	});
-	doc.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeQv(); } });
+	doc.addEventListener('keydown', function (e) {
+		if (!qv || qv.hidden) { return; }
+		if (e.key === 'Escape') { closeQv(); return; }
+		if (e.key === 'Tab') {
+			var items = $$('a[href], button:not([disabled]), input, select, textarea', qv).filter(function (el) { return el.offsetParent !== null; });
+			if (!items.length) { return; }
+			var first = items[0], last = items[items.length - 1];
+			if (!qv.contains(doc.activeElement)) { e.preventDefault(); first.focus(); }
+			else if (e.shiftKey && doc.activeElement === first) { e.preventDefault(); last.focus(); }
+			else if (!e.shiftKey && doc.activeElement === last) { e.preventDefault(); first.focus(); }
+		}
+	});
 
 	// تبديل عدد الأعمدة في صفحات الأقسام.
 	var grid = $('.zd-shop ul.products');
