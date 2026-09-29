@@ -450,9 +450,10 @@ button.zd-sr__chip { padding-inline: 14px; }
 /* 8) الشرائح الرئيسية (Slider)
    ----------------------------------------------------------------------- */
 .zd-hero { position: relative; overflow: hidden; background: var(--zd-sand); }
-.zd-hero__track { position: relative; height: clamp(560px, 158vw, 700px); }
-@media (min-width: 768px) { .zd-hero__track { height: clamp(460px, 62vw, 620px); } }
-@media (min-width: 1024px) { .zd-hero__track { height: clamp(520px, 46vw, 720px); } }
+/* ارتفاع الواجهة يتبع نسبة صورها (9:16 للجوال، 21:9 للشاشة العريضة) فتظهر الصورة كاملة دون قص. */
+.zd-hero__track { position: relative; width: 100%; aspect-ratio: 9 / 16; min-height: 560px; max-height: 88vh; max-height: 88svh; }
+@media (min-width: 768px) { .zd-hero__track { aspect-ratio: 16 / 10; min-height: 440px; max-height: none; } }
+@media (min-width: 1024px) { .zd-hero__track { aspect-ratio: 21 / 9; min-height: 480px; max-height: 84vh; } }
 .zd-slide { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility .9s; }
 .zd-slide.is-active { z-index: 1; opacity: 1; visibility: visible; }
 .zd-slide__media { position: absolute; inset: 0; }

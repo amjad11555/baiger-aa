@@ -37,27 +37,27 @@ function zad_site_image_sources() {
 		'cta-docks'         => array( '20260928_150536_91d9b086-b145-4130-bc14-05928feb6ba3', 2400 ),
 		'texture'           => array( '20260928_150537_e4147041-fa62-4bdc-a139-216b13afb610', 1600 ),
 		'flatlay'           => array( '20260928_150538_e4b8fd25-b7cf-4967-a687-1628c8eced43', 1800 ),
-		// الصفحة الرئيسية 2026: عوالم لونية ولحظات حركة (تحل محل الصور المؤقتة المضمّنة بالأسماء نفسها).
-		'hero-eti-1'        => array( '20260929_140120_31a75586-d8cd-4927-89e6-a04ab4b7f946', 2560 ),
-		'hero-eti-1-m'      => array( '20260929_140542_2c90cd82-05cf-488c-af05-267418173579', 1100 ),
-		'hero-eti-2'        => array( '20260929_140542_7d683769-7501-48ef-88c0-309b912c0acf', 2560 ),
-		'hero-eti-2-m'      => array( '20260929_140543_7c9c3f89-7e12-4158-8788-3bcbade6174b', 1100 ),
-		'hero-eti-3'        => array( '20260929_140543_de58ac5c-ef37-4937-8a1e-c830f70a5c17', 2560 ),
-		'hero-eti-3-m'      => array( '20260929_140543_5eaa695a-3585-46d0-bbd5-a4c592f669b8', 1100 ),
-		'tile-snacks'       => array( '20260929_140543_a9d71aa6-21bd-4188-a8ba-e8b2bf375425', 1000 ),
-		'tile-biscuits'     => array( '20260929_140543_f12e0e5c-5f2a-467d-864d-2d4d809f1ee6', 900 ),
-		'tile-cake'         => array( '20260929_140543_ed7c3482-c997-49b1-ad38-329233475c9a', 900 ),
-		'tile-chips'        => array( '20260929_140120_ab01de48-3e81-4729-a1c9-204e80ad8904', 900 ),
-		'tile-offers'       => array( '20260929_140542_f4588ce6-4ba8-4202-939f-1bc9b741268a', 900 ),
-		'banner-sourcing'   => array( '20260929_140542_604f0762-c638-4dd9-a85e-d906356b931f', 1400 ),
-		'banner-export'     => array( '20260929_140543_1d3c622a-4052-4a4f-8036-4893898618cf', 1400 ),
-		'stage-supermarket' => array( '20260929_140542_a4674347-ba12-4527-956c-22b6d0433ab3', 1200 ),
-		'stage-grocery'     => array( '20260929_140742_9694eca5-c313-4e62-be8e-bc03748a087e', 1200 ),
-		'stage-distributor' => array( '20260929_140744_1ee40717-5b14-4d15-bffc-69b3be3a864e', 1200 ),
-		'stage-export'      => array( '20260929_140745_5138d097-b6a1-4145-bc5a-1ab919e7e056', 1200 ),
-		'stage-order'       => array( '20260929_140913_e12cfc42-d0dc-40a2-b353-8f8e42a7fcb0', 1200 ),
-		'stage-pick'        => array( '20260929_140741_3eaf8995-025f-4105-869b-702ec33a608a', 1200 ),
-		'stage-deliver'     => array( '20260929_140120_824d42de-78f6-49e6-8d83-763cdd118d27', 1200 ),
+		// الصفحة الرئيسية 2026 (Nano Banana Pro): ألوان حيوية ولحظات حركة، وتحل محل الصور المؤقتة المضمّنة بالأسماء نفسها.
+		'hero-eti-1'        => array( '20260929_151915_bc3cbeb0-3883-472c-b9b2-7358de652f16', 2560 ),
+		'hero-eti-1-m'      => array( '20260929_151915_7ac5cabf-1ce0-42e0-8e7d-0225abef55c4', 1100 ),
+		'hero-eti-2'        => array( '20260929_151915_fa00235b-9241-4a9f-be13-8b716b5b3ef0', 2560 ),
+		'hero-eti-2-m'      => array( '20260929_151915_6aa1befa-7bf5-4556-bf1a-d5ac164da535', 1100 ),
+		'hero-eti-3'        => array( '20260929_151915_3ecca5da-6e4e-4e84-9ad7-c6e0642096c4', 2560 ),
+		'hero-eti-3-m'      => array( '20260929_152023_08d0646f-aad7-4d77-a3bd-92a0034e4f22', 1100 ),
+		'tile-snacks'       => array( '20260929_151716_7aeec3a8-da5d-4bb8-b7c5-8c885819325d', 1000 ),
+		'tile-biscuits'     => array( '20260929_151717_547dcef6-e8fe-4ee8-a809-b58a0dd1548e', 900 ),
+		'tile-cake'         => array( '20260929_151718_6a942f40-31fe-4258-9e76-059e98167c32', 900 ),
+		'tile-chips'        => array( '20260929_151717_184018f4-377f-416e-a8e3-98f3e007a6b6', 900 ),
+		'tile-offers'       => array( '20260929_151717_4acf1572-0225-44a2-9729-dcb0670f2358', 900 ),
+		'banner-sourcing'   => array( '20260929_151717_9f61f1f6-1386-466c-a140-081df65c1e22', 1400 ),
+		'banner-export'     => array( '20260929_152023_615c4acd-661c-4941-bb68-c251bf7f19ef', 1400 ),
+		'stage-supermarket' => array( '20260929_152022_b0b9b4e0-5e02-4890-9b9e-1d65f5609084', 1200 ),
+		'stage-grocery'     => array( '20260929_152022_ef1fe385-42d0-42fa-8802-a089b00017bc', 1200 ),
+		'stage-distributor' => array( '20260929_152022_49f3362a-a00e-4c13-b1e2-2a27fb66d635', 1200 ),
+		'stage-export'      => array( '20260929_152022_d32948d1-ae66-458b-8702-a4b42aa1a7c3', 1200 ),
+		'stage-order'       => array( '20260929_152118_b8d7f118-66f6-41f0-9ee9-7aa334769d28', 1200 ),
+		'stage-pick'        => array( '20260929_152118_4e35d5ba-8791-4b34-a0e7-f30e0cee42b3', 1200 ),
+		'stage-deliver'     => array( '20260929_152118_b229dfd2-7a68-490c-834d-5643c194b062', 1200 ),
 	);
 	$out = array();
 	foreach ( $ids as $name => $row ) {
@@ -90,11 +90,31 @@ function zad_site_images_dir() {
 }
 
 /**
- * رابط النسخة المستوردة إن وُجدت.
+ * الصور التي تحتاج جلباً: لم تُجلب بعد، أو تغيّر مصدرها بعد تحديث القالب.
+ *
+ * @return string[]
+ */
+function zad_site_images_pending() {
+	$stored  = zad_site_images_stored();
+	$pending = array();
+	foreach ( zad_site_image_sources() as $name => $src ) {
+		$old = isset( $stored[ $name ]['src'] )
+			? $stored[ $name ]['src'] !== $src['url']
+			// صور الرئيسية المجلوبة قبل تسجيل المصدر (الإصدار 3.7.0) تُعد قديمة، فقد تغيّرت مصادرها.
+			: ! empty( $stored[ $name ] ) && preg_match( '/^(hero-eti|tile|banner|stage)-/', $name );
+		if ( empty( $stored[ $name ] ) || $old ) {
+			$pending[] = $name;
+		}
+	}
+	return $pending;
+}
+
+/**
+ * رابط النسخة المجلوبة من صورة (فارغ إن لم تُجلب).
  *
  * @param string $name  الاسم.
  * @param bool   $small النسخة الصغيرة.
- * @return string رابط أو فارغ.
+ * @return string
  */
 function zad_site_image_imported_url( $name, $small = false ) {
 	$stored = zad_site_images_stored();
@@ -163,6 +183,7 @@ function zad_site_image_import( $name ) {
 		'h'   => $size[1],
 		'ext' => $ext,
 		'v'   => time(),
+		'src' => $sources[ $name ]['url'],
 	);
 	update_option( 'zad_site_images', $stored, false );
 	return true;
@@ -205,7 +226,7 @@ function zad_site_images_notice() {
 		return;
 	}
 	// تظهر كلما وُجدت صور لم تُجلب بعد (أول تثبيت، أو صور جديدة أضافها تحديث القالب).
-	$missing = count( array_diff_key( zad_site_image_sources(), zad_site_images_stored() ) );
+	$missing = count( zad_site_images_pending() );
 	if ( ! $missing ) {
 		return;
 	}
@@ -229,7 +250,7 @@ function zad_site_images_page() {
 		$items[] = array(
 			'name'     => $name,
 			'thumb'    => zad_img_url( $name, true ),
-			'imported' => (bool) zad_site_image_imported_url( $name ),
+			'imported' => (bool) zad_site_image_imported_url( $name ) && ! in_array( $name, zad_site_images_pending(), true ),
 		);
 	}
 	$config = array(
