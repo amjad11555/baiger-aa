@@ -7,7 +7,16 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$zd_cats = zad_categories();
+$zd_all  = zad_categories();
+// ترتيب البطاقات في الرئيسية: الأولى كبيرة، فتأتي صورة الشوكولاتة الطولية أولاً،
+// وتتناوب البطاقات المصوّرة والمرسومة في الصفين.
+$zd_cats = array();
+foreach ( array( 'snacks', 'biscuits', 'cake', 'chips', 'offers' ) as $zd_slug ) {
+	if ( isset( $zd_all[ $zd_slug ] ) ) {
+		$zd_cats[ $zd_slug ] = $zd_all[ $zd_slug ];
+	}
+}
+$zd_cats += $zd_all;
 ?>
 <section class="zd-section zd-collections" aria-labelledby="zd-cats-title">
 	<div class="zd-container">

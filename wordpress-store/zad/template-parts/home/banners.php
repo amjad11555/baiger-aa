@@ -8,14 +8,14 @@
 defined( 'ABSPATH' ) || exit;
 
 $zd_banners = array(
-	array( 'seg-export', 'للمستوردين والموزعين', 'تصدير بالحاويات', 'حاويات 20 و40 قدماً وطبليات مختلطة، مع مستندات التخليص كاملة.', 'اطلب عرض سعر', zad_page_url( 'export' ) ),
-	array( 'sourcing', 'صنف غير موجود في القائمة؟', 'نؤمّنه لك من المصدر', 'أرسل اسم الصنف والكمية، ونعود إليك بالسعر وموعد التوريد.', 'طلب توريد خاص', zad_page_url( 'special_request' ) ),
+	array( 'banner-export', 'للمستوردين والموزعين', 'تصدير بالحاويات', 'حاويات 20 و40 قدماً وطبليات مختلطة، مع مستندات التخليص كاملة.', 'اطلب عرض سعر', zad_page_url( 'export' ) ),
+	array( 'banner-sourcing', 'صنف غير موجود في القائمة؟', 'نؤمّنه لك من المصدر', 'أرسل اسم الصنف والكمية، ونعود إليك بالسعر وموعد التوريد.', 'طلب توريد خاص', zad_page_url( 'special_request' ) ),
 );
 ?>
 <section class="zd-section zd-section--tight zd-banners" aria-label="خدمات الجملة">
 	<div class="zd-container zd-banners__grid">
-		<?php foreach ( $zd_banners as $zd_b ) : ?>
-			<a class="zd-banner" href="<?php echo esc_url( $zd_b[5] ); ?>">
+		<?php foreach ( $zd_banners as $zd_i => $zd_b ) : ?>
+			<a class="zd-banner zd-banner--dark<?php echo $zd_i % 2 ? ' zd-banner--end' : ''; ?>" href="<?php echo esc_url( $zd_b[5] ); ?>">
 				<span class="zd-banner__media"><?php echo zad_img( $zd_b[0], '', array( 'sizes' => '(min-width: 1024px) 50vw, 100vw' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 				<span class="zd-banner__content">
 					<span class="zd-banner__kicker"><?php echo esc_html( $zd_b[1] ); ?></span>

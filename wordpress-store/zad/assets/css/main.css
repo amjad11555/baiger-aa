@@ -473,6 +473,37 @@ button.zd-sr__chip { padding-inline: 14px; }
 .zd-slide__text { margin: 0 0 28px; color: var(--zd-ink-2); font-size: clamp(15.5px, 1.4vw, 17.5px); line-height: 1.85; max-width: 48ch; }
 .zd-slide__actions { display: flex; flex-wrap: wrap; gap: 12px; }
 @media (max-width: 520px) { .zd-slide__actions .zd-btn { flex: 1 1 100%; } .zd-slide__actions .zd-btn--lg { min-height: 48px; } }
+/* شرائح داكنة: الصورة مصممة بخلفية ملوّنة تحت النص، فلا حاجة للتدرج الأبيض. */
+.zd-slide--dark .zd-slide__media::after { background: linear-gradient(0deg, rgba(0, 0, 0, .28) 0%, rgba(0, 0, 0, 0) 38%); }
+.zd-slide--dark .zd-slide__kicker { color: #FFD27A; }
+.zd-slide--dark .zd-slide__title { color: #fff; text-shadow: 0 2px 18px rgba(0, 0, 0, .18); }
+.zd-slide--dark .zd-slide__text { color: rgba(255, 255, 255, .92); }
+.zd-slide--dark .zd-btn--dark { background: #fff; border-color: #fff; color: var(--zd-ink); }
+.zd-slide--dark .zd-btn--dark:hover { background: var(--zd-ink); border-color: var(--zd-ink); color: #fff; }
+.zd-slide--dark .zd-btn--outline { color: #fff; border-color: rgba(255, 255, 255, .78); }
+.zd-slide--dark .zd-btn--outline:hover { background: #fff; border-color: #fff; color: var(--zd-ink); }
+@media (min-width: 768px) {
+	.zd-slide--dark .zd-slide__media::after { background: none; }
+	.zd-slide--end .zd-slide__inner { justify-content: flex-end; }
+	/* في الشاشات الأضيق يُقصّ امتداد الخلفية لا المنتج: الصورة مثبّتة على جهة المنتج. */
+	.zd-slide--dark .zd-slide__media img { object-position: left center; }
+	.zd-slide--dark.zd-slide--end .zd-slide__media img { object-position: right center; }
+}
+/* الجهاز اللوحي عمودياً: لا يتسع لنص ومنتج متجاورين، فنعتّم جهة النص ونضيّقه. */
+@media (min-width: 768px) and (max-width: 1023px) {
+	.zd-slide--dark .zd-slide__media::after { background: linear-gradient(to left, rgba(46, 0, 4, .86) 0%, rgba(46, 0, 4, .66) 42%, rgba(46, 0, 4, 0) 72%); }
+	.zd-slide--dark.zd-slide--end .zd-slide__media::after { transform: scaleX(-1); }
+	.zd-slide--dark .zd-slide__content { max-width: 440px; }
+}
+/* الجوال: النص في الأعلى فوق امتداد الخلفية، والمنتجات في الأسفل. */
+@media (max-width: 767px) {
+	.zd-slide--dark .zd-slide__inner { align-items: flex-start; }
+	.zd-slide--dark .zd-slide__content { padding-block: 34px 0; }
+	.zd-slide--dark .zd-slide__text { display: none; }
+	.zd-slide--dark .zd-slide__actions .zd-btn { flex: 0 1 auto; }
+}
+.zd-hero--dark .zd-hero__dot::before { border-color: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .12); }
+.zd-hero--dark .zd-hero__dot.is-active::before { background: #fff; }
 .zd-slide.is-active .zd-slide__content > * { animation: zd-rise .8s var(--zd-ease) both; }
 .zd-slide.is-active .zd-slide__content > :nth-child(2) { animation-delay: .1s; }
 .zd-slide.is-active .zd-slide__content > :nth-child(3) { animation-delay: .2s; }
@@ -565,6 +596,23 @@ button.zd-sr__chip { padding-inline: 14px; }
 .zd-banner__cta { margin-top: 10px; padding-bottom: 2px; border-bottom: 2px solid var(--zd-ink); font-size: 14px; font-weight: 600; transition: color .2s, border-color .2s; }
 .zd-banner:hover { color: var(--zd-ink); }
 .zd-banner:hover .zd-banner__cta { color: var(--zd-brass-ink); border-color: var(--zd-brass); }
+/* لافتات داكنة: الخلفية الداكنة مرسومة في الصورة جهة النص. */
+.zd-banner--dark { color: #fff; background: #8E0E15; }
+.zd-banner--dark::before { background: none; }
+.zd-banner--dark .zd-banner__kicker { color: #FFD27A; }
+.zd-banner--dark .zd-banner__title { color: #fff; }
+.zd-banner--dark .zd-banner__text { color: rgba(255, 255, 255, .9); }
+.zd-banner--dark .zd-banner__cta { border-color: #fff; }
+.zd-banner--dark:hover { color: #fff; }
+.zd-banner--dark:hover .zd-banner__cta { color: #FFD27A; border-color: #FFD27A; }
+.zd-banner--end { justify-content: flex-end; }
+@media (min-width: 640px) { .zd-banner--end .zd-banner__content { max-width: 54%; } }
+@media (max-width: 639px) {
+	.zd-banner--dark::before { background: linear-gradient(to left, rgba(46, 0, 4, .82) 0%, rgba(46, 0, 4, .6) 55%, rgba(46, 0, 4, .1) 100%); }
+	.zd-banner--dark.zd-banner--end::before { transform: scaleX(-1); }
+	[dir="ltr"] .zd-banner--dark::before { transform: scaleX(-1); }
+	[dir="ltr"] .zd-banner--dark.zd-banner--end::before { transform: none; }
+}
 
 /* لمن نورّد */
 .zd-segments__grid { display: grid; gap: 34px 24px; list-style: none; }
@@ -1426,6 +1474,8 @@ form.checkout { display: grid; gap: 24px; }
 .zd-archive-hero__logo { display: flex; width: fit-content; margin: 0 auto 12px; padding: 8px 14px; border-radius: var(--zd-r-lg); background: #fff; box-shadow: 0 6px 18px -8px rgba(0, 0, 0, .4); }
 /* صورة العلامة حادة ومزدحمة: تعتيم أشد خلف النص، وتبقى الصورة ظاهرة على الأطراف. */
 .zd-archive-hero--brand::before { background: radial-gradient(ellipse 58% 80% at 50% 55%, rgba(0, 0, 0, .7), rgba(0, 0, 0, .38)); }
+.zd-archive-hero--ambient .zd-archive-hero__media img { filter: blur(18px) saturate(1.15); transform: scale(1.2); }
+.zd-archive-hero--ambient::before { background: radial-gradient(ellipse 60% 85% at 50% 50%, rgba(0, 0, 0, .5), rgba(0, 0, 0, .28)); }
 .zd-chip--brand .zd-brand-logo { height: 20px; margin-inline-end: 2px; }
 
 .zd-showcase__head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-bottom: 22px; }

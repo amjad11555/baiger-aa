@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ZAD_VERSION', '3.5.1' );
+define( 'ZAD_VERSION', '3.6.0' );
 define( 'ZAD_DIR', get_template_directory() );
 define( 'ZAD_URI', get_template_directory_uri() );
 

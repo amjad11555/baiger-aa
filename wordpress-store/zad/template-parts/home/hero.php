@@ -1,6 +1,8 @@
 <?php
 /**
  * الواجهة الرئيسية: عارض شرائح بعرض الشاشة بأسلوب Kalles (ثلاث شرائح بتلاشٍ ناعم ونقاط وأسهم).
+ * الصور مصممة من صور إيتي: المنتج على جانب، وامتداد خلفيته الملوّنة تحت النص الأبيض.
+ * tone=dark نص فاتح على خلفية داكنة، align=end النص في الجهة المقابلة (يسار الصفحة العربية).
  *
  * @package Zad
  */
@@ -10,8 +12,10 @@ defined( 'ABSPATH' ) || exit;
 $zd_custom = (string) zad_opt( 'hero_image' );
 $zd_slides = array(
 	array(
-		'image'   => 'hero',
-		'mobile'  => 'hero-m',
+		'image'   => 'hero-eti-1',
+		'mobile'  => 'hero-eti-1-m',
+		'tone'    => $zd_custom ? '' : 'dark',
+		'align'   => '',
 		'kicker'  => zad_opt( 'hero_kicker' ),
 		'title'   => zad_opt( 'hero_title' ),
 		'text'    => zad_opt( 'hero_text' ),
@@ -19,8 +23,10 @@ $zd_slides = array(
 		'second'  => array( 'افتح حساب جملة', zad_wa_number() ? zad_wa_link( 'مرحباً، أرغب بفتح حساب جملة لدى ' . get_bloginfo( 'name' ) ) : zad_page_url( 'contact' ) ),
 	),
 	array(
-		'image'   => 'seg-export',
-		'mobile'  => '',
+		'image'   => 'hero-eti-2',
+		'mobile'  => 'hero-eti-2-m',
+		'tone'    => 'dark',
+		'align'   => 'end',
 		'kicker'  => 'للمستوردين خارج تركيا',
 		'title'   => 'حاوية كاملة من أشهر العلامات التركية',
 		'text'    => 'طبليات مختلطة أو حاويات 20 و40 قدماً إلى أسواقك، مع شهادات المنشأ والحلال ومستندات التخليص.',
@@ -28,8 +34,10 @@ $zd_slides = array(
 		'second'  => array(),
 	),
 	array(
-		'image'   => 'flatlay',
-		'mobile'  => '',
+		'image'   => 'hero-eti-3',
+		'mobile'  => 'hero-eti-3-m',
+		'tone'    => 'dark',
+		'align'   => 'end',
 		'kicker'  => 'عروض الجملة',
 		'title'   => 'أسعار خاصة على كميات محدودة',
 		'text'    => 'خصومات على سعر الكرتونة لأصناف مختارة، تتجدد أسبوعياً حتى نفاد الكمية.',
@@ -38,10 +46,10 @@ $zd_slides = array(
 	),
 );
 ?>
-<section class="zd-hero" aria-roledescription="carousel" aria-label="عروض <?php bloginfo( 'name' ); ?>" data-zd-slider data-autoplay="6500">
+<section class="zd-hero<?php echo $zd_custom ? '' : ' zd-hero--dark'; ?>" aria-roledescription="carousel" aria-label="عروض <?php bloginfo( 'name' ); ?>" data-zd-slider data-autoplay="6500">
 	<div class="zd-hero__track">
 		<?php foreach ( $zd_slides as $zd_i => $zd_s ) : ?>
-			<div class="zd-slide<?php echo 0 === $zd_i ? ' is-active' : ''; ?>" role="group" aria-roledescription="slide" aria-label="<?php echo esc_attr( ( $zd_i + 1 ) . ' من ' . count( $zd_slides ) ); ?>"<?php echo 0 === $zd_i ? '' : ' aria-hidden="true"'; ?>>
+			<div class="zd-slide<?php echo 0 === $zd_i ? ' is-active' : ''; ?><?php echo $zd_s['tone'] ? ' zd-slide--' . esc_attr( $zd_s['tone'] ) : ''; ?><?php echo $zd_s['align'] ? ' zd-slide--' . esc_attr( $zd_s['align'] ) : ''; ?>" role="group" aria-roledescription="slide" aria-label="<?php echo esc_attr( ( $zd_i + 1 ) . ' من ' . count( $zd_slides ) ); ?>"<?php echo 0 === $zd_i ? '' : ' aria-hidden="true"'; ?>>
 				<div class="zd-slide__media">
 					<?php if ( 0 === $zd_i && $zd_custom ) : ?>
 						<img src="<?php echo esc_url( $zd_custom ); ?>" alt="" fetchpriority="high" decoding="async">
