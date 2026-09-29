@@ -308,17 +308,19 @@ function zad_search_item( $p ) {
 	$info   = zad_product_info( $p->get_id() );
 	$brands = zad_all_brands();
 	$simple = $p->is_type( 'simple' ) && $p->is_purchasable() && $p->is_in_stock();
+	$profit = function_exists( 'zad_profit_info' ) ? zad_profit_info( $p ) : null;
 	return array(
-		'id'    => $p->get_id(),
-		'name'  => $p->get_name(),
-		'url'   => get_permalink( $p->get_id() ),
-		'brand' => isset( $brands[ $info['brand'] ] ) ? $brands[ $info['brand'] ]['ar'] : '',
-		'pack'  => $info['pack'],
-		'price' => zad_show_prices() ? zad_money_plain( wc_get_price_to_display( $p ) ) : '',
-		'num'   => (float) wc_get_price_to_display( $p ),
-		'sale'  => $p->is_on_sale(),
-		'buy'   => $simple,
-		'img'   => $p->get_image_id() ? $p->get_image( 'woocommerce_gallery_thumbnail' ) : zad_product_art( $p, 'mini' ),
+		'id'     => $p->get_id(),
+		'name'   => $p->get_name(),
+		'url'    => get_permalink( $p->get_id() ),
+		'brand'  => isset( $brands[ $info['brand'] ] ) ? $brands[ $info['brand'] ]['ar'] : '',
+		'pack'   => $info['pack'],
+		'price'  => zad_show_prices() ? zad_money_plain( wc_get_price_to_display( $p ) ) : '',
+		'num'    => (float) wc_get_price_to_display( $p ),
+		'sale'   => $p->is_on_sale(),
+		'buy'    => $simple,
+		'img'    => $p->get_image_id() ? $p->get_image( 'woocommerce_gallery_thumbnail' ) : zad_product_art( $p, 'mini' ),
+		'profit' => $profit ? (int) $profit['margin'] : 0,
 	);
 }
 

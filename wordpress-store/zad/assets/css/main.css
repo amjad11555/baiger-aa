@@ -698,6 +698,23 @@ ul.products::before, ul.products::after { display: none; }
 .price ins { text-decoration: none; color: var(--zd-sale); }
 .zd-per { font-size: 12px; font-weight: 400; color: var(--zd-muted); white-space: nowrap; }
 .zd-unit-price { font-size: 12.5px; color: var(--zd-muted); }
+
+/* سعر البيع المقترح وهامش ربح البقال */
+.zd-profit-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 4px 0 0; font-size: 12.5px; color: var(--zd-muted); line-height: 1.5; }
+.zd-profit-line b { color: var(--zd-ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.zd-profit-line__gain { padding: 0 8px; border-radius: var(--zd-pill); background: var(--zd-success-50); color: var(--zd-success); font-size: 12px; font-weight: 600; line-height: 22px; white-space: nowrap; }
+.zd-profit { margin: 0 0 22px; padding: 14px 16px 12px; border: 1px solid #CDE8D6; border-radius: var(--zd-r-lg); background: linear-gradient(180deg, var(--zd-success-50), var(--zd-paper) 70%); }
+.zd-profit__title { margin: 0 0 10px; font-size: 13.5px; font-weight: 600; color: var(--zd-success); }
+.zd-profit__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 14px; margin: 0; }
+.zd-profit__grid dt { font-size: 12px; color: var(--zd-muted); line-height: 1.5; }
+.zd-profit__grid dd { margin: 2px 0 0; font-size: 16px; font-weight: 600; color: var(--zd-ink); font-variant-numeric: tabular-nums; }
+.zd-profit__grid dd.zd-profit__gain, .zd-profit__grid dd.zd-profit__gain .amount { color: var(--zd-success); }
+.zd-profit__note { margin: 10px 0 0; font-size: 12.5px; color: var(--zd-muted); }
+@media (max-width: 560px) { .zd-profit__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.zd-qv__profit { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 13.5px; color: var(--zd-muted); }
+.zd-qv__profit b { color: var(--zd-ink); font-weight: 600; }
+.zd-qv__profit .zd-profit-line__gain { font-size: 12.5px; }
+.zd-sr__profit { font-style: normal; font-weight: 600; color: var(--zd-success); }
 .zd-price-request { font-size: 14px; color: var(--zd-ink); font-weight: 600; }
 
 .zd-cart-ctl { --h: 42px; position: relative; display: flex; }
@@ -840,6 +857,13 @@ html.zd-syncing .zd-cart-ctl.is-dirty .zd-cart-ctl__stepper { background: #444; 
 .zd-trust > div:nth-child(even) { padding-inline-start: 18px; border-inline-start: 1px solid var(--zd-line); }
 .zd-trust dt { font-size: 13px; font-weight: 600; color: var(--zd-ink); }
 .zd-trust dd { margin: 2px 0 0; font-size: 13.5px; color: var(--zd-muted); line-height: 1.6; }
+
+/* الدفع عند الاستلام */
+.zd-cod-note { display: flex; align-items: flex-start; gap: 10px; margin: -4px 0 16px; padding: 12px 14px; border-radius: var(--zd-r-lg); background: var(--zd-sand); font-size: 13.5px; color: var(--zd-ink-2); line-height: 1.65; }
+.zd-cod-note svg { flex: none; margin-top: 2px; color: var(--zd-success); }
+.zd-cod-note b { color: var(--zd-ink); font-weight: 600; }
+.zd-cod-line { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 0; font-size: 12.5px; font-weight: 500; color: var(--zd-success); }
+.widget_shopping_cart_content .zd-cod-line { padding: 0 20px 12px; }
 .woocommerce-tabs { margin-top: 40px; }
 .wc-tabs { display: flex; justify-content: center; gap: 8px 36px; overflow-x: auto; list-style: none; margin-bottom: 8px; padding-bottom: 2px; border-bottom: 1px solid var(--zd-line); scrollbar-width: none; }
 .wc-tabs::-webkit-scrollbar { display: none; }
@@ -909,6 +933,8 @@ html.zd-syncing .zd-cart-ctl.is-dirty .zd-cart-ctl__stepper { background: #444; 
 .zd-qo-row__tr { direction: ltr; display: none; }
 .zd-qo-row__price { grid-area: price; font-size: 14px; }
 .zd-qo-row__price .price { font-size: 15px; }
+.zd-qo-row__profit { display: block; font-size: 12px; color: var(--zd-success); line-height: 1.5; }
+.zd-qo-row__profit b { font-weight: 600; }
 .zd-qo-row .zd-cart-ctl { grid-area: ctl; }
 @media (min-width: 768px) {
 	.zd-qo-row { grid-template-columns: 58px minmax(0, 1fr) 170px 140px; grid-template-areas: "art info price ctl"; padding: 10px 18px; }
@@ -1293,6 +1319,16 @@ form.checkout { display: grid; gap: 24px; }
 #payment .wc_payment_method > label { font-weight: 600; margin-inline-start: 6px; }
 #payment .payment_box { margin-top: 8px; font-size: 14px; color: var(--zd-ink-2); }
 #payment .payment_box p { margin: 0; }
+.zd-cod-pick { min-width: 0; margin: 12px 0 2px; padding: 0; border: 0; }
+.zd-cod-pick legend { margin-bottom: 8px; padding: 0; font-size: 13px; font-weight: 600; color: var(--zd-ink); }
+#payment .zd-cod-pick p { display: grid; gap: 8px; }
+.zd-cod-pick__opt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--zd-line-2); border-radius: var(--zd-r); background: var(--zd-paper); cursor: pointer; transition: border-color .15s, background .15s; }
+.zd-cod-pick__opt:hover { border-color: var(--zd-ink); }
+.zd-cod-pick__opt:has(input:checked) { border-color: var(--zd-ink); background: var(--zd-brass-100); }
+.zd-cod-pick__opt input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--zd-ink); }
+.zd-cod-pick__opt span { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; line-height: 1.5; }
+.zd-cod-pick__opt b { font-size: 14px; font-weight: 600; color: var(--zd-ink); }
+.zd-cod-pick__opt small { font-size: 12px; color: var(--zd-muted); }
 .woocommerce-terms-and-conditions-wrapper, .woocommerce-privacy-policy-text { font-size: 13px; color: var(--zd-muted); margin-bottom: 14px; }
 #place_order { width: 100%; min-height: 54px; font-size: 16px; }
 .blockUI.blockOverlay { background: rgba(255, 255, 255, .6) !important; border-radius: inherit; }

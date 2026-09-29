@@ -3,7 +3,7 @@
  * بطاقة المنتج بأسلوب Kalles.
  *
  * الصورة بخلفية فاتحة مع الشارات، وعند المرور: زر الحفظ، و«عرض سريع»، وزر «أضف إلى الطلبية»
- * الذي يتحول إلى عدّاد كراتين. تحت الصورة: العلامة، والاسم، والسعر، وتعبئة الكرتونة.
+ * الذي يتحول إلى عدّاد كراتين. تحت الصورة: العلامة، والاسم، والسعر، وسعر البيع وهامش الربح، وتعبئة الكرتونة.
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package Zad\WooCommerce
@@ -53,6 +53,7 @@ $zd_desc     = wp_trim_words( wp_strip_all_tags( (string) $zd_desc ), 30, '…' 
 			<span class="price"><?php echo wp_kses_post( $product->get_price_html() ); ?></span>
 			<?php echo wp_kses_post( zad_unit_price_html( $product ) ); ?>
 		</div>
+		<?php echo zad_profit_line_html( $product ); // phpcs:ignore WordPress.Security.EscapeOutput -- مبالغ wc_price وأرقام صحيحة فقط. ?>
 		<?php if ( $zd_info['pack'] ) : ?>
 			<p class="zd-card__spec">الكرتونة: <bdi><?php echo esc_html( $zd_info['pack'] ); ?></bdi></p>
 		<?php endif; ?>

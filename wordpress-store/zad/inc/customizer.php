@@ -28,6 +28,16 @@ function zad_sanitize_amount( $value ) {
 }
 
 /**
+ * تنظيف نسبة هامش الربح (1–90%).
+ *
+ * @param mixed $value القيمة.
+ * @return int
+ */
+function zad_sanitize_margin( $value ) {
+	return (int) min( 90, max( 1, round( (float) $value ) ) );
+}
+
+/**
  * تسجيل الإعدادات.
  *
  * @param WP_Customize_Manager $wp_customize المخصص.
@@ -81,6 +91,9 @@ function zad_customize_register( $wp_customize ) {
 		'show_prices'   => array( 'zad_shop', 'checkbox', 'إظهار الأسعار للزوار', 'ألغِ التفعيل لعرض «السعر عند الطلب» بدل الأسعار في الكتالوج.', 'zad_sanitize_bool' ),
 		'min_order'     => array( 'zad_shop', 'number', 'الحد الأدنى لقيمة الطلب', '0 = بدون حد أدنى.', 'zad_sanitize_amount' ),
 		'free_delivery' => array( 'zad_shop', 'number', 'التوصيل مجاني للطلبات فوق', 'للعرض فقط في الواجهة (0 = إخفاء). اضبط طرق الشحن الفعلية من إعدادات ووكومرس.', 'zad_sanitize_amount' ),
+		'show_profit'   => array( 'zad_shop', 'checkbox', 'إظهار سعر البيع المقترح وربح البقال', 'يعرض على كل صنف سعر البيع للمستهلك وربح الكرتونة وهامش الربح.', 'zad_sanitize_bool' ),
+		'retail_margin' => array( 'zad_shop', 'number', 'هامش ربح البقال الافتراضي %', 'يُقدَّر منه سعر البيع للأصناف التي لم يُكتب لها «سعر البيع المقترح» في صفحة المنتج. الهامش من سعر البيع (25 = يربح البقال ربع سعر البيع).', 'zad_sanitize_margin' ),
+		'cod_card'      => array( 'zad_shop', 'checkbox', 'قبول البطاقة عند الاستلام', 'يضيف خيار «بطاقة بنكية عند الاستلام» تحت الدفع عند الاستلام (يلزم جهاز POS مع المندوب).', 'zad_sanitize_bool' ),
 		'force_rtl'     => array( 'zad_shop', 'checkbox', 'فرض الاتجاه من اليمين لليسار (عربي)', 'مفيد إذا كانت لغة لوحة التحكم غير العربية.', 'zad_sanitize_bool' ),
 		// اجتماعي.
 		'instagram'     => array( 'zad_social', 'url', 'Instagram', '', 'esc_url_raw' ),

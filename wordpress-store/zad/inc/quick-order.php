@@ -97,7 +97,7 @@ function zad_qo_row_html( $r, $slug ) {
 		'<li class="zd-qo-row%1$s" data-id="%2$d" data-cat="%3$s" data-brand="%4$s" data-sale="%5$s" data-search="%6$s">'
 		. '<a class="zd-qo-row__art" href="%7$s" tabindex="-1" aria-hidden="true">%8$s</a>'
 		. '<div class="zd-qo-row__info"><a class="zd-qo-row__name" href="%7$s">%9$s</a><span class="zd-qo-row__meta">%10$s</span></div>'
-		. '<div class="zd-qo-row__price"><span class="price">%11$s</span></div>%12$s</li>',
+		. '<div class="zd-qo-row__price"><span class="price">%11$s</span>%13$s</div>%12$s</li>',
 		$r['qty'] > 0 ? ' is-selected' : '',
 		(int) $r['id'],
 		esc_attr( $slug ),
@@ -109,7 +109,8 @@ function zad_qo_row_html( $r, $slug ) {
 		esc_html( $r['name'] ),
 		$meta,
 		wp_kses_post( $p->get_price_html() ),
-		zad_cart_control( $p, $r['qty'], 'row' )
+		zad_cart_control( $p, $r['qty'], 'row' ),
+		zad_profit_line_html( $p, 'row' )
 	) . "\n";
 }
 

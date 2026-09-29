@@ -491,7 +491,7 @@
 				data.products.forEach(function (it) {
 					html += '<li class="zd-sr__item"><a class="zd-sr__art" href="' + escapeAttr(it.url) + '" tabindex="-1" aria-hidden="true">' + (it.img || '') + '</a>' +
 						'<a class="zd-sr__info zd-sr__link" href="' + escapeAttr(it.url) + '"><span class="zd-sr__name">' + escapeHtml(it.name) + '</span>' +
-						'<span class="zd-sr__meta">' + escapeHtml([it.brand, it.pack].filter(Boolean).join(' · ')) + (it.price ? ' · <b>' + escapeHtml(it.price) + '</b>' : '') + '</span></a>' +
+						'<span class="zd-sr__meta">' + escapeHtml([it.brand, it.pack].filter(Boolean).join(' · ')) + (it.price ? ' · <b>' + escapeHtml(it.price) + '</b>' : '') + (it.profit ? ' <em class="zd-sr__profit">ربح <bdi>' + parseInt(it.profit, 10) + '%</bdi></em>' : '') + '</span></a>' +
 						ctlHtml(it) + '</li>';
 				});
 				html += '</ul></div>';
@@ -1032,12 +1032,13 @@
 		if (!card) { return; }
 		e.preventDefault();
 		qvLast = b;
-		var a = $('.zd-card__title a', card), brand = $('.zd-card__brand', card), price = $('.zd-card__price', card), spec = $('.zd-card__spec', card), media = $('.zd-card__img', card), ctl = $('.zd-cart-ctl', card), badges = $('.zd-card__badges', card);
+		var a = $('.zd-card__title a', card), brand = $('.zd-card__brand', card), price = $('.zd-card__price', card), spec = $('.zd-card__spec', card), media = $('.zd-card__img', card), ctl = $('.zd-cart-ctl', card), badges = $('.zd-card__badges', card), profit = $('.zd-profit-line', card);
 		var url = a ? a.href : '#';
 		var body = '<div class="zd-qv"><div class="zd-qv__media">' + (media ? media.innerHTML : '') + (badges ? badges.outerHTML : '') + '</div><div class="zd-qv__info">' +
 			(brand ? '<p class="zd-qv__brand">' + brand.innerHTML + '</p>' : '') +
 			'<h2 class="zd-qv__title"><a href="' + escapeAttr(url) + '">' + escapeHtml(a ? a.textContent.trim() : '') + '</a></h2>' +
 			(price ? '<div class="zd-qv__price">' + price.innerHTML + '</div>' : '') +
+			(profit ? '<div class="zd-qv__profit">' + profit.innerHTML + (profit.getAttribute('data-carton') ? '<span>ربح الكرتونة <b>' + escapeHtml(profit.getAttribute('data-carton')) + '</b></span>' : '') + '</div>' : '') +
 			(card.getAttribute('data-zd-desc') ? '<p class="zd-qv__desc">' + escapeHtml(card.getAttribute('data-zd-desc')) + '</p>' : '') +
 			(spec ? '<p class="zd-qv__spec">' + spec.innerHTML + '</p>' : '') +
 			'<div class="zd-qv__buy"><span class="zd-buy__label">عدد الكراتين</span><div data-zd-qv-ctl></div></div>' +

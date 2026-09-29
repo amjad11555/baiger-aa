@@ -222,7 +222,10 @@ function zad_unit_price_html( $product ) {
 	if ( $units < 2 || $price <= 0 ) {
 		return '';
 	}
-	return sprintf( '<span class="zd-unit-price">≈ %s للقطعة</span>', wc_price( $price / $units ) );
+	$unit = $price / $units;
+	// كسور القطعة مهمة للبقال (7.92 ₺ لا 8 ₺) حتى لو كانت أسعار الكرتونة بلا كسور.
+	$decimals = abs( $unit - round( $unit ) ) < 0.005 ? 0 : 2;
+	return sprintf( '<span class="zd-unit-price">≈ %s للقطعة</span>', wc_price( $unit, array( 'decimals' => $decimals ) ) );
 }
 
 /* -------------------------------------------------------------------------
@@ -488,7 +491,7 @@ add_action( 'woocommerce_single_product_summary', 'zad_single_extras', 35 );
 function zad_trust_badges() {
 	$items = array(
 		array( 'التوريد', 'داخل ' . zad_opt( 'city' ) . ' خلال 24–48 ساعة، ولكل الولايات حسب الجدول' ),
-		array( 'الدفع', 'عند الاستلام أو بالتحويل البنكي، مع فاتورة نظامية' ),
+		array( 'الدفع', 'عند الاستلام ' . zad_cod_short() . ' أو بالتحويل البنكي، مع فاتورة نظامية' ),
 		array( 'الجودة', 'منتجات أصلية بدفعات إنتاج حديثة' ),
 		array( 'الحد الأدنى', 'كرتونة واحدة من الصنف' ),
 	);
@@ -542,7 +545,7 @@ function zad_wholesale_tab() {
 		printf( '<li>الحد الأدنى لقيمة الطلبية: <strong>%s</strong></li>', wp_kses_post( wc_price( $min ) ) );
 	}
 	printf( '<li>التوريد: داخل %s خلال 24 إلى 48 ساعة من التأكيد، وإلى باقي الولايات وفق جدول التوزيع.</li>', esc_html( zad_opt( 'city' ) ) );
-	echo '<li>الدفع: عند الاستلام نقداً أو بالتحويل البنكي، مع فاتورة نظامية لكل طلبية.</li>';
+	echo '<li>الدفع: عند الاستلام ' . esc_html( zad_cod_short() ) . ' أو بالتحويل البنكي، مع فاتورة نظامية لكل طلبية.</li>';
 	printf( '<li>صنف غير موجود في القائمة؟ <a href="%s">أرسل طلب توريد خاص</a> ونؤمّنه من المصدر.</li>', esc_url( zad_page_url( 'special_request' ) ) );
 	printf( '<li>للتصدير خارج تركيا (حاويات وطبليات مختلطة): <a href="%s">اطلب عرض سعر للتصدير</a>.</li>', esc_url( zad_page_url( 'export' ) ) );
 	echo '</ul></div>';
@@ -808,6 +811,10 @@ function zad_thankyou_whatsapp( $order_id ) {
 		$lines[] = sprintf( '• %s — %d كرتونة', $item->get_name(), (int) $item->get_quantity() );
 	}
 	$lines[] = 'الإجمالي: ' . zad_money_plain( $order->get_total() );
+	$cod     = zad_cod_method_label( $order );
+	if ( $cod ) {
+		$lines[] = 'الدفع: عند الاستلام — ' . $cod;
+	}
 	$lines[] = 'الاسم: ' . trim( $order->get_billing_first_name() . ' ' . $order->get_billing_company() );
 	$lines[] = 'الجوال: ' . $order->get_billing_phone();
 	printf(

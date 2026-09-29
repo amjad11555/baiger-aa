@@ -242,7 +242,7 @@ function zad_seed_settings() {
 		array(
 			'enabled'            => 'yes',
 			'title'              => 'الدفع عند الاستلام',
-			'description'        => 'ادفع نقداً أو بالتحويل عند استلام الطلب في محلك.',
+			'description'        => 'لا دفع مسبق: تدفع للمندوب حين تصل الكراتين إلى محلك.',
 			'instructions'       => 'سنتواصل معك هاتفياً أو عبر واتساب لتأكيد الطلب وموعد التوصيل.',
 			'enable_for_methods' => array(),
 			'enable_for_virtual' => 'yes',
