@@ -1,6 +1,6 @@
 <?php
 /**
- * صور الموقع الاحترافية: الصور العشرون المصممة لزاد (Nano Banana Pro)
+ * صور الموقع الاحترافية المصممة لزاد (Nano Banana Pro)
  * تُجلب من استضافتك مرة واحدة، وتُحوَّل إلى WebP بمقاسين، وتحل محل
  * الصور المضمّنة في القالب. المصدر ثابت، ولا يُقبل أي رابط من المستخدم.
  *
@@ -15,28 +15,49 @@ defined( 'ABSPATH' ) || exit;
  * @return array
  */
 function zad_site_image_sources() {
-	$base = 'https://d8j0ntlcm91z4.cloudfront.net/user_3HMjZPgpKCsHgo8BLC9DovmF1SX/hf_20260928_';
+	$base = 'https://d8j0ntlcm91z4.cloudfront.net/user_3HMjZPgpKCsHgo8BLC9DovmF1SX/hf_';
 	$ids  = array(
-		'hero'            => array( '150213_fd44b848-7fd0-42b4-b8c5-6db3da86fc8f', 2400 ),
-		'hero-m'          => array( '150214_d8b8f104-2f8b-4733-9608-ec17b64c6604', 1100 ),
-		'cat-cake'        => array( '150213_092c504a-1fb9-401d-b3ff-1f1561534176', 900 ),
-		'cat-biscuits'    => array( '150216_13844631-9953-4c55-9701-a0390cc1a15d', 900 ),
-		'cat-chips'       => array( '150215_37026964-f3cc-4b8b-8ba7-87dcc4fa2ecd', 900 ),
-		'cat-snacks'      => array( '150536_e8ac65f8-06ce-4a66-b7c4-b398be90719c', 900 ),
-		'cat-offers'      => array( '150218_7ae267f2-59f3-4364-afc6-7d83f04bff89', 900 ),
-		'seg-supermarket' => array( '150213_cd9346d5-60a2-45de-ad66-e59d1bb4ab17', 1200 ),
-		'seg-grocery'     => array( '150214_b3500843-63de-4887-aef8-c8379eb20975', 1200 ),
-		'seg-distributor' => array( '150212_a3db1fa3-6cb1-4f56-b0c2-2f699c85c168', 1200 ),
-		'seg-export'      => array( '150214_c175752c-52c2-4a6d-ad85-360f477ae863', 1600 ),
-		'step-order'      => array( '150219_f818c341-fd83-4642-9f5e-67f03bbd8b07', 1000 ),
-		'step-pick'       => array( '150536_9b1ab5f9-d6d3-44d6-8bef-e993044e40e6', 1000 ),
-		'step-deliver'    => array( '150536_32140017-8135-4b0e-9ab5-e20e99c64e4d', 1000 ),
-		'about-team'      => array( '150538_ad505396-ad3d-4175-94b0-7ab444e4561e', 1600 ),
-		'sourcing'        => array( '150536_d05e6213-008a-4dad-b0b2-9ef8904d5806', 1400 ),
-		'quality'         => array( '150536_6071e71b-d1c0-478f-99ee-727398dd950d', 1000 ),
-		'cta-docks'       => array( '150536_91d9b086-b145-4130-bc14-05928feb6ba3', 2400 ),
-		'texture'         => array( '150537_e4147041-fa62-4bdc-a139-216b13afb610', 1600 ),
-		'flatlay'         => array( '150538_e4b8fd25-b7cf-4967-a687-1628c8eced43', 1800 ),
+		'hero'              => array( '20260928_150213_fd44b848-7fd0-42b4-b8c5-6db3da86fc8f', 2400 ),
+		'hero-m'            => array( '20260928_150214_d8b8f104-2f8b-4733-9608-ec17b64c6604', 1100 ),
+		'cat-cake'          => array( '20260928_150213_092c504a-1fb9-401d-b3ff-1f1561534176', 900 ),
+		'cat-biscuits'      => array( '20260928_150216_13844631-9953-4c55-9701-a0390cc1a15d', 900 ),
+		'cat-chips'         => array( '20260928_150215_37026964-f3cc-4b8b-8ba7-87dcc4fa2ecd', 900 ),
+		'cat-snacks'        => array( '20260928_150536_e8ac65f8-06ce-4a66-b7c4-b398be90719c', 900 ),
+		'cat-offers'        => array( '20260928_150218_7ae267f2-59f3-4364-afc6-7d83f04bff89', 900 ),
+		'seg-supermarket'   => array( '20260928_150213_cd9346d5-60a2-45de-ad66-e59d1bb4ab17', 1200 ),
+		'seg-grocery'       => array( '20260928_150214_b3500843-63de-4887-aef8-c8379eb20975', 1200 ),
+		'seg-distributor'   => array( '20260928_150212_a3db1fa3-6cb1-4f56-b0c2-2f699c85c168', 1200 ),
+		'seg-export'        => array( '20260928_150214_c175752c-52c2-4a6d-ad85-360f477ae863', 1600 ),
+		'step-order'        => array( '20260928_150219_f818c341-fd83-4642-9f5e-67f03bbd8b07', 1000 ),
+		'step-pick'         => array( '20260928_150536_9b1ab5f9-d6d3-44d6-8bef-e993044e40e6', 1000 ),
+		'step-deliver'      => array( '20260928_150536_32140017-8135-4b0e-9ab5-e20e99c64e4d', 1000 ),
+		'about-team'        => array( '20260928_150538_ad505396-ad3d-4175-94b0-7ab444e4561e', 1600 ),
+		'sourcing'          => array( '20260928_150536_d05e6213-008a-4dad-b0b2-9ef8904d5806', 1400 ),
+		'quality'           => array( '20260928_150536_6071e71b-d1c0-478f-99ee-727398dd950d', 1000 ),
+		'cta-docks'         => array( '20260928_150536_91d9b086-b145-4130-bc14-05928feb6ba3', 2400 ),
+		'texture'           => array( '20260928_150537_e4147041-fa62-4bdc-a139-216b13afb610', 1600 ),
+		'flatlay'           => array( '20260928_150538_e4b8fd25-b7cf-4967-a687-1628c8eced43', 1800 ),
+		// الصفحة الرئيسية 2026: عوالم لونية ولحظات حركة (تحل محل الصور المؤقتة المضمّنة بالأسماء نفسها).
+		'hero-eti-1'        => array( '20260929_140120_31a75586-d8cd-4927-89e6-a04ab4b7f946', 2560 ),
+		'hero-eti-1-m'      => array( '20260929_140542_2c90cd82-05cf-488c-af05-267418173579', 1100 ),
+		'hero-eti-2'        => array( '20260929_140542_7d683769-7501-48ef-88c0-309b912c0acf', 2560 ),
+		'hero-eti-2-m'      => array( '20260929_140543_7c9c3f89-7e12-4158-8788-3bcbade6174b', 1100 ),
+		'hero-eti-3'        => array( '20260929_140543_de58ac5c-ef37-4937-8a1e-c830f70a5c17', 2560 ),
+		'hero-eti-3-m'      => array( '20260929_140543_5eaa695a-3585-46d0-bbd5-a4c592f669b8', 1100 ),
+		'tile-snacks'       => array( '20260929_140543_a9d71aa6-21bd-4188-a8ba-e8b2bf375425', 1000 ),
+		'tile-biscuits'     => array( '20260929_140543_f12e0e5c-5f2a-467d-864d-2d4d809f1ee6', 900 ),
+		'tile-cake'         => array( '20260929_140543_ed7c3482-c997-49b1-ad38-329233475c9a', 900 ),
+		'tile-chips'        => array( '20260929_140120_ab01de48-3e81-4729-a1c9-204e80ad8904', 900 ),
+		'tile-offers'       => array( '20260929_140542_f4588ce6-4ba8-4202-939f-1bc9b741268a', 900 ),
+		'banner-sourcing'   => array( '20260929_140542_604f0762-c638-4dd9-a85e-d906356b931f', 1400 ),
+		'banner-export'     => array( '20260929_140543_1d3c622a-4052-4a4f-8036-4893898618cf', 1400 ),
+		'stage-supermarket' => array( '20260929_140542_a4674347-ba12-4527-956c-22b6d0433ab3', 1200 ),
+		'stage-grocery'     => array( '20260929_140742_9694eca5-c313-4e62-be8e-bc03748a087e', 1200 ),
+		'stage-distributor' => array( '20260929_140744_1ee40717-5b14-4d15-bffc-69b3be3a864e', 1200 ),
+		'stage-export'      => array( '20260929_140745_5138d097-b6a1-4145-bc5a-1ab919e7e056', 1200 ),
+		'stage-order'       => array( '20260929_140913_e12cfc42-d0dc-40a2-b353-8f8e42a7fcb0', 1200 ),
+		'stage-pick'        => array( '20260929_140741_3eaf8995-025f-4105-869b-702ec33a608a', 1200 ),
+		'stage-deliver'     => array( '20260929_140120_824d42de-78f6-49e6-8d83-763cdd118d27', 1200 ),
 	);
 	$out = array();
 	foreach ( $ids as $name => $row ) {
@@ -180,11 +201,17 @@ add_action( 'admin_menu', 'zad_site_images_menu' );
  */
 function zad_site_images_notice() {
 	$screen = get_current_screen();
-	if ( ! current_user_can( 'manage_options' ) || zad_site_images_stored() || ! $screen || ! in_array( $screen->id, array( 'dashboard', 'themes', 'appearance_page_zad-setup' ), true ) ) {
+	if ( ! current_user_can( 'manage_options' ) || ! $screen || ! in_array( $screen->id, array( 'dashboard', 'themes', 'appearance_page_zad-setup' ), true ) ) {
+		return;
+	}
+	// تظهر كلما وُجدت صور لم تُجلب بعد (أول تثبيت، أو صور جديدة أضافها تحديث القالب).
+	$missing = count( array_diff_key( zad_site_image_sources(), zad_site_images_stored() ) );
+	if ( ! $missing ) {
 		return;
 	}
 	printf(
-		'<div class="notice notice-info"><p><strong>صور موقع زاد جاهزة للجلب.</strong> عشرون صورة احترافية مصممة للواجهة والأقسام والصفحات، تُجلب إلى استضافتك بضغطة واحدة. <a class="button button-primary" href="%s" style="margin-inline-start:8px">جلب الصور الآن</a></p></div>',
+		'<div class="notice notice-info"><p><strong>%1$s</strong> صور احترافية مصممة للواجهة والأقسام والصفحات، تُجلب إلى استضافتك بضغطة واحدة. <a class="button button-primary" href="%2$s" style="margin-inline-start:8px">جلب الصور الآن</a></p></div>',
+		esc_html( sprintf( 'صور موقع زاد: %d صورة جاهزة للجلب.', $missing ) ),
 		esc_url( admin_url( 'themes.php?page=zad-site-images' ) )
 	);
 }
@@ -213,9 +240,9 @@ function zad_site_images_page() {
 	?>
 	<div class="wrap zd-si" dir="rtl">
 		<h1>صور موقع زاد</h1>
-		<p>عشرون صورة مصممة خصيصاً لهوية زاد: واجهة الصفحة الرئيسية، والأقسام، وشرائح العملاء، وخطوات الطلب، وصفحات الشركة. تجلب هذه الأداة الصور من مصدرها مباشرة إلى استضافتك، وتحوّلها إلى WebP بمقاسين للجوال والشاشات الكبيرة، ثم تستخدمها الواجهة تلقائياً بدل الصور المؤقتة المضمّنة في القالب.</p>
+		<p><?php echo esc_html( count( $items ) ); ?> صورة مصممة خصيصاً لهوية زاد: شرائح الصفحة الرئيسية وبطاقات الأقسام ولافتاتها، وشرائح العملاء، وخطوات الطلب، وصفحات الشركة. تجلب هذه الأداة الصور من مصدرها مباشرة إلى استضافتك، وتحوّلها إلى WebP بمقاسين للجوال والشاشات الكبيرة، ثم تستخدمها الواجهة تلقائياً بدل الصور المؤقتة المضمّنة في القالب.</p>
 		<p>
-			<button type="button" class="button button-primary button-hero" id="zd-si-run">جلب الصور العشرين</button>
+			<button type="button" class="button button-primary button-hero" id="zd-si-run">جلب كل الصور</button>
 			<button type="button" class="button button-hero" id="zd-si-reset">الرجوع إلى الصور المضمّنة</button>
 		</p>
 		<div class="zd-si__bar" hidden><span></span></div>
@@ -332,6 +359,6 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			}
 			WP_CLI::success( sprintf( 'استُوردت %d من %d صورة.', $ok, count( $names ) ) );
 		},
-		array( 'shortdesc' => 'جلب صور موقع زاد العشرين وتحويلها إلى WebP.' )
+		array( 'shortdesc' => 'جلب صور موقع زاد وتحويلها إلى WebP.' )
 	);
 }
