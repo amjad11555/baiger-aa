@@ -27,7 +27,6 @@ function zad_defaults() {
 		'free_delivery'   => 0,
 		'show_profit'     => true,
 		'retail_margin'   => 25,
-		'cod_card'        => true,
 		'require_account' => true,
 		'members_prices'  => false,
 		'hero_kicker'     => 'زاد للتجارة · جملة وتوزيع',

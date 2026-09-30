@@ -580,7 +580,7 @@ add_action( 'woocommerce_single_product_summary', 'zad_single_extras', 35 );
 function zad_trust_badges() {
 	$items = array(
 		array( 'التوريد', 'داخل ' . zad_opt( 'city' ) . ' خلال 24–48 ساعة، ولكل الولايات حسب الجدول' ),
-		array( 'الدفع', 'عند الاستلام ' . zad_cod_short() . ' أو بالتحويل البنكي، مع فاتورة نظامية' ),
+		array( 'الدفع', 'نقداً عند الاستلام، مع فاتورة نظامية' ),
 		array( 'الجودة', 'منتجات أصلية بدفعات إنتاج حديثة' ),
 		array( 'الحد الأدنى', zad_min_cartons() > 0 ? sprintf( '%d كرتونة للطلبية من أي أصناف', zad_min_cartons() ) : 'كرتونة واحدة من الصنف' ),
 	);
@@ -637,7 +637,7 @@ function zad_wholesale_tab() {
 		printf( '<li>الحد الأدنى لقيمة الطلبية: <strong>%s</strong></li>', wp_kses_post( wc_price( $min ) ) );
 	}
 	printf( '<li>التوريد: داخل %s خلال 24 إلى 48 ساعة من التأكيد، وإلى باقي الولايات وفق جدول التوزيع.</li>', esc_html( zad_opt( 'city' ) ) );
-	echo '<li>الدفع: عند الاستلام ' . esc_html( zad_cod_short() ) . ' أو بالتحويل البنكي، مع فاتورة نظامية لكل طلبية.</li>';
+	echo '<li>الدفع: نقداً عند الاستلام، مع فاتورة نظامية لكل طلبية.</li>';
 	printf( '<li>صنف غير موجود في القائمة؟ <a href="%s">أرسل طلب توريد خاص</a> ونؤمّنه من المصدر.</li>', esc_url( zad_page_url( 'special_request' ) ) );
 	printf( '<li>للتصدير خارج تركيا (حاويات وطبليات مختلطة): <a href="%s">اطلب عرض سعر للتصدير</a>.</li>', esc_url( zad_page_url( 'export' ) ) );
 	echo '</ul></div>';

@@ -79,7 +79,7 @@ $zd_account  = $zd_has_wc ? wc_get_page_permalink( 'myaccount' ) : wp_login_url(
 			<?php else : ?>
 				<a class="zd-btn zd-btn--dark zd-btn--block" href="<?php echo esc_url( zad_page_url( 'contact' ) ); ?>">اشترك في القائمة</a>
 			<?php endif; ?>
-			<p class="zd-footer__pay">الدفع عند الاستلام · تحويل بنكي · فاتورة نظامية</p>
+			<p class="zd-footer__pay">الدفع نقداً عند الاستلام · فاتورة نظامية</p>
 		</div>
 	</div>
 

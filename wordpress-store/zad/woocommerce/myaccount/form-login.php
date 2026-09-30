@@ -57,7 +57,7 @@ if ( $zd_from_checkout && zad_wa_number() && function_exists( 'zad_cart_whatsapp
 			<li><?php zad_the_icon( 'tag', '', 20 ); ?><span>أسعار الجملة لكل الأصناف، مع سعر البيع وربحك</span></li>
 			<li><?php zad_the_icon( 'bolt', '', 20 ); ?><span>طلبية بضغطات قليلة، و«اطلبها مجدداً» لطلبيتك المعتادة</span></li>
 			<li><?php zad_the_icon( 'truck', '', 20 ); ?><span>توصيل مجاني إلى باب المحل أو ترتيبها على الرف</span></li>
-			<li><?php zad_the_icon( 'wallet', '', 20 ); ?><span>الدفع عند الاستلام نقداً أو بالبطاقة</span></li>
+			<li><?php zad_the_icon( 'wallet', '', 20 ); ?><span>الدفع نقداً عند الاستلام، بلا دفع مسبق</span></li>
 		</ul>
 		<?php if ( zad_wa_number() ) : ?>
 			<p class="zd-auth__help">تحتاج مساعدة في التسجيل؟ <a href="<?php echo esc_url( zad_wa_link( 'مرحباً، أحتاج مساعدة في إنشاء حساب لمحلي.' ) ); ?>" target="_blank" rel="noopener">راسلنا على واتساب</a></p>

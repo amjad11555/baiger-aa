@@ -1,9 +1,9 @@
 <?php
 /**
- * الدفع عند الاستلام: طريقة السداد للمندوب (نقداً / بطاقة / تحويل) وإبرازه في المتجر.
+ * الدفع عند الاستلام نقداً فقط: لا دفع مسبق، ولا بطاقة ولا تحويل.
  *
- * يعتمد على بوابة «الدفع عند الاستلام» المدمجة في ووكومرس (cod): يضيف تحتها في صفحة الدفع
- * اختيار طريقة السداد، ويحفظه مع الطلب، ويعرضه في صفحة الشكر والبريد ولوحة الطلبات ورسالة واتساب.
+ * يعتمد على بوابة «الدفع عند الاستلام» المدمجة في ووكومرس (cod)، وهي طريقة الدفع الوحيدة في المتجر.
+ * يُحفظ «نقداً» مع الطلب ويظهر في صفحة الشكر والبريد ولوحة الطلبات ورسالة واتساب.
  *
  * @package Zad
  */
@@ -26,24 +26,18 @@ function zad_cod_enabled() {
  * @return array مفتاح => [الاسم، الشرح].
  */
 function zad_cod_methods() {
-	$methods = array(
-		'cash'     => array( 'نقداً', 'تدفع للمندوب عند تسليم الكراتين' ),
-		'card'     => array( 'بطاقة بنكية', 'جهاز POS مع المندوب' ),
-		'transfer' => array( 'تحويل بنكي (Havale/EFT)', 'تحوّل المبلغ عند الاستلام' ),
+	return array(
+		'cash' => array( 'نقداً', 'تدفع للمندوب عند تسليم الكراتين' ),
 	);
-	if ( ! zad_opt( 'cod_card' ) ) {
-		unset( $methods['card'] );
-	}
-	return $methods;
 }
 
 /**
- * وصف مختصر لطرق السداد: «نقداً أو بالبطاقة».
+ * وصف مختصر لطريقة السداد: «نقداً».
  *
  * @return string
  */
 function zad_cod_short() {
-	return zad_opt( 'cod_card' ) ? 'نقداً أو بالبطاقة' : 'نقداً';
+	return 'نقداً';
 }
 
 /**
@@ -66,10 +60,7 @@ function zad_cod_method_label( $order ) {
 }
 
 /**
- * اختيار طريقة السداد داخل صندوق «الدفع عند الاستلام» في صفحة الدفع.
- *
- * يُلحق بوصف البوابة لأن ووكومرس يعرض الوصف داخل صندوقها ويُظهره فقط عند اختيارها.
- * المعرّفات ثابتة ليحافظ سكربت الدفع في ووكومرس على الاختيار بعد تحديث الملخّص.
+ * سطر «نقداً فقط» داخل صندوق «الدفع عند الاستلام» في صفحة الدفع.
  *
  * @param string $description وصف البوابة.
  * @param string $gateway_id  معرّف البوابة.
@@ -79,34 +70,21 @@ function zad_cod_description( $description, $gateway_id ) {
 	if ( 'cod' !== $gateway_id || ( is_admin() && ! wp_doing_ajax() ) || ! is_checkout() || is_wc_endpoint_url( 'order-pay' ) ) {
 		return $description;
 	}
-	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- قراءة الاختيار السابق فقط لإعادة عرضه.
-	$posted = isset( $_POST['post_data'] ) ? wp_parse_args( wp_unslash( $_POST['post_data'] ) ) : array();
-	$chosen = isset( $posted['zad_cod_method'] ) ? sanitize_key( $posted['zad_cod_method'] ) : 'cash';
-
-	$html = '<fieldset class="zd-cod-pick"><legend>كيف ستدفع للمندوب؟</legend>';
-	foreach ( zad_cod_methods() as $key => $m ) {
-		$html .= sprintf(
-			'<label class="zd-cod-pick__opt" for="zad_cod_%1$s"><input type="radio" id="zad_cod_%1$s" name="zad_cod_method" value="%1$s"%2$s><span><b>%3$s</b><small>%4$s</small></span></label>',
-			esc_attr( $key ),
-			checked( $chosen, $key, false ),
-			esc_html( $m[0] ),
-			esc_html( $m[1] )
-		);
-	}
-	$html .= '</fieldset>';
+	$html = '<p class="zd-cod-cash">' . zad_icon( 'wallet', '', 18 ) . '<span>الدفع <b>نقداً فقط</b> للمندوب عند الاستلام.</span></p><input type="hidden" name="zad_cod_method" value="cash">';
 	return $description . $html;
 }
 add_filter( 'woocommerce_gateway_description', 'zad_cod_description', 20, 2 );
 
 /**
- * الدفع عند الاستلام أولاً في قائمة طرق الدفع (يُختار تلقائياً).
+ * الدفع عند الاستلام نقداً هو الطريقة الوحيدة: تُخفى أي بوابة أخرى (تحويل، شيك، بطاقات)
+ * حتى لو فُعّلت خطأً من إعدادات ووكومرس.
  *
  * @param array $gateways البوابات المتاحة.
  * @return array
  */
 function zad_cod_first( $gateways ) {
 	if ( isset( $gateways['cod'] ) ) {
-		$gateways = array( 'cod' => $gateways['cod'] ) + $gateways;
+		$gateways = array( 'cod' => $gateways['cod'] );
 	}
 	return $gateways;
 }
@@ -184,7 +162,7 @@ function zad_cod_single_note() {
 		return;
 	}
 	printf(
-		'<p class="zd-cod-note">%1$s<span><b>الدفع عند الاستلام</b> %2$s — لا دفع مسبق، تدفع حين تصل الكراتين إلى محلك.</span></p>',
+		'<p class="zd-cod-note">%1$s<span><b>الدفع عند الاستلام %2$s</b> — لا دفع مسبق، تدفع حين تصل الكراتين إلى محلك.</span></p>',
 		zad_icon( 'wallet', '', 20 ), // phpcs:ignore WordPress.Security.EscapeOutput
 		esc_html( zad_cod_short() )
 	);
@@ -199,7 +177,7 @@ function zad_cod_cart_note() {
 		return;
 	}
 	printf(
-		'<p class="zd-cod-line">%1$s<span>الدفع عند الاستلام · %2$s</span></p>',
+		'<p class="zd-cod-line">%1$s<span>الدفع عند الاستلام %2$s</span></p>',
 		zad_icon( 'wallet', '', 16 ), // phpcs:ignore WordPress.Security.EscapeOutput
 		esc_html( zad_cod_short() )
 	);

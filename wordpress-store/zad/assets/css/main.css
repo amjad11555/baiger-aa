@@ -1453,6 +1453,9 @@ form.checkout { display: grid; gap: 24px; }
 #payment .wc_payment_method > label { font-weight: 600; margin-inline-start: 6px; }
 #payment .payment_box { margin-top: 8px; font-size: 14px; color: var(--zd-ink-2); }
 #payment .payment_box p { margin: 0; }
+.zd-cod-cash { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: 13.5px; color: var(--zd-ink-2); }
+.zd-cod-cash svg { flex: none; color: var(--zd-success); }
+.zd-cod-cash b { color: var(--zd-ink); font-weight: 700; }
 .zd-cod-pick { min-width: 0; margin: 12px 0 2px; padding: 0; border: 0; }
 .zd-cod-pick legend { margin-bottom: 8px; padding: 0; font-size: 13px; font-weight: 600; color: var(--zd-ink); }
 #payment .zd-cod-pick p { display: grid; gap: 8px; }
