@@ -27,7 +27,7 @@ foreach ( $zd_groups as $zd_g ) {
 				<div>
 					<p class="zd-eyebrow">محدّثة بتاريخ <?php echo esc_html( zad_ar_date() ); ?></p>
 					<h1 class="zd-qo-hero__title"><?php the_title(); ?></h1>
-					<p class="zd-qo-hero__intro"><?php echo esc_html( zad_n_items( $zd_total ) ); ?> بسعر الكرتونة وسعر القطعة. ابحث عن الصنف، وحدد عدد الكراتين، ثم أتمّ الطلبية أو أرسلها إلى قسم المبيعات عبر واتساب.</p>
+					<p class="zd-qo-hero__intro"><?php echo esc_html( zad_n_items( $zd_total ) ); ?> بسعر الكرتونة وسعر القطعة. ابحث عن الصنف، وحدد عدد الكراتين، ثم أتمّ الطلبية أو أرسلها إلى قسم المبيعات عبر واتساب.<?php echo zad_min_cartons() > 0 ? ' <strong>الحد الأدنى للطلبية ' . (int) zad_min_cartons() . ' كرتونة من أي أصناف.</strong>' : ''; // phpcs:ignore WordPress.Security.EscapeOutput ?></p>
 				</div>
 				<ol class="zd-qo-steps" aria-label="طريقة الطلب">
 					<li><span>01</span> ابحث أو اختر القسم</li>
@@ -115,7 +115,10 @@ foreach ( $zd_groups as $zd_g ) {
 				<span class="zd-qo-summary__stat"><b data-zd-qo-lines>0</b> صنف</span>
 				<span class="zd-qo-summary__stat"><b data-zd-qo-cartons>0</b> كرتونة</span>
 				<?php if ( zad_show_prices() ) : ?>
-					<span class="zd-qo-summary__total"><small>الإجمالي التقديري</small><b data-zd-qo-total>0</b><small class="zd-qo-summary__min" data-zd-qo-min hidden></small></span>
+					<span class="zd-qo-summary__total"><small>الإجمالي التقديري</small><b data-zd-qo-total>0</b></span>
+				<?php endif; ?>
+				<?php if ( zad_min_cartons() > 0 ) : ?>
+					<small class="zd-qo-summary__min" data-zd-qo-min>الحد الأدنى للطلبية <?php echo (int) zad_min_cartons(); ?> كرتونة</small>
 				<?php endif; ?>
 			</div>
 			<div class="zd-qo-summary__actions">

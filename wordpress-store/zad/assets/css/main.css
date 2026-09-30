@@ -1013,6 +1013,9 @@ html.zd-syncing .zd-cart-ctl.is-dirty .zd-cart-ctl__stepper { background: #444; 
 .zd-qo-row { content-visibility: auto; contain-intrinsic-size: auto 96px; }
 .zd-qo-row + .zd-qo-row { border-top: 1px solid var(--zd-line); }
 .zd-qo-row.is-selected { background: var(--zd-brass-100); }
+/* الصف المختار: ألوان سعر أغمق لتبقى مقروءة فوق الخلفية الملوّنة (تباين 4.5:1). */
+.zd-qo-row.is-selected .price del, .zd-qo-row.is-selected .price del .amount { color: #555555; }
+.zd-qo-row.is-selected .price ins, .zd-qo-row.is-selected .price ins .amount { color: #B00000; }
 .zd-qo-row__art { grid-area: art; width: 58px; height: 58px; border-radius: var(--zd-r); overflow: hidden; background: var(--zd-sand); display: block; }
 .zd-qo-row__art svg, .zd-qo-row__art img { width: 100%; height: 100%; object-fit: contain; }
 .zd-qo-row__info { grid-area: info; min-width: 0; display: flex; flex-direction: column; }
@@ -1106,6 +1109,25 @@ body:has(.zd-orderbar.is-visible) .zd-footer { padding-bottom: 84px; }
 .zd-orderbar__lines { font-size: 12.5px; color: var(--zd-on-dark-2); white-space: nowrap; }
 .zd-orderbar__lines b { color: #fff; font-weight: 600; }
 .zd-orderbar__min, .zd-qo-summary__min { display: block; font-size: 11.5px; font-weight: 500; color: var(--zd-brass-200); }
+
+/* الحد الأدنى للطلبية (بالكراتين) */
+.zd-qo-summary__stats { flex-wrap: wrap; row-gap: 2px; }
+.zd-qo-summary__min { flex-basis: 100%; }
+.zd-qo-summary__min.is-ok { color: #7EE2A8; }
+.zd-orderbar__go.is-below, .zd-qo-summary .is-below { opacity: .55; }
+.zd-minbox { display: grid; gap: 8px; margin: 0 0 14px; padding: 12px 14px; border: 1px solid #F3D9A6; border-radius: var(--zd-r-lg); background: #FFF8EA; }
+.zd-minbox__text { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--zd-ink); }
+.zd-minbox__text b { font-weight: 700; }
+.zd-minbox__track { display: block; height: 6px; overflow: hidden; border-radius: 99px; background: rgba(0, 0, 0, .08); }
+.zd-minbox__fill { display: block; height: 100%; border-radius: inherit; background: var(--zd-brass); transition: width .3s var(--zd-ease); }
+.zd-minbox.is-ok { border-color: rgba(26, 127, 75, .25); background: #EFFAF3; }
+.zd-minbox.is-ok .zd-minbox__fill { background: var(--zd-success); }
+.zd-minbox--drawer { margin: 0 20px 12px; }
+.zd-minbox--checkout { margin: 4px 0 14px; }
+.zd-btn-disabled, .checkout-button.zd-btn-disabled, .woocommerce-mini-cart__buttons .zd-btn-disabled { white-space: normal; text-align: center; display: flex; align-items: center; justify-content: center; background: var(--zd-line-2) !important; border-color: var(--zd-line-2) !important; color: var(--zd-muted) !important; cursor: not-allowed; pointer-events: none; }
+.zd-buy__min { display: flex; align-items: center; gap: 8px; margin: -4px 0 14px; font-size: 13.5px; color: var(--zd-ink-2); }
+.zd-buy__min svg { flex: none; color: var(--zd-brass-ink, var(--zd-ink)); }
+.zd-buy__min b { color: var(--zd-ink); font-weight: 700; }
 .zd-orderbar__min b { color: #fff; font-weight: 600; }
 .zd-orderbar__total { font-size: 16.5px; font-weight: 600; color: var(--zd-brass); font-variant-numeric: tabular-nums; }
 .zd-orderbar__go { flex: none; display: inline-flex; align-items: center; height: 46px; padding: 0 24px; border-radius: var(--zd-pill); background: var(--zd-brass); color: var(--zd-ink); font-weight: 600; font-size: 14.5px; transition: background .2s, color .2s; }

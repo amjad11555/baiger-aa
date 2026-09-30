@@ -541,6 +541,9 @@ function zad_single_buy() {
 		zad_icon( 'heart', '', 22 ) // phpcs:ignore WordPress.Security.EscapeOutput
 	);
 	echo '</div>';
+	if ( zad_min_cartons() > 0 ) {
+		printf( '<p class="zd-buy__min">%1$s<span>الحد الأدنى للطلبية <b>%2$d كرتونة</b> من أي أصناف تختارها.</span></p>', zad_icon( 'box', '', 18 ), zad_min_cartons() ); // phpcs:ignore WordPress.Security.EscapeOutput
+	}
 	// شريط ثابت على الجوال يظهر حين يخرج زر الإضافة الأساسي من الشاشة (inert حتى يظهر).
 	printf(
 		'<div class="zd-stickybuy" data-zd-stickybuy inert><div class="zd-stickybuy__info"><span class="zd-stickybuy__name">%1$s</span><span class="zd-stickybuy__price">%2$s</span></div>%3$s</div>',
@@ -579,7 +582,7 @@ function zad_trust_badges() {
 		array( 'التوريد', 'داخل ' . zad_opt( 'city' ) . ' خلال 24–48 ساعة، ولكل الولايات حسب الجدول' ),
 		array( 'الدفع', 'عند الاستلام ' . zad_cod_short() . ' أو بالتحويل البنكي، مع فاتورة نظامية' ),
 		array( 'الجودة', 'منتجات أصلية بدفعات إنتاج حديثة' ),
-		array( 'الحد الأدنى', 'كرتونة واحدة من الصنف' ),
+		array( 'الحد الأدنى', zad_min_cartons() > 0 ? sprintf( '%d كرتونة للطلبية من أي أصناف', zad_min_cartons() ) : 'كرتونة واحدة من الصنف' ),
 	);
 	echo '<dl class="zd-trust">';
 	foreach ( $items as $it ) {
@@ -625,7 +628,10 @@ function zad_wholesale_tab() {
 	if ( $info['pack'] ) {
 		printf( '<li>التعبئة: <strong>%s</strong></li>', esc_html( $info['pack'] ) );
 	}
-	echo '<li>وحدة البيع: <strong>كرتونة كاملة</strong>، والحد الأدنى كرتونة واحدة من الصنف.</li>';
+	echo '<li>وحدة البيع: <strong>كرتونة كاملة</strong>، ويمكنك طلب كرتونة واحدة من الصنف.</li>';
+	if ( zad_min_cartons() > 0 ) {
+		printf( '<li>الحد الأدنى للطلبية: <strong>%d كرتونة</strong> مشكّلة من أي أصناف.</li>', (int) zad_min_cartons() );
+	}
 	echo '<li>أسعار الكميات: للطلب بالطبلية أو بكميات دورية ثابتة، تواصل مع قسم المبيعات للحصول على سعر خاص.</li>';
 	if ( $min > 0 ) {
 		printf( '<li>الحد الأدنى لقيمة الطلبية: <strong>%s</strong></li>', wp_kses_post( wc_price( $min ) ) );
@@ -741,19 +747,65 @@ add_filter(
 	}
 );
 
+/* -------------------------------------------------------------------------
+ * الحد الأدنى للطلبية (بالكراتين، واختيارياً بالمبلغ)
+ * ---------------------------------------------------------------------- */
+
 /**
- * التحقق من الحد الأدنى للطلب.
+ * صندوق «الحد الأدنى للطلبية» مع شريط التقدّم (السلة، درج الطلبية، الدفع).
+ *
+ * @param int    $count   عدد الكراتين في الطلبية.
+ * @param string $context cart | drawer | checkout.
+ * @return string
+ */
+function zad_min_box_html( $count, $context = 'cart' ) {
+	$min = zad_min_cartons();
+	if ( $min <= 0 ) {
+		return '';
+	}
+	$left = zad_min_cartons_left( $count );
+	$pct  = (int) min( 100, round( $count / $min * 100 ) );
+	$text = $left > 0
+		? sprintf( 'الحد الأدنى للطلبية <b>%1$d كرتونة</b> من أي أصناف. في طلبيتك <b>%2$d</b>، أضف <b>%3$d</b> كرتونة لإتمام الطلب.', $min, $count, $left )
+		: sprintf( 'طلبيتك %1$d كرتونة، وبلغت الحد الأدنى (%2$d كرتونة) ✓', $count, $min );
+	return sprintf(
+		'<div class="zd-minbox zd-minbox--%1$s%2$s" role="status"><p class="zd-minbox__text">%3$s</p><span class="zd-minbox__track" aria-hidden="true"><span class="zd-minbox__fill" style="width:%4$d%%"></span></span></div>',
+		esc_attr( $context ),
+		$left > 0 ? '' : ' is-ok',
+		wp_kses( $text, array( 'b' => array() ) ),
+		$pct
+	);
+}
+
+/**
+ * التحقق عند الدفع وعند إرسال الطلب: لا طلبية تحت الحد الأدنى.
+ * في صفحة السلة لا تظهر رسالة خطأ، بل صندوق التقدّم وزر إتمام معطّل (أدناه).
  */
 function zad_min_order_check() {
+	if ( ! WC()->cart || WC()->cart->is_empty() || is_cart() ) {
+		return;
+	}
+	$left = zad_min_cartons_left();
+	if ( $left > 0 ) {
+		wc_add_notice(
+			sprintf(
+				'الحد الأدنى للطلبية %1$d كرتونة من أي أصناف، وفي طلبيتك %2$d. أضف %3$d كرتونة لإتمام الطلب.',
+				zad_min_cartons(),
+				zad_cart_cartons(),
+				$left
+			),
+			'error'
+		);
+	}
 	$min = (float) zad_opt( 'min_order' );
-	if ( $min <= 0 || ! WC()->cart || WC()->cart->is_empty() ) {
+	if ( $min <= 0 ) {
 		return;
 	}
 	$total = (float) WC()->cart->get_subtotal() + (float) WC()->cart->get_subtotal_tax();
 	if ( $total < $min ) {
 		wc_add_notice(
 			sprintf(
-				'الحد الأدنى للطلب %1$s. أضف منتجات بقيمة %2$s لإتمام الطلب.',
+				'الحد الأدنى لقيمة الطلب %1$s. أضف أصنافاً بقيمة %2$s لإتمام الطلب.',
 				wc_price( $min ),
 				wc_price( $min - $total )
 			),
@@ -762,6 +814,79 @@ function zad_min_order_check() {
 	}
 }
 add_action( 'woocommerce_check_cart_items', 'zad_min_order_check' );
+
+/**
+ * من يفتح صفحة الدفع وطلبيته تحت الحد الأدنى يعود إلى السلة، وفيها ما ينقصه بالضبط
+ * (قبل تحويل الزائر إلى التسجيل، فلا يسجّل ثم يكتشف أن طلبيته غير مكتملة).
+ */
+function zad_min_checkout_redirect() {
+	if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_wc_endpoint_url( 'order-received' ) || is_wc_endpoint_url( 'order-pay' ) ) {
+		return;
+	}
+	if ( ! WC()->cart || WC()->cart->is_empty() || zad_min_cartons_left() <= 0 ) {
+		return;
+	}
+	wc_add_notice(
+		sprintf( 'الحد الأدنى للطلبية %1$d كرتونة من أي أصناف. أضف %2$d كرتونة ثم أتمّ الطلب.', zad_min_cartons(), zad_min_cartons_left() ),
+		'notice'
+	);
+	wp_safe_redirect( wc_get_cart_url() );
+	exit;
+}
+add_action( 'template_redirect', 'zad_min_checkout_redirect', 4 );
+
+/**
+ * صفحة السلة: صندوق الحد الأدنى فوق زر الإتمام، وتحت الحد يُستبدل الزر بزر معطّل
+ * وتختفي «أرسل الطلبية عبر واتساب».
+ */
+function zad_min_cart_actions() {
+	if ( ! WC()->cart || WC()->cart->is_empty() ) {
+		return;
+	}
+	echo zad_min_box_html( zad_cart_cartons(), 'cart' ); // phpcs:ignore WordPress.Security.EscapeOutput
+	$left = zad_min_cartons_left();
+	if ( $left > 0 ) {
+		remove_action( 'woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout', 20 );
+		remove_action( 'woocommerce_proceed_to_checkout', 'zad_cart_whatsapp_button', 30 );
+		printf( '<span class="checkout-button button alt wc-forward zd-btn-disabled" aria-disabled="true">أضف %d كرتونة لإتمام الطلب</span>', (int) $left );
+	}
+}
+add_action( 'woocommerce_proceed_to_checkout', 'zad_min_cart_actions', 5 );
+
+/**
+ * درج الطلبية: الصندوق المختصر، وتحت الحد يُعطَّل زر «إتمام الطلب».
+ */
+function zad_min_drawer_box() {
+	if ( ! WC()->cart || WC()->cart->is_empty() ) {
+		return;
+	}
+	echo zad_min_box_html( zad_cart_cartons(), 'drawer' ); // phpcs:ignore WordPress.Security.EscapeOutput
+	if ( zad_min_cartons_left() > 0 ) {
+		remove_action( 'woocommerce_widget_shopping_cart_buttons', 'woocommerce_widget_shopping_cart_proceed_to_checkout', 20 );
+		add_action( 'woocommerce_widget_shopping_cart_buttons', 'zad_min_drawer_disabled_button', 20 );
+	} else {
+		remove_action( 'woocommerce_widget_shopping_cart_buttons', 'zad_min_drawer_disabled_button', 20 );
+		if ( ! has_action( 'woocommerce_widget_shopping_cart_buttons', 'woocommerce_widget_shopping_cart_proceed_to_checkout' ) ) {
+			add_action( 'woocommerce_widget_shopping_cart_buttons', 'woocommerce_widget_shopping_cart_proceed_to_checkout', 20 );
+		}
+	}
+}
+add_action( 'woocommerce_widget_shopping_cart_before_buttons', 'zad_min_drawer_box', 5 );
+
+/**
+ * زر «إتمام الطلب» المعطّل في الدرج.
+ */
+function zad_min_drawer_disabled_button() {
+	printf( '<span class="button checkout wc-forward zd-btn-disabled" aria-disabled="true">أضف %d كرتونة</span>', (int) zad_min_cartons_left() );
+}
+
+/**
+ * صفحة الدفع: سطر الحد الأدنى فوق زر «تأكيد الطلبية».
+ */
+function zad_min_checkout_note() {
+	echo zad_min_box_html( zad_cart_cartons(), 'checkout' ); // phpcs:ignore WordPress.Security.EscapeOutput
+}
+add_action( 'woocommerce_review_order_before_submit', 'zad_min_checkout_note', 5 );
 
 /**
  * أجزاء السلة المحدّثة عبر AJAX.

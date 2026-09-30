@@ -211,6 +211,18 @@
 		return $$('.zd-cart-ctl[data-id="' + id + '"]');
 	}
 
+	// الحد الأدنى للطلبية بالكراتين: عدد الكراتين الحالي (مع التغييرات التي لم تُحفظ بعد) وما ينقصه.
+	var MIN = parseInt(C.minCartons, 10) || 0;
+	function cartCartons() {
+		var map = {}, n = 0;
+		Object.keys(cartMap).forEach(function (id) { map[id] = parseInt(cartMap[id], 10) || 0; });
+		Object.keys(pending).forEach(function (id) { map[id] = parseInt(pending[id], 10) || 0; });
+		Object.keys(map).forEach(function (id) { n += map[id]; });
+		return n;
+	}
+	function minLeft(n) { return MIN > 0 ? Math.max(0, MIN - n) : 0; }
+	function minMsg(n) { return 'الحد الأدنى للطلبية ' + MIN + ' كرتونة من أي أصناف. أضف ' + minLeft(n) + ' كرتونة لإتمام الطلب.'; }
+
 	function setControl(el, qty) {
 		qty = Math.max(0, Math.min(9999, parseInt(qty, 10) || 0));
 		el.setAttribute('data-qty', qty);
@@ -321,11 +333,13 @@
 		set('[data-zd-lines]', data.lines || 0);
 		set('[data-zd-cartons]', data.count || 0);
 		var minEl = $('[data-zd-min]', orderbar);
-		if (minEl && C.minOrder > 0 && typeof data.total_raw === 'number') {
-			var left = C.minOrder - data.total_raw;
+		var left = minLeft(data.count || 0);
+		if (minEl) {
 			minEl.hidden = !(left > 0 && data.count > 0);
-			set('[data-zd-min-left]', money(left));
+			set('[data-zd-min-left]', left);
 		}
+		var go = $('.zd-orderbar__go', orderbar);
+		if (go) { go.classList.toggle('is-below', left > 0); }
 		var had = orderbar.classList.contains('is-visible');
 		orderbar.classList.toggle('is-visible', (data.count || 0) > 0);
 		if (!had && data.count > 0 && !reduceMotion) {
@@ -335,10 +349,17 @@
 		}
 	}
 
-	// أي زر «أكمل الطلب»: احفظ التغييرات المعلّقة أولاً ثم انتقل.
+	// أي زر «أكمل الطلب»: تحت الحد الأدنى يُمنع الانتقال مع التوضيح، وإلا تُحفظ التغييرات المعلّقة أولاً.
 	doc.addEventListener('click', function (e) {
 		var go = e.target.closest('[data-zd-checkout]');
-		if (!go || !pendingCount) { return; }
+		if (!go) { return; }
+		var n = cartCartons();
+		if (n > 0 && minLeft(n) > 0) {
+			e.preventDefault();
+			toast(minMsg(n), 'error');
+			return;
+		}
+		if (!pendingCount) { return; }
 		e.preventDefault();
 		clearTimeout(syncTimer);
 		Promise.resolve(flush()).then(function () { window.location.href = go.href; });
@@ -664,6 +685,9 @@
 		});
 		return out;
 	}
+	function qoCartons() {
+		return qoSelected().reduce(function (n, it) { return n + it.qty; }, 0);
+	}
 
 	function waMessage(sel) {
 		var lines = [T.waIntro || ''];
@@ -693,11 +717,16 @@
 		set('[data-zd-qo-cartons]', cartons);
 		set('[data-zd-qo-total]', money(total));
 		var qoMin = $('[data-zd-qo-min]');
-		if (qoMin && C.minOrder > 0) {
-			var need = C.minOrder - total;
-			qoMin.hidden = !(need > 0 && sel.length > 0);
-			qoMin.textContent = need > 0 ? 'باقي ' + money(need) + ' للحد الأدنى' : '';
+		var need = minLeft(cartons);
+		if (qoMin && MIN > 0) {
+			qoMin.textContent = !cartons ? 'الحد الأدنى للطلبية ' + MIN + ' كرتونة'
+				: (need > 0 ? 'أضف ' + need + ' كرتونة للحد الأدنى (' + MIN + ')' : '✓ بلغت الحد الأدنى (' + MIN + ' كرتونة)');
+			qoMin.classList.toggle('is-ok', cartons > 0 && need === 0);
 		}
+		$$('[data-zd-qo-checkout], [data-zd-qo-wa]').forEach(function (b) {
+			b.classList.toggle('is-below', cartons > 0 && need > 0);
+			if (cartons > 0 && need > 0) { b.setAttribute('aria-disabled', 'true'); } else { b.removeAttribute('aria-disabled'); }
+		});
 		var summary = $('[data-zd-qo-summary]');
 		if (summary) { summary.classList.toggle('has-items', sel.length > 0); }
 		var wa = $('[data-zd-qo-wa]');
@@ -778,7 +807,9 @@
 		var waBtn = $('[data-zd-qo-wa]');
 		if (waBtn) {
 			waBtn.addEventListener('click', function (e) {
-				if (!qoSelected().length) { e.preventDefault(); toast(T.empty, 'error'); }
+				if (!qoSelected().length) { e.preventDefault(); toast(T.empty, 'error'); return; }
+				var n = qoCartons();
+				if (minLeft(n) > 0) { e.preventDefault(); toast(minMsg(n), 'error'); }
 			});
 		}
 
@@ -787,6 +818,8 @@
 			checkoutBtn.addEventListener('click', function (e) {
 				e.preventDefault();
 				if (!qoSelected().length) { toast(T.empty, 'error'); return; }
+				var n = qoCartons();
+				if (minLeft(n) > 0) { toast(minMsg(n), 'error'); return; }
 				clearTimeout(syncTimer);
 				Promise.resolve(flush()).then(function () {
 					window.location.href = checkoutBtn.href;

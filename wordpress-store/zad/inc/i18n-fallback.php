@@ -48,6 +48,8 @@ function zad_i18n_map() {
 		'Place order'                                   => 'تأكيد الطلب',
 		'Cash on delivery'                              => 'الدفع عند الاستلام',
 		'Sorry, this product cannot be purchased.'      => 'عذراً، لا يمكن طلب هذا الصنف حالياً.',
+		'There are some issues with the items in your cart. Please go back to the cart page and resolve these issues before checking out.' => 'في طلبيتك ما يحتاج إلى تعديل. عد إلى الطلبية لإكمالها ثم أتمّ الطلب.',
+		'Return to cart'                                => 'العودة إلى الطلبية',
 		'Pay with cash upon delivery.'                  => 'ادفع نقداً عند استلام الطلب.',
 		'Additional information'                        => 'معلومات إضافية',
 		'Order notes'                                   => 'ملاحظات الطلب',

@@ -129,6 +129,7 @@ function zad_assets() {
 		'storeName'  => get_bloginfo( 'name' ),
 		'showPrices' => zad_show_prices(),
 		'minOrder'   => zad_show_prices() ? (float) zad_opt( 'min_order' ) : 0,
+		'minCartons' => zad_min_cartons(),
 		'i18n'       => array(
 			'added'        => 'أُضيف إلى الطلبية',
 			'updated'      => 'تم تحديث الكمية',

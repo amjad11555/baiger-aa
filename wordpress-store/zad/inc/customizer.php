@@ -89,7 +89,8 @@ function zad_customize_register( $wp_customize ) {
 		'seo_tagline'     => array( 'zad_home', 'text', 'الوصف المختصر للسيو (يظهر في عنوان الصفحة الرئيسية)', '', 'sanitize_text_field' ),
 		// المتجر.
 		'show_prices'     => array( 'zad_shop', 'checkbox', 'إظهار الأسعار للزوار', 'ألغِ التفعيل لعرض «السعر عند الطلب» بدل الأسعار في الكتالوج.', 'zad_sanitize_bool' ),
-		'min_order'       => array( 'zad_shop', 'number', 'الحد الأدنى لقيمة الطلب', '0 = بدون حد أدنى.', 'zad_sanitize_amount' ),
+		'min_cartons'     => array( 'zad_shop', 'number', 'الحد الأدنى للطلبية (عدد الكراتين)', 'مجموع الكراتين في الطلبية من أي أصناف. لا يُتم الزبون الطلب قبل بلوغه، ويظهر له في الطلبية وقائمة الأسعار والدفع. 0 = بدون حد أدنى.', 'absint' ),
+		'min_order'       => array( 'zad_shop', 'number', 'الحد الأدنى لقيمة الطلب (اختياري)', 'حد إضافي بالمبلغ. 0 = بدون حد أدنى.', 'zad_sanitize_amount' ),
 		'free_delivery'   => array( 'zad_shop', 'number', 'التوصيل مجاني للطلبات فوق', 'للعرض فقط في الواجهة (0 = إخفاء). اضبط طرق الشحن الفعلية من إعدادات ووكومرس.', 'zad_sanitize_amount' ),
 		'show_profit'     => array( 'zad_shop', 'checkbox', 'إظهار سعر البيع المقترح وربح البقال', 'يعرض على كل صنف سعر البيع للمستهلك وربح الكرتونة وهامش الربح.', 'zad_sanitize_bool' ),
 		'retail_margin'   => array( 'zad_shop', 'number', 'هامش ربح البقال الافتراضي %', 'يُقدَّر منه سعر البيع للأصناف التي لم يُكتب لها «سعر البيع المقترح» في صفحة المنتج. الهامش من سعر البيع (25 = يربح البقال ربع سعر البيع).', 'zad_sanitize_margin' ),

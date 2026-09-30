@@ -98,15 +98,12 @@ $zd_account  = $zd_has_wc ? wc_get_page_permalink( 'myaccount' ) : wp_login_url(
 			<span class="zd-orderbar__lines">الطلبية: <b data-zd-lines><?php echo (int) $zd_lines; ?></b> صنف · <b data-zd-cartons><?php echo (int) $zd_count; ?></b> كرتونة</span>
 			<?php if ( zad_show_prices() ) : ?>
 				<span class="zd-orderbar__total"><span class="zd-cart-total"><?php echo wp_kses_post( WC()->cart ? WC()->cart->get_cart_subtotal() : '' ); ?></span></span>
-				<?php
-				$zd_min  = (float) zad_opt( 'min_order' );
-				$zd_left = $zd_min > 0 && WC()->cart ? $zd_min - ( (float) WC()->cart->get_subtotal() + (float) WC()->cart->get_subtotal_tax() ) : 0;
-				?>
-				<span class="zd-orderbar__min" data-zd-min<?php echo $zd_left > 0 && $zd_count ? '' : ' hidden'; ?>>باقي <b data-zd-min-left><?php echo wp_kses_post( $zd_left > 0 ? wc_price( $zd_left ) : '' ); ?></b> للحد الأدنى</span>
 			<?php endif; ?>
+			<?php $zd_left = zad_min_cartons_left( $zd_count ); ?>
+			<span class="zd-orderbar__min" data-zd-min<?php echo $zd_left > 0 && $zd_count ? '' : ' hidden'; ?>>أضف <b data-zd-min-left><?php echo (int) $zd_left; ?></b> كرتونة للحد الأدنى (<?php echo (int) zad_min_cartons(); ?>)</span>
 		</span>
 	</button>
-	<a class="zd-orderbar__go" href="<?php echo esc_url( wc_get_checkout_url() ); ?>" data-zd-checkout>إتمام الطلب</a>
+	<a class="zd-orderbar__go<?php echo $zd_left > 0 ? ' is-below' : ''; ?>" href="<?php echo esc_url( wc_get_checkout_url() ); ?>" data-zd-checkout>إتمام الطلب</a>
 </div>
 <?php endif; ?>
 

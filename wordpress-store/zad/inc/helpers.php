@@ -23,6 +23,7 @@ function zad_defaults() {
 		'announcement'    => 'أسعار جملة للحسابات التجارية · توريد إلى جميع الولايات التركية · تصدير بالحاويات',
 		'show_prices'     => true,
 		'min_order'       => 0,
+		'min_cartons'     => 15,
 		'free_delivery'   => 0,
 		'show_profit'     => true,
 		'retail_margin'   => 25,
@@ -350,7 +351,9 @@ function zad_segments() {
 		array(
 			'image' => 'stage-grocery',
 			'title' => 'البقالات والميني ماركت',
-			'text'  => 'اطلب من كرتونة واحدة لكل صنف، ونوصل الطلبية إلى باب المحل والدفع عند الاستلام.',
+			'text'  => zad_min_cartons() > 0
+				? sprintf( 'اطلب %d كرتونة مشكّلة من أي أصناف (ولو كرتونة واحدة من الصنف)، ونوصلها إلى باب المحل أو على الرف والدفع عند الاستلام.', zad_min_cartons() )
+				: 'اطلب من كرتونة واحدة لكل صنف، ونوصل الطلبية إلى باب المحل والدفع عند الاستلام.',
 		),
 		array(
 			'image' => 'stage-distributor',
@@ -603,6 +606,35 @@ function zad_show_prices() {
  */
 function zad_prices_need_login() {
 	return zad_opt( 'show_prices' ) && zad_opt( 'members_prices' ) && ! is_user_logged_in();
+}
+
+/**
+ * الحد الأدنى للطلبية بعدد الكراتين (مجموع الكراتين من أي أصناف). 0 = بلا حد أدنى.
+ *
+ * @return int
+ */
+function zad_min_cartons() {
+	return max( 0, (int) zad_opt( 'min_cartons' ) );
+}
+
+/**
+ * عدد الكراتين في الطلبية الحالية.
+ *
+ * @return int
+ */
+function zad_cart_cartons() {
+	return function_exists( 'WC' ) && WC()->cart ? (int) WC()->cart->get_cart_contents_count() : 0;
+}
+
+/**
+ * كم كرتونة تنقص الطلبية لتبلغ الحد الأدنى.
+ *
+ * @param int|null $count عدد الكراتين (الافتراضي: الطلبية الحالية).
+ * @return int
+ */
+function zad_min_cartons_left( $count = null ) {
+	$count = null === $count ? zad_cart_cartons() : (int) $count;
+	return max( 0, zad_min_cartons() - $count );
 }
 
 /**

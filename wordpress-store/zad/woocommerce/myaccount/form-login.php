@@ -42,7 +42,7 @@ do_action( 'woocommerce_before_customer_login_form' );
 // قادم من «إتمام الطلب» وطلبيته جاهزة: بديل فوري بلا تسجيل عبر واتساب.
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $zd_from_checkout = isset( $_GET['zad_next'] ) && 'checkout' === $_GET['zad_next'];
-if ( $zd_from_checkout && zad_wa_number() && function_exists( 'zad_cart_whatsapp_text' ) && WC()->cart && ! WC()->cart->is_empty() ) :
+if ( $zd_from_checkout && zad_wa_number() && function_exists( 'zad_cart_whatsapp_text' ) && WC()->cart && ! WC()->cart->is_empty() && 0 === zad_min_cartons_left() ) :
 	?>
 	<div class="zd-auth__wa">
 		<p><strong>مستعجل؟</strong> أرسل طلبيتك الآن عبر واتساب، ويسجّل قسم المبيعات بيانات محلك نيابةً عنك.</p>
