@@ -14,6 +14,12 @@
 	function save(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* لا شيء */ } }
 
 	var seen = Math.max(parseInt(load('zd_notif_seen') || '0', 10) || 0, N.seen || 0);
+	// أول زيارة: كل الأصناف جديدة على الزائر، فلا معنى لعدّاد «5 جديد» على الجرس.
+	// نبدأ العدّ من الآن، ويظهر للزائر العائد ما وصل بعد زيارته الأولى فقط.
+	if (!seen && load('zd_notif_seen') === null) {
+		seen = N.now;
+		save('zd_notif_seen', String(N.now));
+	}
 	var promoSeen = !N.promo || load('zd_promo_seen') === N.promo || N.promoSeen === N.promo;
 	var panel = doc.getElementById('zd-notif');
 	var items = panel ? Array.prototype.slice.call(panel.querySelectorAll('[data-zd-t]')) : [];
@@ -66,6 +72,8 @@
 
 	// فتح الجرس: تبقى النقاط ظاهرة في هذه المرة، ويصفر العدّاد.
 	doc.addEventListener('click', function (e) {
+		// من ضغط رابط العرض في الشريط العلوي رآه فعلاً: لا نافذة له بعد ذلك.
+		if (e.target.closest && e.target.closest('[data-zd-announce] a')) { markPromoSeen(); }
 		if (e.target.closest && e.target.closest('[data-zd-open="zd-notif"]')) {
 			paintDots();
 			closeToast();
@@ -155,9 +163,33 @@
 		if (N.toast && seen > 0 && n > 0 && !toast) { showToast(n); }
 	}
 
+	// نافذة العرض لا تقاطع الزائر فور وصوله: لا تظهر في صفحات المنتج والسلة والدفع والحساب
+	// (من يصل من جوجل إلى صنف يراه أولاً)، وفي غيرها بعد 15 ثانية أو بعد تمرير نصف الصفحة تقريباً،
+	// ولا تُفتح فوق درج أو نافذة أخرى مفتوحة. العرض ظاهر أصلاً في الشريط العلوي.
+	function armPromo() {
+		var b = doc.body.classList;
+		var quiet = ['single-product', 'woocommerce-cart', 'woocommerce-checkout', 'woocommerce-account'].some(function (c) { return b.contains(c); });
+		if (quiet) { setTimeout(maybeToast, 1200); return; }
+		var fired = false, timer = 0;
+		function fire() {
+			if (fired || promoSeen) { return; }
+			if (doc.hidden || b.contains('zd-lock')) { timer = setTimeout(fire, 4000); return; }
+			fired = true;
+			clearTimeout(timer);
+			window.removeEventListener('scroll', onScroll);
+			openPromo();
+		}
+		function onScroll() {
+			var h = doc.documentElement;
+			if (h.scrollHeight > 0 && (window.scrollY + window.innerHeight) / h.scrollHeight > 0.45) { fire(); }
+		}
+		timer = setTimeout(fire, 15000);
+		window.addEventListener('scroll', onScroll, { passive: true });
+	}
+
 	paintBadge();
 	if (N.popup && !promoSeen && modal) {
-		setTimeout(openPromo, 700);
+		armPromo();
 	} else {
 		setTimeout(maybeToast, 1200);
 	}

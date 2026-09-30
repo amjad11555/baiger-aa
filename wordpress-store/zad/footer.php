@@ -91,7 +91,7 @@ $zd_account  = $zd_has_wc ? wc_get_page_permalink( 'myaccount' ) : wp_login_url(
 	</div>
 </footer>
 
-<?php if ( $zd_has_wc && ! $zd_is_qo && ! $zd_checkout ) : ?>
+<?php if ( $zd_has_wc && ! $zd_is_qo && ! $zd_checkout && ! ( is_account_page() && ! is_user_logged_in() ) ) : ?>
 <div class="zd-orderbar<?php echo $zd_count ? ' is-visible' : ''; ?>" data-zd-orderbar aria-live="polite">
 	<button type="button" class="zd-orderbar__cart" data-zd-open="zd-cart-drawer" aria-controls="zd-cart-drawer" aria-label="عرض الطلبية">
 		<span class="zd-orderbar__info">

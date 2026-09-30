@@ -21,14 +21,14 @@ $zd_steps = array(
 	array(
 		'image' => 'stage-deliver',
 		'title' => 'نسلّمها إلى متجرك',
-		'text'  => 'نوصل داخل إسطنبول خلال 24 إلى 48 ساعة، وإلى باقي الولايات وفق جدول التوزيع. تدفع عند الاستلام أو بالتحويل البنكي.',
+		'text'  => 'نوصلها إلى باب محلك أو نرتّب الكراتين على رفوفك، داخل إسطنبول خلال 24 إلى 48 ساعة وإلى باقي الولايات وفق جدول التوزيع. تدفع عند الاستلام أو بالتحويل البنكي.',
 	),
 );
 ?>
 <section class="zd-section zd-process" aria-labelledby="zd-process-title">
 	<div class="zd-container">
 		<?php zad_section_head( 'آلية العمل', 'من الطلبية إلى رف متجرك في ثلاث خطوات', 'zd-process-title' ); ?>
-		<ol class="zd-process__list">
+		<ol class="zd-process__list" tabindex="0" aria-label="خطوات الطلب">
 			<?php foreach ( $zd_steps as $zd_i => $zd_step ) : ?>
 				<li class="zd-pstep">
 					<div class="zd-pstep__media"><?php echo zad_img( $zd_step['image'], '', array( 'sizes' => '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>

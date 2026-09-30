@@ -2,7 +2,7 @@
 /**
  * حسابات الزبائن (البقالات والمحلات).
  *
- * التسجيل: الاسم، واسم المحل، ورقم الواتساب، والمنطقة، والعنوان، وموقع المحل على الخريطة، وكلمة مرور.
+ * التسجيل: الاسم، واسم المحل، ورقم الواتساب، والمنطقة، والعنوان، وموقع المحل على الخريطة (اختياري)، وكلمة مرور.
  * الدخول: برقم الواتساب (بأي صيغة) أو بالبريد. رقم الواتساب هو اسم المستخدم، والبريد اختياري.
  * الطلب: يُطلب الحساب قبل إتمام الطلبية (قابل للإلغاء من الإعدادات)، وتُنسخ المنطقة والموقع إلى الطلب.
  *
@@ -286,10 +286,13 @@ function zad_customer_validate( $v, $user_id = 0 ) {
 	if ( mb_strlen( $v['address'] ) < 5 ) {
 		$errors['address'] = 'اكتب عنوان المحل بالتفصيل (الحي والشارع ورقم المحل).';
 	}
-	$lat = is_numeric( $v['lat'] ) ? (float) $v['lat'] : null;
-	$lng = is_numeric( $v['lng'] ) ? (float) $v['lng'] : null;
-	if ( null === $lat || null === $lng || $lat < 35 || $lat > 43 || $lng < 25 || $lng > 45.5 ) {
-		$errors['location'] = 'حدّد موقع المحل على الخريطة: اضغط «موقعي الحالي» أو المس مكان المحل على الخريطة.';
+	// الموقع على الخريطة اختياري (يسرّع وصول المندوب)، لكن إن أُرسل فيجب أن يكون داخل تركيا.
+	if ( '' !== $v['lat'] || '' !== $v['lng'] ) {
+		$lat = is_numeric( $v['lat'] ) ? (float) $v['lat'] : null;
+		$lng = is_numeric( $v['lng'] ) ? (float) $v['lng'] : null;
+		if ( null === $lat || null === $lng || $lat < 35 || $lat > 43 || $lng < 25 || $lng > 45.5 ) {
+			$errors['location'] = 'الموقع المحدّد خارج تركيا. المس مكان المحل على الخريطة أو اتركه فارغاً.';
+		}
 	}
 	return $errors;
 }
@@ -312,9 +315,11 @@ function zad_customer_save( $user_id, $v ) {
 		'billing_country'    => 'TR',
 		'zad_wa'             => $v['wa'],
 		'zad_district'       => $v['district'],
-		'zad_lat'            => number_format( (float) $v['lat'], 6, '.', '' ),
-		'zad_lng'            => number_format( (float) $v['lng'], 6, '.', '' ),
 	);
+	if ( is_numeric( $v['lat'] ) && is_numeric( $v['lng'] ) ) {
+		$meta['zad_lat'] = number_format( (float) $v['lat'], 6, '.', '' );
+		$meta['zad_lng'] = number_format( (float) $v['lng'], 6, '.', '' );
+	}
 	foreach ( $meta as $key => $value ) {
 		update_user_meta( $user_id, $key, $value );
 	}
@@ -728,8 +733,8 @@ function zad_customer_fields_html( $v, $name_key, $prefix ) {
 			<input type="text" id="<?php echo $id( 'address' ); // phpcs:ignore ?>" name="zad_address" value="<?php echo esc_attr( $v['address'] ); ?>" autocomplete="street-address" required aria-required="true" placeholder="الحي، الشارع، رقم المحل، علامة مميزة">
 		</div>
 		<fieldset class="zd-field zd-field--wide zd-locate" data-zd-locate>
-			<legend>موقع المحل على الخريطة<?php echo $star; // phpcs:ignore ?></legend>
-			<p class="zd-locate__hint">يصل المندوب إلى باب محلك مباشرة. اضغط «موقعي الحالي» إن كنت في المحل، أو المس مكانه على الخريطة.</p>
+			<legend>موقع المحل على الخريطة <span class="zd-opt">(اختياري)</span></legend>
+			<p class="zd-locate__hint">يساعد المندوب على الوصول إلى باب محلك مباشرة. اضغط «موقعي الحالي» إن كنت في المحل، أو المس مكانه على الخريطة، أو تجاوز هذه الخطوة ونتصل بك لتأكيد العنوان.</p>
 			<div class="zd-locate__bar">
 				<button type="button" class="zd-btn zd-btn--dark zd-locate__gps" data-zd-gps><?php zad_the_icon( 'pin', '', 18 ); ?><span>موقعي الحالي</span></button>
 				<p class="zd-locate__status" data-zd-loc-status role="status" aria-live="polite"><?php echo ( is_numeric( $v['lat'] ) && is_numeric( $v['lng'] ) ) ? 'تم تحديد موقع المحل ✓' : 'لم يُحدَّد الموقع بعد'; ?></p>
@@ -759,7 +764,7 @@ function zad_account_dashboard() {
 	$last    = $orders ? $orders[0] : null;
 	$count   = wc_get_customer_order_count( $user_id );
 	$place   = 'other' === $p['district'] ? $p['city'] : zad_district_label( $p['district'], true );
-	$missing = ! $p['shop'] || ! $p['wa'] || ! $p['district'] || null === $p['lat'];
+	$missing = ! $p['shop'] || ! $p['wa'] || ! $p['district'];
 	$edit    = wc_get_account_endpoint_url( 'edit-account' );
 	?>
 	<div class="zd-acc">
@@ -771,7 +776,7 @@ function zad_account_dashboard() {
 		<?php if ( $missing ) : ?>
 			<div class="zd-acc__warn" role="note">
 				<strong>أكمل بيانات محلك</strong>
-				<span>نحتاج اسم المحل ورقم الواتساب والمنطقة وموقع المحل على الخريطة لنوصل طلبياتك بسرعة.</span>
+				<span>نحتاج اسم المحل ورقم الواتساب والمنطقة لنوصل طلبياتك إلى باب المحل بسرعة.</span>
 				<a class="zd-btn zd-btn--dark" href="<?php echo esc_url( $edit ); ?>">أكمل البيانات</a>
 			</div>
 		<?php endif; ?>

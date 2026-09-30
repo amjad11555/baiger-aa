@@ -143,14 +143,5 @@
 			});
 		}
 
-		form.addEventListener('submit', function (e) {
-			if (locate && !hasPin()) {
-				e.preventDefault();
-				locate.classList.add('has-error');
-				say('حدّد موقع المحل على الخريطة قبل المتابعة: اضغط «موقعي الحالي» أو المس مكانه على الخريطة.', true);
-				locate.scrollIntoView({ behavior: 'smooth', block: 'center' });
-				if (gps && !gps.hidden) { gps.focus({ preventScroll: true }); }
-			}
-		});
 	});
 })();

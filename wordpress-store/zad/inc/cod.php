@@ -189,7 +189,7 @@ function zad_cod_single_note() {
 		esc_html( zad_cod_short() )
 	);
 }
-add_action( 'woocommerce_single_product_summary', 'zad_cod_single_note', 32 );
+add_action( 'woocommerce_single_product_summary', 'zad_cod_single_note', 18 );
 
 /**
  * سطر مختصر في درج الطلبية وصفحة السلة.

@@ -413,6 +413,40 @@ function zad_archive_filters() {
 }
 
 /**
+ * عنوان يعكس الفلاتر المختارة (مثل «الكيك المغلّف من إيتي بالجملة») ليرى التاجر ما اختاره.
+ *
+ * @param string $title العنوان الأساسي للصفحة.
+ * @return string
+ */
+function zad_filtered_title( $title ) {
+	$f      = zad_archive_filters();
+	$cats   = zad_categories();
+	$brands = zad_all_brands();
+	if ( ! $f['section'] && ! $f['company'] ) {
+		return $title;
+	}
+	// القسم والشركة الفعليان: من الفلتر، أو من صفحة القسم/العلامة نفسها.
+	$section = $f['section'];
+	$company = $f['company'];
+	if ( ! $section && is_product_category() ) {
+		$section = get_queried_object()->slug;
+	}
+	if ( ! $company && is_tax( 'product_brand' ) ) {
+		$company = get_queried_object()->slug;
+	}
+	$sec_name = $section && isset( $cats[ $section ] ) ? $cats[ $section ]['title'] : '';
+	$co_name  = $company && ! empty( $brands[ $company ]['ar'] ) ? $brands[ $company ]['ar'] : '';
+	$special  = is_search() || ( function_exists( 'zad_is_new_view' ) && zad_is_new_view() );
+	if ( $special ) {
+		return $title . ' – ' . implode( ' · ', array_filter( array( $f['section'] ? $sec_name : '', $f['company'] ? $co_name : '' ) ) );
+	}
+	if ( $sec_name && $co_name ) {
+		return sprintf( '%s من %s بالجملة', $sec_name, $co_name );
+	}
+	return $sec_name ? $sec_name . ' بالجملة' : ( $co_name ? sprintf( 'منتجات %s بالجملة', $co_name ) : $title );
+}
+
+/**
  * البحث الذكي في صفحة النتائج + فلاتر الشركة والقسم في كل أرشيفات المنتجات.
  *
  * @param WP_Query $q الاستعلام.

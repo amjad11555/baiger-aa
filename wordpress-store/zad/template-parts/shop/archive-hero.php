@@ -59,6 +59,9 @@ if ( is_search() ) {
 	$zd_desc  = 'الكيك والبسكويت والشيبس والشوكولاتة التركية بسعر الكرتونة لتجار التجزئة. صفِّ الأصناف حسب القسم أو العلامة، وأضف الكميات مباشرة إلى الطلبية.';
 }
 
+// العنوان يعكس القسم والشركة المختارين.
+$zd_title = zad_filtered_title( $zd_title );
+
 // الرابط الأساسي للصفحة الحالية دون الفلاتر.
 $zd_base = remove_query_arg( array( 'company', 'section', 'paged', 'product-page' ) );
 $zd_base = preg_replace( '#/page/\d+/?#', '/', $zd_base );

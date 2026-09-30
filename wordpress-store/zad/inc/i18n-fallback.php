@@ -47,6 +47,7 @@ function zad_i18n_map() {
 		'Your order'                                    => 'طلبك',
 		'Place order'                                   => 'تأكيد الطلب',
 		'Cash on delivery'                              => 'الدفع عند الاستلام',
+		'Sorry, this product cannot be purchased.'      => 'عذراً، لا يمكن طلب هذا الصنف حالياً.',
 		'Pay with cash upon delivery.'                  => 'ادفع نقداً عند استلام الطلب.',
 		'Additional information'                        => 'معلومات إضافية',
 		'Order notes'                                   => 'ملاحظات الطلب',

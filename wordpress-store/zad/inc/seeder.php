@@ -496,7 +496,7 @@ function zad_seed_menus() {
 }
 
 /**
- * منطقة الشحن: تركيا (توصيل مجاني + استلام من المستودع).
+ * منطقة الشحن: تركيا (توصيل مجاني إلى المحل فقط، بلا استلام من المستودع).
  *
  * @return string
  */
@@ -522,20 +522,9 @@ function zad_seed_shipping() {
 		update_option(
 			'woocommerce_free_shipping_' . $free . '_settings',
 			array(
-				'title'      => 'توريد إلى المتجر',
+				'title'      => zad_delivery_title(),
 				'requires'   => '',
 				'min_amount' => '0',
-			)
-		);
-	}
-	$pickup = $zone->add_shipping_method( 'local_pickup' );
-	if ( $pickup ) {
-		update_option(
-			'woocommerce_local_pickup_' . $pickup . '_settings',
-			array(
-				'title'      => 'استلام من المستودع',
-				'tax_status' => 'none',
-				'cost'       => '',
 			)
 		);
 	}

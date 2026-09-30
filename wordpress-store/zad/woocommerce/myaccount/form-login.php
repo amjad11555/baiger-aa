@@ -2,7 +2,7 @@
 /**
  * حساب التاجر: «حساب جديد» و«لدي حساب».
  *
- * التسجيل برقم الواتساب واسم المحل ومنطقته وموقعه على الخريطة (البريد اختياري)،
+ * التسجيل برقم الواتساب واسم المحل ومنطقته وعنوانه (الموقع على الخريطة والبريد اختياريان)،
  * والدخول برقم الواتساب بأي صيغة أو بالبريد. معالجة التسجيل في inc/customers.php،
  * والدخول يمر بمعالج ووكومرس المعتاد.
  *
@@ -38,6 +38,17 @@ $zd_tab_url  = static function ( $tab ) use ( $zd_base, $zd_next ) {
 
 do_action( 'woocommerce_before_customer_login_form' );
 ?>
+<?php
+// قادم من «إتمام الطلب» وطلبيته جاهزة: بديل فوري بلا تسجيل عبر واتساب.
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$zd_from_checkout = isset( $_GET['zad_next'] ) && 'checkout' === $_GET['zad_next'];
+if ( $zd_from_checkout && zad_wa_number() && function_exists( 'zad_cart_whatsapp_text' ) && WC()->cart && ! WC()->cart->is_empty() ) :
+	?>
+	<div class="zd-auth__wa">
+		<p><strong>مستعجل؟</strong> أرسل طلبيتك الآن عبر واتساب، ويسجّل قسم المبيعات بيانات محلك نيابةً عنك.</p>
+		<a class="zd-btn zd-btn--wa zd-btn--block" href="<?php echo esc_url( zad_wa_link( zad_cart_whatsapp_text() ) ); ?>" target="_blank" rel="noopener"><?php zad_the_icon( 'whatsapp', '', 20 ); ?><span>أرسل الطلبية عبر واتساب</span></a>
+	</div>
+<?php endif; ?>
 <div class="zd-auth" data-zd-auth>
 	<div class="zd-auth__intro">
 		<p class="zd-eyebrow">حساب التاجر</p>
@@ -45,7 +56,7 @@ do_action( 'woocommerce_before_customer_login_form' );
 		<ul class="zd-auth__perks">
 			<li><?php zad_the_icon( 'tag', '', 20 ); ?><span>أسعار الجملة لكل الأصناف، مع سعر البيع وربحك</span></li>
 			<li><?php zad_the_icon( 'bolt', '', 20 ); ?><span>طلبية بضغطات قليلة، و«اطلبها مجدداً» لطلبيتك المعتادة</span></li>
-			<li><?php zad_the_icon( 'truck', '', 20 ); ?><span>توصيل إلى باب المحل بموقعه على الخريطة</span></li>
+			<li><?php zad_the_icon( 'truck', '', 20 ); ?><span>توصيل مجاني إلى باب المحل أو ترتيبها على الرف</span></li>
 			<li><?php zad_the_icon( 'wallet', '', 20 ); ?><span>الدفع عند الاستلام نقداً أو بالبطاقة</span></li>
 		</ul>
 		<?php if ( zad_wa_number() ) : ?>

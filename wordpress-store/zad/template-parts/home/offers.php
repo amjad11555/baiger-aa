@@ -19,7 +19,7 @@ if ( ! $zd_sale_ids ) {
 		zad_product_grid(
 			array(
 				'include' => $zd_sale_ids,
-				'limit'   => 4,
+				'limit'   => 8,
 				'orderby' => 'menu_order',
 				'order'   => 'ASC',
 			),

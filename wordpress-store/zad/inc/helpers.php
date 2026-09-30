@@ -87,6 +87,22 @@ function zad_wa_link( $text = '' ) {
 }
 
 /**
+ * esc_url() يحذف %0A (السطر الجديد) من أي رابط، فتصل رسائل واتساب متلاصقة الأسطر.
+ * روابط wa.me التي نبنيها بـ rawurlencode آمنة أصلاً (أحرف وأرقام و%XX فقط)، فنعيدها كما هي.
+ *
+ * @param string $good     الرابط بعد التنظيف.
+ * @param string $original الرابط الأصلي.
+ * @return string
+ */
+function zad_keep_wa_newlines( $good, $original ) {
+	if ( is_string( $original ) && preg_match( '#^https://wa\.me/\d*(\?text=[A-Za-z0-9%._~-]*)?$#', $original ) ) {
+		return $original;
+	}
+	return $good;
+}
+add_filter( 'clean_url', 'zad_keep_wa_newlines', 10, 2 );
+
+/**
  * الصفحات الخاصة بالقالب: المفتاح => [المسار، القالب، العنوان].
  *
  * @return array
@@ -339,7 +355,7 @@ function zad_segments() {
 		array(
 			'image' => 'stage-distributor',
 			'title' => 'الموزعون وتجار نصف الجملة',
-			'text'  => 'أسعار كميات بالطبلية، وتحميل مباشر من المستودع لتغذية شبكة التوزيع في منطقتك.',
+			'text'  => 'أسعار كميات بالطبلية، ونوصلها إلى مستودعك لتغذية شبكة التوزيع في منطقتك.',
 		),
 		array(
 			'image' => 'stage-export',

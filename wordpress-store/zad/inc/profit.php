@@ -128,7 +128,7 @@ function zad_single_profit() {
 	</section>
 	<?php
 }
-add_action( 'woocommerce_single_product_summary', 'zad_single_profit', 16 );
+add_action( 'woocommerce_single_product_summary', 'zad_single_profit', 19 );
 
 /* -------------------------------------------------------------------------
  * لوحة التحكم: حقول الجملة في صفحة تحرير المنتج (تبويب «عام»)

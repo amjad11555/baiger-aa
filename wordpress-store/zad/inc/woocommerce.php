@@ -179,6 +179,60 @@ function zad_price_html( $html, $product ) {
 add_filter( 'woocommerce_get_price_html', 'zad_price_html', 20, 2 );
 
 /**
+ * وضع «الأسعار للأعضاء فقط»: لا شراء للزائر قبل تسجيل الدخول
+ * (يمنع الإضافة عبر ?add-to-cart وواجهة Store API أيضاً).
+ *
+ * @param bool $purchasable قابل للشراء.
+ * @return bool
+ */
+function zad_members_purchasable( $purchasable ) {
+	return zad_prices_need_login() ? false : $purchasable;
+}
+add_filter( 'woocommerce_is_purchasable', 'zad_members_purchasable', 20 );
+
+/**
+ * البيانات المنظّمة للمنتج: لا سعر فيها حين تكون الأسعار مخفية.
+ *
+ * @param array $markup بيانات Product.
+ * @return array
+ */
+function zad_structured_data_price( $markup ) {
+	if ( ! zad_show_prices() ) {
+		unset( $markup['offers'] );
+	}
+	return $markup;
+}
+add_filter( 'woocommerce_structured_data_product', 'zad_structured_data_price', 20 );
+
+/**
+ * واجهة ووكومرس العامة (Store API): إزالة الأسعار من ردود المنتجات حين تكون مخفية.
+ *
+ * @param WP_REST_Response|WP_Error $response الرد.
+ * @param array                     $handler  المعالج.
+ * @param WP_REST_Request           $request  الطلب.
+ * @return WP_REST_Response|WP_Error
+ */
+function zad_store_api_hide_prices( $response, $handler, $request ) {
+	if ( zad_show_prices() || ! $response instanceof WP_REST_Response || ! preg_match( '#^/wc/store(/v\d+)?/products#', $request->get_route() ) ) {
+		return $response;
+	}
+	$strip = static function ( $item ) {
+		if ( is_array( $item ) ) {
+			unset( $item['prices'] );
+			if ( isset( $item['price_html'] ) ) {
+				$item['price_html'] = '';
+			}
+		}
+		return $item;
+	};
+	$data = $response->get_data();
+	$data = isset( $data['id'] ) ? $strip( $data ) : array_map( $strip, (array) $data );
+	$response->set_data( $data );
+	return $response;
+}
+add_filter( 'rest_request_after_callbacks', 'zad_store_api_hide_prices', 20, 3 );
+
+/**
  * وضع «السعر عند الطلب»: لا تظهر المبالغ في الطلبية والدفع أيضاً، وإلا كفى إضافة صنف لقراءة السعر.
  * يؤكد قسم المبيعات السعر عند الاتصال، ويظهر في تفاصيل الطلب بعد إرساله.
  *
@@ -282,10 +336,9 @@ function zad_card_badges( $product ) {
 	} else {
 		if ( $product->is_on_sale() && zad_show_prices() ) {
 			$pct = zad_discount_percent( $product );
-			// عرض بمبلغ ثابت: «−10 ₺» أوضح لصاحب المحل من «−2%».
-			$off = function_exists( 'zad_promo_price_for' ) && null !== zad_promo_price_for( $product ) && 'fixed' === zad_promo()['type']
-				? (float) $product->get_regular_price() - (float) $product->get_price()
-				: 0;
+			// شارة موحّدة بالمبلغ الموفَّر على الكرتونة («−10 ₺») لكل العروض، فهي أوضح لصاحب المحل
+			// من خليط «−10 ₺» و«−2%» (النسبة تبقى للأصناف المتغيّرة فقط).
+			$off = $product->is_type( 'simple' ) ? round( (float) $product->get_regular_price() - (float) $product->get_price(), 2 ) : 0;
 			if ( $off > 0 ) {
 				$out .= sprintf( '<span class="zd-badge zd-badge--sale"><bdi dir="ltr">−%s</bdi></span>', esc_html( zad_money_plain( $off ) ) );
 			} else {
@@ -317,10 +370,19 @@ function zad_cart_control( $product, $qty = 0, $context = 'card' ) {
 	if ( ! $product->is_type( 'simple' ) ) {
 		return sprintf( '<a class="zd-btn zd-btn--ghost zd-btn--sm" href="%s">اختر الخيارات</a>', esc_url( $product->get_permalink() ) );
 	}
+	// وضع «الأسعار للأعضاء فقط»: الزائر يسجّل دخوله أولاً، ولا يصل أي سعر إلى الصفحة.
+	if ( zad_prices_need_login() ) {
+		return sprintf(
+			'<a class="zd-login-buy zd-login-buy--%1$s" href="%2$s">%3$s</a>',
+			esc_attr( $context ),
+			esc_url( add_query_arg( 'tab', 'login', wc_get_page_permalink( 'myaccount' ) ) ),
+			'row' === $context ? zad_icon( 'user', '', 18 ) . '<span class="screen-reader-text">سجّل دخولك لطلب ' . esc_html( $name ) . '</span>' : '<span>سجّل دخولك للطلب</span>'
+		);
+	}
 	if ( ! $product->is_purchasable() || ! $product->is_in_stock() ) {
 		return '<span class="zd-cart-ctl zd-cart-ctl--' . esc_attr( $context ) . ' is-disabled"><span class="zd-cart-ctl__na">غير متوفر حالياً</span></span>';
 	}
-	$price = (float) wc_get_price_to_display( $product );
+	$price = zad_show_prices() ? (float) wc_get_price_to_display( $product ) : '';
 	$label = 'row' === $context ? '<span class="screen-reader-text">أضف</span>' : '<span>أضف إلى الطلبية</span>';
 	return sprintf(
 		'<div class="zd-cart-ctl zd-cart-ctl--%11$s%1$s" data-id="%2$d" data-qty="%3$d" data-price="%4$s" data-name="%5$s">'
@@ -471,18 +533,25 @@ function zad_single_buy() {
 	echo zad_cart_control( $product, $qty, 'lg' ); // phpcs:ignore WordPress.Security.EscapeOutput
 	printf( '<a class="zd-buy__checkout" href="%s" data-zd-checkout>إتمام الطلب</a>', esc_url( wc_get_checkout_url() ) );
 	printf(
-		'<button type="button" class="zd-buy__wish" data-zd-wish="%1$d" data-name="%2$s" data-url="%3$s" data-price="%4$s" aria-pressed="false" aria-label="%5$s">%6$s</button>',
+		'<button type="button" class="zd-buy__wish" data-zd-wish="%1$d" data-name="%2$s" data-url="%3$s" aria-pressed="false" aria-label="%4$s">%5$s</button>',
 		(int) $product->get_id(),
 		esc_attr( $product->get_name() ),
 		esc_url( get_permalink( $product->get_id() ) ),
-		esc_attr( wp_strip_all_tags( $product->get_price_html() ) ),
 		esc_attr( 'احفظ ' . $product->get_name() ),
 		zad_icon( 'heart', '', 22 ) // phpcs:ignore WordPress.Security.EscapeOutput
 	);
 	echo '</div>';
+	// شريط ثابت على الجوال يظهر حين يخرج زر الإضافة الأساسي من الشاشة (inert حتى يظهر).
+	printf(
+		'<div class="zd-stickybuy" data-zd-stickybuy inert><div class="zd-stickybuy__info"><span class="zd-stickybuy__name">%1$s</span><span class="zd-stickybuy__price">%2$s</span></div>%3$s</div>',
+		esc_html( $product->get_name() ),
+		wp_kses_post( $product->get_price_html() ),
+		zad_cart_control( $product, $qty, 'sticky' ) // phpcs:ignore WordPress.Security.EscapeOutput
+	);
 }
 remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
-add_action( 'woocommerce_single_product_summary', 'zad_single_buy', 30 );
+// زر الإضافة مباشرة بعد السعر والتعبئة (كان بعد صندوق الربح والوصف، على بعد شاشة ونصف في الجوال).
+add_action( 'woocommerce_single_product_summary', 'zad_single_buy', 17 );
 
 /**
  * أزرار إضافية: واتساب + الطلب السريع.
@@ -620,8 +689,10 @@ function zad_cart_whatsapp_text() {
 		$lines[] = 'الإجمالي التقديري: ' . zad_money_plain( WC()->cart->get_subtotal() + WC()->cart->get_subtotal_tax() );
 	}
 	$lines[] = '';
-	$lines[] = 'اسم المتجر / الشركة:';
-	$lines[] = 'العنوان:';
+	$lines[] = 'التسليم: عند باب المحل / ترتيبها على الرف';
+	$who     = is_user_logged_in() && function_exists( 'zad_customer_profile' ) ? zad_customer_profile( get_current_user_id() ) : null;
+	$lines[] = 'اسم المحل: ' . ( $who ? $who['shop'] : '' );
+	$lines[] = 'العنوان: ' . ( $who ? trim( $who['address'] . ' ' . $who['city'] ) : '' );
 	return implode( "\n", $lines );
 }
 
@@ -828,7 +899,11 @@ function zad_thankyou_whatsapp( $order_id ) {
 		$lines[] = sprintf( '• %s — %d كرتونة', $item->get_name(), (int) $item->get_quantity() );
 	}
 	$lines[] = 'الإجمالي: ' . zad_money_plain( $order->get_total() );
-	$cod     = zad_cod_method_label( $order );
+	$drop    = function_exists( 'zad_drop_label' ) ? zad_drop_label( $order ) : '';
+	if ( $drop ) {
+		$lines[] = 'التسليم: ' . $drop;
+	}
+	$cod = zad_cod_method_label( $order );
 	if ( $cod ) {
 		$lines[] = 'الدفع: عند الاستلام — ' . $cod;
 	}

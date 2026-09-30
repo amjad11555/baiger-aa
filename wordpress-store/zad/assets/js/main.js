@@ -71,9 +71,17 @@
 		var top = parseFloat(window.getComputedStyle(header).top) || 0;
 		doc.documentElement.style.setProperty('--zd-header-h', Math.max(0, header.offsetHeight + Math.min(0, top)) + 'px');
 	}
+	// اتجاه التمرير: عند النزول تتنحى العناصر العائمة (واتساب، أقسام قائمة الأسعار) لتفسح الشاشة للمحتوى،
+	// وتعود فور الصعود أو قرب أعلى الصفحة.
+	var lastY = window.scrollY;
 	function onScroll() {
+		var y = window.scrollY;
+		if (Math.abs(y - lastY) > 8) {
+			doc.documentElement.classList.toggle('zd-scroll-down', y > lastY && y > 320);
+			lastY = y;
+		}
 		if (!header) { return; }
-		var scrolled = window.scrollY > 8;
+		var scrolled = y > 8;
 		if (scrolled !== header.classList.contains('is-scrolled')) {
 			header.classList.toggle('is-scrolled', scrolled);
 		}
@@ -245,7 +253,7 @@
 		inflight = fetch(C.syncUrl, {
 			method: 'POST',
 			credentials: 'same-origin',
-			headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'X-ZAD-Sync': '1' },
 			body: body.toString()
 		})
 			.then(function (r) { if (!r.ok) { throw new Error(r.status); } return r.json(); })
@@ -286,7 +294,7 @@
 		if (!C.syncUrl) { return; }
 		var body = new URLSearchParams();
 		body.set('items', '{}');
-		fetch(C.syncUrl, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }, body: body.toString() })
+		fetch(C.syncUrl, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'X-ZAD-Sync': '1' }, body: body.toString() })
 			.then(function (r) { return r.json(); })
 			.then(function (data) {
 				if (data && data.ok) {
@@ -952,7 +960,7 @@
 		if (btn.getAttribute('data-name')) {
 			var img = $('.woocommerce-product-gallery img, .zd-gallery-art', doc);
 			var pack = $('.zd-specs dd', doc);
-			return { n: btn.getAttribute('data-name'), u: btn.getAttribute('data-url'), s: pack ? pack.textContent.trim() : '', i: img ? img.outerHTML : '' };
+			return { n: btn.getAttribute('data-name'), u: btn.getAttribute('data-url'), s: pack ? 'الكرتونة: ' + pack.textContent.trim() : '', i: img ? img.outerHTML : '' };
 		}
 		var card = btn.closest('.zd-card');
 		if (!card) { return null; }
@@ -1093,6 +1101,18 @@
 			setCols(n);
 			store('zd_cols', n);
 		});
+	}
+
+	// صفحة المنتج على الجوال: شريط إضافة ثابت يظهر حين يخرج زر الإضافة الأساسي من الشاشة.
+	var stickyBuy = $('[data-zd-stickybuy]');
+	var mainBuy = $('.zd-buy');
+	if (stickyBuy && mainBuy && 'IntersectionObserver' in window) {
+		new IntersectionObserver(function (entries) {
+			var show = !entries[0].isIntersecting;
+			stickyBuy.classList.toggle('is-visible', show);
+			if (show) { stickyBuy.removeAttribute('inert'); } else { stickyBuy.setAttribute('inert', ''); }
+			doc.documentElement.classList.toggle('zd-stickybuy-on', show);
+		}, { rootMargin: '0px 0px -60px 0px' }).observe(mainBuy);
 	}
 
 	// العودة إلى أعلى الصفحة.

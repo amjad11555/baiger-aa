@@ -123,10 +123,20 @@ function zad_qo_row_html( $r, $slug ) {
  * مزامنة كميات السلة (تعيين كميات محددة لكل منتج).
  *
  * يستقبل items بصيغة JSON: {"product_id": qty}. الكمية 0 تحذف المنتج.
- * ملاحظة: مثل نقطة add_to_cart الأصلية في ووكومرس، لا يلزم nonce لأن
- * العملية تخص سلة الزائر نفسه فقط، ونتجنب بذلك مشاكل الصفحات المخزنة مؤقتاً.
+ * حماية من الطلبات القادمة من مواقع أخرى (CSRF) بلا nonce (الـ nonce يتقادم في الصفحات المخزنة
+ * مؤقتاً): يُرفض أي Origin لا يطابق نطاق الموقع، وإن غاب Origin تلزم ترويسة X-ZAD-Sync
+ * التي لا يستطيع موقع آخر إرسالها دون موافقة CORS.
  */
 function zad_ajax_sync_cart() {
+	$origin = isset( $_SERVER['HTTP_ORIGIN'] ) ? (string) wp_unslash( $_SERVER['HTTP_ORIGIN'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$host   = wp_parse_url( home_url(), PHP_URL_HOST );
+	$ok     = ( '' !== $origin && 'null' !== $origin )
+		? wp_parse_url( $origin, PHP_URL_HOST ) === $host   // المتصفح أرسل Origin (ومنه sendBeacon عند مغادرة الصفحة).
+		: ! empty( $_SERVER['HTTP_X_ZAD_SYNC'] );          // بلا Origin: تلزم الترويسة الخاصة.
+	if ( ! $ok ) {
+		wp_send_json_error( array( 'message' => 'forbidden' ), 403 );
+	}
+
 	// أي مخرجات عارضة (تنبيهات PHP من إضافات أخرى) تُحتجز ثم تُحذف قبل إرسال JSON.
 	$ob_level = ob_get_level();
 	ob_start();
@@ -216,7 +226,7 @@ function zad_ajax_sync_cart() {
 			'count'     => $cart->get_cart_contents_count(),
 			'lines'     => count( $cart->get_cart() ),
 			'subtotal'  => $cart->get_cart_subtotal(),
-			'total_raw' => (float) $cart->get_subtotal() + (float) $cart->get_subtotal_tax(),
+			'total_raw' => zad_show_prices() ? (float) $cart->get_subtotal() + (float) $cart->get_subtotal_tax() : 0,
 			'items'     => zad_cart_qty_map(),
 			'fragments' => $fragments,
 			'cart_hash' => $cart->get_cart_hash(),
