@@ -313,6 +313,7 @@ function zad_customer_save( $user_id, $v ) {
 		'billing_city'       => $city,
 		'billing_address_1'  => $v['address'],
 		'billing_country'    => 'TR',
+		'billing_state'      => 'other' === $v['district'] ? '' : 'TR34',
 		'zad_wa'             => $v['wa'],
 		'zad_district'       => $v['district'],
 	);
@@ -421,9 +422,22 @@ function zad_process_registration() {
 		),
 		false
 	);
+	$api_sent = function_exists( 'zad_verify_enabled' ) && zad_verify_enabled() ? zad_verify_start( $user_id ) : false;
 	zad_notify_new_customer( $user_id );
 
 	wc_set_customer_auth_cookie( $user_id );
+	if ( function_exists( 'zad_user_verified' ) && ! zad_user_verified( $user_id ) ) {
+		wc_add_notice(
+			sprintf(
+				$api_sent ? 'أهلاً بك يا %1$s! أُنشئ حساب «%2$s». أرسلنا رمز تأكيد إلى واتساب، اكتبه أدناه لتظهر الأسعار.' : 'أهلاً بك يا %1$s! أُنشئ حساب «%2$s». خطوة أخيرة: أكّد حسابك برسالة واتساب لتظهر الأسعار.',
+				$v['name'],
+				$v['shop']
+			),
+			'success'
+		);
+		wp_safe_redirect( wc_get_page_permalink( 'myaccount' ) . '#zd-verify' );
+		exit;
+	}
 	wc_add_notice( sprintf( 'أهلاً بك يا %s! تم إنشاء حساب «%s». يمكنك الآن الطلب بأسعار الجملة وتتبع طلبياتك.', $v['name'], $v['shop'] ), 'success' );
 	wp_safe_redirect( zad_account_next_url() );
 	exit;
@@ -451,6 +465,7 @@ function zad_notify_new_customer( $user_id ) {
 		'العنوان: ' . $p['address'],
 		'الموقع: ' . zad_map_link( $p['lat'], $p['lng'] ),
 		'',
+		function_exists( 'zad_user_verified' ) && ! zad_user_verified( $user_id ) ? 'تفعيل الحساب (بعد التأكد من رسالة واتساب الزبون): ' . zad_verify_admin_url( $user_id ) : '',
 		'كل الزبائن: ' . admin_url( 'admin.php?page=zad-customers' ),
 	);
 	wp_mail( $to, 'زبون جديد: ' . $p['shop'], implode( "\n", $lines ) );
@@ -829,7 +844,7 @@ function zad_account_dashboard() {
 					</div>
 				<?php else : ?>
 					<p class="zd-acc__stat">لم ترسل أي طلبية بعد.</p>
-					<p>حدّد عدد الكراتين لكل صنف من قائمة الأسعار، ونوصلها إلى محلك مع الدفع عند الاستلام.</p>
+					<p>حدّد عدد الكراتين لكل صنف من قائمة الأسعار، ونوصلها إلى محلك: نقداً عند الاستلام في إسطنبول، وبتحويل بنكي خارجها.</p>
 				<?php endif; ?>
 			</section>
 		</div>

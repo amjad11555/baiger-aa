@@ -54,6 +54,15 @@ function zad_flavors() {
 		'plain'       => array( 'كلاسيك', '#F1D9A8', '#C9A35F' ),
 		'kunafa'      => array( 'فستق وكنافة', '#9BC53D', '#6B4A1F' ),
 		'jelly'       => array( 'جيلي فواكه', '#FF6F91', '#C93D63' ),
+		'watermelon'  => array( 'بطيخ', '#F2546B', '#3C9A4A' ),
+		'mint'        => array( 'نعناع', '#7FD1B9', '#2E8B6E' ),
+		'cola'        => array( 'كولا', '#5A2A1A', '#2B120A' ),
+		'apple'       => array( 'تفاح', '#9BC53D', '#C8102E' ),
+		'pomegranate' => array( 'رمان', '#C2185B', '#7B0F3A' ),
+		'date'        => array( 'تمر', '#8B5A2B', '#5A3615' ),
+		'peach'       => array( 'دراق', '#F9A26C', '#D9653B' ),
+		'pineapple'   => array( 'أناناس', '#F7D046', '#5E9E3A' ),
+		'sour'        => array( 'حامض', '#C6E33B', '#7FA41E' ),
 	);
 }
 
@@ -209,6 +218,10 @@ function zad_product_art( $product, $variant = 'card' ) {
 		'biscuits' => 'biscuit',
 		'chips'    => 'chips',
 		'snacks'   => 'snack',
+		'candy'    => 'snack',
+		'gum'      => 'snack',
+		'toys'     => 'gift',
+		'drinks'   => 'snack',
 		'offers'   => 'gift',
 	);
 	$shape  = isset( $shapes[ $info['cat'] ] ) ? $shapes[ $info['cat'] ] : 'snack';

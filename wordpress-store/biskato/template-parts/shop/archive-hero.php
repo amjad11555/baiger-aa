@@ -12,7 +12,7 @@ $zd_brands  = zad_all_brands();
 $zd_filters = zad_archive_filters();
 $zd_cat     = '';
 $zd_brand   = '';
-$zd_image   = 'flatlay';
+$zd_image   = 'hero-v5';
 $zd_eyebrow = 'التشكيلة';
 $zd_desc    = '';
 $zd_scope   = array();
@@ -22,7 +22,7 @@ $zd_count = (int) $wp_query->found_posts;
 if ( is_search() ) {
 	$zd_title   = sprintf( 'نتائج البحث عن «%s»', get_search_query() );
 	$zd_eyebrow = 'البحث';
-	$zd_image   = 'step-pick';
+	$zd_image   = 'stage-pick';
 	$zd_ids     = zad_search_ids( get_search_query() );
 	$zd_scope   = array( 'ids' => array_flip( $zd_ids ) );
 } elseif ( is_product_category() ) {

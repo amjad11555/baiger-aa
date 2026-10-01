@@ -6,3 +6,4 @@ data/
 
 # ملفات بيانات قالب ووردبريس (الكتالوج) — ليست بيانات البوت
 !/wordpress-store/maria/inc/data/
+!/wordpress-store/biskato/inc/data/

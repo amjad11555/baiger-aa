@@ -165,8 +165,9 @@ function zad_price_html( $html, $product ) {
 	if ( is_admin() && ! wp_doing_ajax() ) {
 		return $html;
 	}
-	if ( zad_prices_need_login() && function_exists( 'wc_get_page_permalink' ) ) {
-		return sprintf( '<a class="zd-price-request zd-price-login" href="%s">سجّل دخولك لرؤية السعر</a>', esc_url( wc_get_page_permalink( 'myaccount' ) ) );
+	if ( zad_prices_need_login() ) {
+		list( $cta_url, $cta_text ) = zad_price_cta();
+		return sprintf( '<a class="zd-price-request zd-price-login" href="%1$s">%2$s</a>', esc_url( $cta_url ), esc_html( $cta_text ) );
 	}
 	if ( ! zad_show_prices() ) {
 		return '<span class="zd-price-request">السعر عند الطلب</span>';
@@ -177,6 +178,8 @@ function zad_price_html( $html, $product ) {
 	return $html . ' <small class="zd-per">/ كرتونة</small>';
 }
 add_filter( 'woocommerce_get_price_html', 'zad_price_html', 20, 2 );
+// أسعار الجملة بكسور بعد الخصم (240.10 ₺)، والأسعار الصحيحة بلا «.00».
+add_filter( 'woocommerce_price_trim_zeros', '__return_true' );
 
 /**
  * وضع «الأسعار للأعضاء فقط»: لا شراء للزائر قبل تسجيل الدخول
@@ -193,16 +196,35 @@ add_filter( 'woocommerce_is_purchasable', 'zad_members_purchasable', 20 );
 /**
  * البيانات المنظّمة للمنتج: لا سعر فيها حين تكون الأسعار مخفية.
  *
- * @param array $markup بيانات Product.
+ * @param array      $markup  بيانات Product.
+ * @param WC_Product $product المنتج.
  * @return array
  */
-function zad_structured_data_price( $markup ) {
+function zad_structured_data_price( $markup, $product = null ) {
 	if ( ! zad_show_prices() ) {
 		unset( $markup['offers'] );
 	}
+	// الاسم التركي المكتوب على العبوة والقسم: يساعدان على الظهور في بحث «اسم الصنف + جملة».
+	$id = $product instanceof WC_Product ? $product->get_id() : get_the_ID();
+	if ( $id ) {
+		$info = zad_product_info( $id );
+		if ( $info['tr'] ) {
+			$markup['alternateName'] = $info['tr'];
+		}
+		$cats = zad_categories();
+		if ( $info['cat'] && isset( $cats[ $info['cat'] ] ) ) {
+			$markup['category'] = $cats[ $info['cat'] ]['title'];
+		}
+		if ( empty( $markup['brand'] ) && $info['brand'] && isset( zad_brands()[ $info['brand'] ] ) ) {
+			$markup['brand'] = array(
+				'@type' => 'Brand',
+				'name'  => zad_brands()[ $info['brand'] ]['latin'],
+			);
+		}
+	}
 	return $markup;
 }
-add_filter( 'woocommerce_structured_data_product', 'zad_structured_data_price', 20 );
+add_filter( 'woocommerce_structured_data_product', 'zad_structured_data_price', 20, 2 );
 
 /**
  * واجهة ووكومرس العامة (Store API): إزالة الأسعار من ردود المنتجات حين تكون مخفية.
@@ -334,16 +356,10 @@ function zad_card_badges( $product ) {
 	if ( ! $product->is_in_stock() ) {
 		$out .= '<span class="zd-badge zd-badge--muted">نفدت الكمية</span>';
 	} else {
-		if ( $product->is_on_sale() && zad_show_prices() ) {
+		// نسبة الخصم (إيتي 2%، أولكر 5%…) تظهر للجميع، فهي لا تكشف السعر وتشجّع على فتح حساب.
+		if ( $product->is_on_sale() && 'hidden' !== zad_price_gate() ) {
 			$pct = zad_discount_percent( $product );
-			// شارة موحّدة بالمبلغ الموفَّر على الكرتونة («−10 ₺») لكل العروض، فهي أوضح لصاحب المحل
-			// من خليط «−10 ₺» و«−2%» (النسبة تبقى للأصناف المتغيّرة فقط).
-			$off = $product->is_type( 'simple' ) ? round( (float) $product->get_regular_price() - (float) $product->get_price(), 2 ) : 0;
-			if ( $off > 0 ) {
-				$out .= sprintf( '<span class="zd-badge zd-badge--sale"><bdi dir="ltr">−%s</bdi></span>', esc_html( zad_money_plain( $off ) ) );
-			} else {
-				$out .= $pct ? sprintf( '<span class="zd-badge zd-badge--sale"><bdi dir="ltr">−%d%%</bdi></span>', $pct ) : '<span class="zd-badge zd-badge--sale">عرض</span>';
-			}
+			$out .= $pct ? sprintf( '<span class="zd-badge zd-badge--sale">خصم <bdi dir="ltr">%d%%</bdi></span>', $pct ) : '<span class="zd-badge zd-badge--sale">عرض</span>';
 		}
 		if ( function_exists( 'zad_is_new' ) && zad_engage( 'news' )['badge'] && zad_is_new( $product ) ) {
 			$out .= '<span class="zd-badge zd-badge--new">جديد</span>';
@@ -372,11 +388,13 @@ function zad_cart_control( $product, $qty = 0, $context = 'card' ) {
 	}
 	// وضع «الأسعار للأعضاء فقط»: الزائر يسجّل دخوله أولاً، ولا يصل أي سعر إلى الصفحة.
 	if ( zad_prices_need_login() ) {
+		$verify = 'verify' === zad_price_gate();
+		$label  = $verify ? 'أكّد حسابك للطلب' : 'سجّل للطلب ورؤية السعر';
 		return sprintf(
 			'<a class="zd-login-buy zd-login-buy--%1$s" href="%2$s">%3$s</a>',
 			esc_attr( $context ),
-			esc_url( add_query_arg( 'tab', 'login', wc_get_page_permalink( 'myaccount' ) ) ),
-			'row' === $context ? zad_icon( 'user', '', 18 ) . '<span class="screen-reader-text">سجّل دخولك لطلب ' . esc_html( $name ) . '</span>' : '<span>سجّل دخولك للطلب</span>'
+			esc_url( $verify ? wc_get_page_permalink( 'myaccount' ) . '#zd-verify' : add_query_arg( 'tab', 'register', wc_get_page_permalink( 'myaccount' ) ) ),
+			'row' === $context ? zad_icon( $verify ? 'whatsapp' : 'user', '', 18 ) . '<span class="screen-reader-text">' . esc_html( $label . ': ' . $name ) . '</span>' : '<span>' . esc_html( $label ) . '</span>'
 		);
 	}
 	if ( ! $product->is_purchasable() || ! $product->is_in_stock() ) {
@@ -580,7 +598,7 @@ add_action( 'woocommerce_single_product_summary', 'zad_single_extras', 35 );
 function zad_trust_badges() {
 	$items = array(
 		array( 'التوريد', 'داخل ' . zad_opt( 'city' ) . ' خلال 24–48 ساعة، ولكل الولايات حسب الجدول' ),
-		array( 'الدفع', 'نقداً عند الاستلام، مع فاتورة نظامية' ),
+		array( 'الدفع', 'نقداً عند الاستلام في إسطنبول، وتحويل بنكي خارجها' ),
 		array( 'الجودة', 'منتجات أصلية بدفعات إنتاج حديثة' ),
 		array( 'الحد الأدنى', zad_min_cartons() > 0 ? sprintf( '%d كرتونة للطلبية من أي أصناف', zad_min_cartons() ) : 'كرتونة واحدة من الصنف' ),
 	);
@@ -637,7 +655,7 @@ function zad_wholesale_tab() {
 		printf( '<li>الحد الأدنى لقيمة الطلبية: <strong>%s</strong></li>', wp_kses_post( wc_price( $min ) ) );
 	}
 	printf( '<li>التوريد: داخل %s خلال 24 إلى 48 ساعة من التأكيد، وإلى باقي الولايات وفق جدول التوزيع.</li>', esc_html( zad_opt( 'city' ) ) );
-	echo '<li>الدفع: نقداً عند الاستلام، مع فاتورة نظامية لكل طلبية.</li>';
+	echo '<li>الدفع: نقداً عند الاستلام داخل إسطنبول فقط، وبتحويل بنكي للطلبات خارج إسطنبول وخارج تركيا. فاتورة نظامية مع كل طلبية.</li>';
 	printf( '<li>صنف غير موجود في القائمة؟ <a href="%s">أرسل طلب توريد خاص</a> ونؤمّنه من المصدر.</li>', esc_url( zad_page_url( 'special_request' ) ) );
 	printf( '<li>للتصدير خارج تركيا (حاويات وطبليات مختلطة): <a href="%s">اطلب عرض سعر للتصدير</a>.</li>', esc_url( zad_page_url( 'export' ) ) );
 	echo '</ul></div>';
@@ -907,13 +925,33 @@ add_filter( 'woocommerce_add_to_cart_fragments', 'zad_cart_fragments' );
  * ---------------------------------------------------------------------- */
 
 /**
+ * تسمية حقل الولاية لتركيا: ووكومرس يسميها «Province» ويبدّلها سكربت الصفحة حسب الدولة.
+ *
+ * @param array $locale إعدادات الدول.
+ * @return array
+ */
+function zad_country_locale_labels( $locale ) {
+	$locale['TR']['state']['label']    = 'الولاية';
+	$locale['TR']['state']['required'] = true;
+	return $locale;
+}
+add_filter( 'woocommerce_get_country_locale', 'zad_country_locale_labels', 20 );
+
+/**
  * حقول العنوان الافتراضية.
  *
  * @param array $fields الحقول.
  * @return array
  */
 function zad_default_address_fields( $fields ) {
-	unset( $fields['last_name'], $fields['address_2'], $fields['postcode'], $fields['state'] );
+	unset( $fields['last_name'], $fields['address_2'], $fields['postcode'] );
+	// الولاية تحدد طريقة الدفع: إسطنبول = نقداً عند الاستلام، وغيرها = تحويل بنكي.
+	if ( isset( $fields['state'] ) ) {
+		$fields['state']['label']    = 'الولاية';
+		$fields['state']['required'] = true;
+		$fields['state']['priority'] = 45;
+		$fields['state']['class']    = array( 'form-row-wide', 'address-field', 'update_totals_on_change' );
+	}
 	if ( isset( $fields['first_name'] ) ) {
 		$fields['first_name']['label']       = 'اسم المسؤول';
 		$fields['first_name']['placeholder'] = 'صاحب المتجر أو مسؤول المشتريات';
@@ -938,8 +976,8 @@ function zad_default_address_fields( $fields ) {
 		$fields['country']['priority'] = 40;
 	}
 	if ( isset( $fields['city'] ) ) {
-		$fields['city']['label']       = 'المدينة / المنطقة';
-		$fields['city']['placeholder'] = 'مثال: إسطنبول – الفاتح';
+		$fields['city']['label']       = 'المنطقة / الحي';
+		$fields['city']['placeholder'] = 'مثال: الفاتح';
 		$fields['city']['priority']    = 50;
 	}
 	if ( isset( $fields['address_1'] ) ) {
@@ -1030,7 +1068,7 @@ function zad_thankyou_whatsapp( $order_id ) {
 	}
 	$cod = zad_cod_method_label( $order );
 	if ( $cod ) {
-		$lines[] = 'الدفع: عند الاستلام — ' . $cod;
+		$lines[] = 'الدفع: ' . ( 'bacs' === $order->get_payment_method() ? 'تحويل بنكي' : 'نقداً عند الاستلام' );
 	}
 	$lines[] = 'الاسم: ' . trim( $order->get_billing_first_name() . ' ' . $order->get_billing_company() );
 	$lines[] = 'الجوال: ' . $order->get_billing_phone();

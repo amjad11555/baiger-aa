@@ -17,22 +17,23 @@ if ( ! defined( 'ABSPATH' ) || ! function_exists( 'zad_seed_description' ) ) {
 }
 
 $out  = isset( $args[0] ) ? $args[0] : 'products-ar.csv';
-$rows = include ZAD_DIR . '/inc/data/catalog.php';
+$rows = zad_catalog_rows();
 $cats = zad_categories();
 
 $fh = fopen( $out, 'w' );
 fwrite( $fh, "\xEF\xBB\xBF" ); // BOM ليعرض Excel الحروف العربية بشكل صحيح.
 
-$header = array( 'Type', 'SKU', 'Name', 'Published', 'Is featured?', 'Visibility in catalog', 'Short description', 'Description', 'Sale price', 'Regular price', 'Categories', 'In stock?', 'Meta: _zad_brand', 'Meta: _zad_line', 'Meta: _zad_tr', 'Meta: _zad_flavor', 'Meta: _zad_pack', 'Meta: _zad_units', 'Meta: _zad_bundle' );
+$header = array( 'Type', 'SKU', 'Name', 'Published', 'Is featured?', 'Visibility in catalog', 'Short description', 'Description', 'Sale price', 'Regular price', 'Categories', 'In stock?', 'Brands', 'Meta: _zad_brand', 'Meta: _zad_line', 'Meta: _zad_tr', 'Meta: _zad_flavor', 'Meta: _zad_pack', 'Meta: _zad_units', 'Meta: _zad_unit' );
 fputcsv( $fh, $header, ',', '"', '\\' );
 
-foreach ( $rows as $row ) {
-	$r = array_combine( array( 'sku', 'brand', 'cat', 'line', 'name', 'tr', 'flavor', 'pack', 'units', 'price', 'sale', 'best', 'desc' ), $row );
-
-	$categories = array( $cats[ $r['cat'] ]['name'] );
-	if ( ( $r['sale'] || 'offers' === $r['cat'] ) && 'offers' !== $r['cat'] ) {
+foreach ( $rows as $r ) {
+	// سعر العرض = خصم العلامة الدائم من الإعدادات (إيتي وأولكر).
+	$sale       = zad_discounted_price( $r['price'], $r['brand'] );
+	$categories = array( isset( $cats[ $r['cat'] ] ) ? $cats[ $r['cat'] ]['name'] : $r['cat'] );
+	if ( '' !== $sale ) {
 		$categories[] = $cats['offers']['name'];
 	}
+	$brand = isset( zad_brands()[ $r['brand'] ] ) ? zad_brands()[ $r['brand'] ]['ar'] : '';
 
 	fputcsv(
 		$fh,
@@ -43,19 +44,20 @@ foreach ( $rows as $row ) {
 			1,
 			$r['best'] ? 1 : 0,
 			'visible',
-			'<p>' . $r['desc'] . '. التعبئة: ' . $r['pack'] . '. متوفر بالجملة للبقالات بسعر الكرتونة مع توصيل سريع.</p>',
+			'<p>' . $r['desc'] . '.' . ( $r['pack'] ? ' التعبئة: ' . $r['pack'] . '.' : '' ) . '</p>',
 			zad_seed_description( $r ),
-			$r['sale'] ? $r['sale'] : '',
+			$sale,
 			$r['price'],
 			implode( ', ', $categories ),
 			1,
+			$brand,
 			$r['brand'],
 			$r['line'],
 			$r['tr'],
 			$r['flavor'],
 			$r['pack'],
 			(int) $r['units'],
-			'offers' === $r['cat'] ? 1 : '',
+			$r['unit'] ? $r['unit'] : 'علبة',
 		),
 		',',
 		'"',

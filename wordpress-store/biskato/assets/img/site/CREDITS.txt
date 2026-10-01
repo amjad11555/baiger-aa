@@ -1,11 +1,14 @@
-Image credits — ZAD theme, assets/img/site
+Image credits — Biskato theme, assets/img/site
 
-hero-eti-*, tile-snacks, tile-biscuits, tile-offers, banner-sourcing, eti-*
+These bundled images are placeholders shown until the theme imports the site photos
+(hero-v5, tiles, delivery banner, about-team) to the live host. See inc/site-images.php.
+
+eti-cikolata
   Built from Eti promotional photographs supplied by the store owner.
   The Eti name, logo and packaging are trademarks of Eti Gıda Sanayi ve Ticaret A.Ş.
 
-tile-cake, tile-chips, banner-export, stage-*
-  Stage graphics drawn for this theme. The food, shop and transport icons placed on
+hero-v5, tile-*, banner-delivery, about-team, seg-export, seg-supermarket, sourcing, stage-*
+  Stage graphics drawn for this theme. The food, box, shop and transport icons placed on
   the stands are from Microsoft Fluent Emoji (https://github.com/microsoft/fluentui-emoji),
   used under the MIT License:
 

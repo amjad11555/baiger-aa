@@ -603,7 +603,12 @@
 				t.setAttribute('aria-selected', on ? 'true' : 'false');
 				t.tabIndex = on ? 0 : -1;
 				var panel = doc.getElementById(t.getAttribute('aria-controls'));
-				if (panel) { panel.hidden = !on; }
+				if (panel) {
+					panel.hidden = !on;
+					// محتوى التبويب يُرسم عند فتحه أول مرة فقط.
+					var tpl = on ? panel.querySelector('template[data-zd-lazy]') : null;
+					if (tpl) { panel.replaceChild(tpl.content, tpl); if (typeof paintWish === 'function') { paintWish(); } }
+				}
 			});
 			if (focus) { tab.focus(); }
 		}
@@ -1147,6 +1152,37 @@
 			doc.documentElement.classList.toggle('zd-stickybuy-on', show);
 		}, { rootMargin: '0px 0px -60px 0px' }).observe(mainBuy);
 	}
+
+	// تبويبات صفحة المنتج (بدل سكربت ووكومرس المعتمد على jQuery).
+	$$('.wc-tabs-wrapper').forEach(function (w) {
+		var links = $$('.wc-tabs a', w);
+		var panels = $$('.woocommerce-Tabs-panel', w);
+		if (!links.length) { return; }
+		function show(id, focus) {
+			panels.forEach(function (p) { p.hidden = ('#' + p.id) !== id; });
+			links.forEach(function (a) {
+				var on = a.getAttribute('href') === id;
+				a.parentNode.classList.toggle('active', on);
+				a.setAttribute('aria-selected', on ? 'true' : 'false');
+				a.setAttribute('tabindex', on ? '0' : '-1');
+				if (on && focus) { a.focus(); }
+			});
+		}
+		links.forEach(function (a, i) {
+			a.addEventListener('click', function (e) { e.preventDefault(); show(a.getAttribute('href')); });
+			a.addEventListener('keydown', function (e) {
+				var k = e.key, n = null;
+				if (k === 'ArrowLeft' || k === 'ArrowRight') {
+					// في الصفحة العربية السهم الأيسر يعني التالي.
+					var step = (k === 'ArrowLeft') === (doc.documentElement.dir === 'rtl') ? 1 : -1;
+					n = links[(i + step + links.length) % links.length];
+				}
+				if (n) { e.preventDefault(); show(n.getAttribute('href'), true); }
+			});
+		});
+		var hash = window.location.hash;
+		show(hash && w.querySelector('.wc-tabs a[href="' + hash + '"]') ? hash : links[0].getAttribute('href'));
+	});
 
 	// العودة إلى أعلى الصفحة.
 	var totop = $('[data-zd-totop]');

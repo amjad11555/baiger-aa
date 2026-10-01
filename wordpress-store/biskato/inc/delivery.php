@@ -121,6 +121,28 @@ add_action( 'init', 'zad_delivery_migrate', 25 );
 add_filter( 'woocommerce_shipping_show_shipping_calculator', '__return_false' );
 
 /**
+ * التوصيل المجاني لإسطنبول فقط: لباقي الولايات التركية يتغير الاسم إلى شحن نؤكد تكلفته قبل الإرسال.
+ *
+ * @param WC_Shipping_Rate[] $rates   الأسعار.
+ * @param array              $package الطرد.
+ * @return WC_Shipping_Rate[]
+ */
+function zad_region_rate_labels( $rates, $package ) {
+	$d      = isset( $package['destination'] ) ? (array) $package['destination'] : array();
+	$region = function_exists( 'zad_region_of' ) ? zad_region_of( isset( $d['country'] ) ? $d['country'] : '', isset( $d['state'] ) ? $d['state'] : '', isset( $d['city'] ) ? $d['city'] : '' ) : 'istanbul';
+	if ( 'turkey' !== $region ) {
+		return $rates;
+	}
+	foreach ( $rates as $rate ) {
+		if ( 'free_shipping' === $rate->get_method_id() ) {
+			$rate->set_label( 'شحن إلى ولايتك (نؤكد الموعد والتكلفة قبل الإرسال)' );
+		}
+	}
+	return $rates;
+}
+add_filter( 'woocommerce_package_rates', 'zad_region_rate_labels', 100, 2 );
+
+/**
  * سطر توضيحي تحت طريقة التوصيل في السلة والدفع.
  *
  * @param WC_Shipping_Rate $rate السعر.

@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 function zad_quick_order_groups() {
 	$cats   = zad_categories();
 	$groups = array();
-	foreach ( array( 'cake', 'biscuits', 'chips', 'snacks', 'offers' ) as $slug ) {
+	foreach ( array_keys( $cats ) as $slug ) {
 		$groups[ $slug ] = array(
 			'name'  => $cats[ $slug ]['title'],
 			'image' => $cats[ $slug ]['image'],

@@ -47,6 +47,25 @@ function zad_normalize( $s ) {
 }
 
 /**
+ * هيكل الكلمة للمطابقة التقريبية: تُحذف حروف المد (ا و ي) بعد أول حرف ويُدمج الحرف المكرر،
+ * فتتطابق «بسكريم» و«بيسكريم»، و«هالي» و«هاللي»، و«كرانشي» و«كرنشي».
+ *
+ * @param string $s نص مطبّع.
+ * @return string
+ */
+function zad_skeleton( $s ) {
+	$out = array();
+	foreach ( explode( ' ', (string) $s ) as $w ) {
+		if ( '' === $w ) {
+			continue;
+		}
+		$w     = mb_substr( $w, 0, 1 ) . preg_replace( '/[اوي]/u', '', mb_substr( $w, 1 ) );
+		$out[] = preg_replace( '/(.)\1+/u', '$1', $w );
+	}
+	return implode( ' ', $out );
+}
+
+/**
  * مرادفات الأقسام (كلمات يكتبها أصحاب البقالات).
  *
  * @return array slug => [كلمات]
@@ -56,7 +75,11 @@ function zad_category_aliases() {
 		'cake'     => array( 'كيك', 'كيكه', 'كعك', 'kek', 'cake' ),
 		'biscuits' => array( 'بسكويت', 'بسكوت', 'بيسكويت', 'biskuvi', 'biscuit' ),
 		'chips'    => array( 'شيبس', 'شيبسات', 'تشيبس', 'جيبس', 'cips', 'chips' ),
-		'snacks'   => array( 'تسالي', 'سناكس', 'snack' ),
+		'snacks'   => array( 'شوكولاته', 'شكولاته', 'شوكولا', 'ويفر', 'تسالي', 'cikolata', 'gofret', 'chocolate' ),
+		'candy'    => array( 'سكاكر', 'حلوى', 'حلويات', 'جيلي', 'ملبس', 'مصاص', 'مصاصه', 'شيكر', 'seker', 'sekerleme', 'jelibon', 'candy' ),
+		'gum'      => array( 'علكه', 'علك', 'لبان', 'مستكه', 'sakiz', 'gum' ),
+		'toys'     => array( 'العاب', 'لعبه', 'لعب', 'مفاجاه', 'مفاجات', 'oyuncak', 'surpriz', 'toy' ),
+		'drinks'   => array( 'عصير', 'عصاير', 'عصائر', 'شاي', 'مشروب', 'مشروبات', 'icecek', 'cay', 'juice' ),
 		'offers'   => array( 'عرض', 'عروض', 'تخفيض', 'تخفيضات', 'خصم', 'offer' ),
 	);
 }
@@ -71,7 +94,11 @@ function zad_category_hints() {
 		'cake'     => array( 'براوني', 'رول', 'كب كيك', 'مافن' ),
 		'biscuits' => array( 'ويفر', 'وافر', 'كوكيز', 'gofret', 'kurabiye', 'wafer' ),
 		'chips'    => array( 'كراكر', 'كراكرز', 'فشار', 'ذره', 'kraker', 'popcorn' ),
-		'snacks'   => array( 'شوكولاته', 'شكولاته', 'شوكولا', 'حلوى', 'حلويات', 'جيلي', 'مارشميلو', 'سكاكر', 'cikolata', 'chocolate', 'bar' ),
+		'snacks'   => array( 'بار', 'مارشميلو', 'كاكاو', 'bar' ),
+		'candy'    => array( 'لوليبوب', 'لولي بوب', 'توفي', 'مارشميلو', 'lolipop', 'toffee' ),
+		'gum'      => array( 'بالون', 'balon' ),
+		'toys'     => array( 'بيضه', 'بيض المفاجاه', 'كندر', 'surprise' ),
+		'drinks'   => array( 'نسكافيه', 'قهوه', 'كاكاو ساخن', 'kahve' ),
 		'offers'   => array( 'باقه', 'باقات' ),
 	);
 }
@@ -86,7 +113,7 @@ function zad_search_index() {
 	if ( null !== $index ) {
 		return $index;
 	}
-	$index = get_transient( 'zad_search_index' );
+	$index = get_transient( 'zad_search_index_' . ZAD_VERSION );
 	if ( is_array( $index ) ) {
 		return $index;
 	}
@@ -134,6 +161,7 @@ function zad_search_index() {
 			'n'     => zad_normalize( $p->get_name() ),
 			't'     => zad_normalize( $info['tr'] ),
 			'h'     => ' ' . zad_normalize( implode( ' ', $parts ) ) . ' ',
+			'k'     => ' ' . zad_skeleton( zad_normalize( implode( ' ', $parts ) ) ) . ' ',
 			'cat'   => $info['cat'],
 			'cats'  => is_array( $in_cats ) ? $in_cats : array(),
 			'brand' => $info['brand'],
@@ -141,7 +169,7 @@ function zad_search_index() {
 			'sale'  => $p->is_on_sale() ? 1 : 0,
 		);
 	}
-	set_transient( 'zad_search_index', $index, DAY_IN_SECONDS );
+	set_transient( 'zad_search_index_' . ZAD_VERSION, $index, DAY_IN_SECONDS );
 	return $index;
 }
 
@@ -149,7 +177,7 @@ function zad_search_index() {
  * مسح الفهرس عند تغيّر المنتجات أو الأقسام أو الشركات.
  */
 function zad_search_flush() {
-	delete_transient( 'zad_search_index' );
+	delete_transient( 'zad_search_index_' . ZAD_VERSION );
 }
 foreach ( array( 'woocommerce_update_product', 'woocommerce_new_product', 'before_delete_post', 'trashed_post', 'untrashed_post', 'edited_product_brand', 'edited_product_cat', 'created_product_brand', 'delete_product_brand', 'woocommerce_product_import_inserted_product_object' ) as $zad_hook ) {
 	add_action( $zad_hook, 'zad_search_flush' );
@@ -208,6 +236,11 @@ function zad_search_score( $tokens, $nq, $scope, $strict ) {
 			if ( ! $found && 0 === strpos( $t, 'ال' ) && mb_strlen( $t ) > 4 ) {
 				// كلمة بـ «ال» التعريف: جرّبها بدونها.
 				$found = false !== strpos( $row['h'], mb_substr( $t, 2 ) );
+			}
+			if ( ! $found && isset( $row['k'] ) && mb_strlen( $t ) >= 4 ) {
+				// إملاء مختلف للاسم نفسه (بسكريم / بيسكريم).
+				$sk    = zad_skeleton( $t );
+				$found = mb_strlen( $sk ) >= 3 && false !== strpos( $row['k'], $sk );
 			}
 			if ( ! $found && ! $strict && mb_strlen( $t ) >= 4 ) {
 				// مطابقة جذر الكلمة (أول 4 أحرف) في الوضع المرن.

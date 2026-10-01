@@ -1,8 +1,10 @@
 <?php
 /**
- * الواجهة الرئيسية: عارض شرائح بعرض الشاشة بأسلوب Kalles (ثلاث شرائح بتلاشٍ ناعم ونقاط وأسهم).
- * الصور مصممة من صور إيتي: المنتج على جانب، وامتداد خلفيته الملوّنة تحت النص الأبيض.
- * tone=dark نص فاتح على خلفية داكنة، align=end النص في الجهة المقابلة (يسار الصفحة العربية).
+ * الواجهة الرئيسية: قسم افتتاحي واحد ثابت (بلا شرائح متحركة، أسرع وأوضح).
+ *
+ * النص والأزرار في جهة، والصورة في الجهة الأخرى مع شارات خصم إيتي وأولكر.
+ * الأزرار تتبدل حسب حالة الزائر: زائر جديد ← افتح حساباً، حساب غير مؤكد ← أكّد عبر واتساب،
+ * حساب مؤكد ← قائمة الأسعار والعروض.
  *
  * @package Zad
  */
@@ -10,93 +12,66 @@
 defined( 'ABSPATH' ) || exit;
 
 $zd_custom = (string) zad_opt( 'hero_image' );
-$zd_slides = array(
-	array(
-		'image'   => 'hero-eti-1',
-		'mobile'  => 'hero-eti-1-m',
-		'tone'    => $zd_custom ? '' : 'dark',
-		'align'   => '',
-		'kicker'  => zad_opt( 'hero_kicker' ),
-		'title'   => zad_opt( 'hero_title' ),
-		'text'    => zad_opt( 'hero_text' ),
-		'primary' => array( 'تصفّح قائمة الأسعار', zad_page_url( 'quick_order' ) ),
-		'second'  => array( 'افتح حساب جملة', zad_wa_number() ? zad_wa_link( 'مرحباً، أرغب بفتح حساب جملة لدى ' . get_bloginfo( 'name' ) ) : zad_page_url( 'contact' ) ),
-	),
-	array(
-		'image'   => 'hero-eti-2',
-		'mobile'  => 'hero-eti-2-m',
-		'tone'    => 'dark',
-		'align'   => 'end',
-		'kicker'  => 'للمستوردين خارج تركيا',
-		'title'   => 'حاوية كاملة من أشهر العلامات التركية',
-		'text'    => 'طبليات مختلطة أو حاويات 20 و40 قدماً إلى أسواقك، مع شهادات المنشأ والحلال ومستندات التخليص.',
-		'primary' => array( 'اطلب عرض سعر للتصدير', zad_page_url( 'export' ) ),
-		'second'  => array(),
-	),
-	array(
-		'image'   => 'hero-eti-3',
-		'mobile'  => 'hero-eti-3-m',
-		'tone'    => 'dark',
-		'align'   => 'end',
-		'kicker'  => 'عروض الجملة',
-		'title'   => 'أسعار خاصة على كميات محدودة',
-		'text'    => 'خصومات على سعر الكرتونة لأصناف مختارة، تتجدد أسبوعياً حتى نفاد الكمية.',
-		'primary' => array( 'تسوّق العروض', zad_cat_url( 'offers' ) ),
-		'second'  => array(),
-	),
-);
+$zd_gate   = zad_price_gate();
+$zd_count  = (int) wp_count_posts( 'product' )->publish;
+$zd_count  = $zd_count >= 20 ? (int) floor( $zd_count / 10 ) * 10 : $zd_count;
+$zd_acc    = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/' );
+$zd_shop   = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+
+if ( 'login' === $zd_gate ) {
+	$zd_primary = array( 'افتح حساب جملة مجاناً', add_query_arg( 'tab', 'register', $zd_acc ) );
+	$zd_second  = array( 'تصفّح الأصناف', $zd_shop );
+} elseif ( 'verify' === $zd_gate ) {
+	$zd_primary = array( 'أكّد حسابك عبر واتساب', $zd_acc . '#zd-verify' );
+	$zd_second  = array( 'تصفّح الأصناف', $zd_shop );
+} else {
+	$zd_primary = array( 'قائمة أسعار الجملة', zad_page_url( 'quick_order' ) );
+	$zd_second  = array( 'عروض إيتي وأولكر', zad_cat_url( 'offers' ) );
+}
+$zd_badges = array();
+foreach ( array( 'eti', 'ulker' ) as $zd_b ) {
+	$zd_d = function_exists( 'zad_brand_discount' ) ? zad_brand_discount( $zd_b ) : 0;
+	if ( $zd_d > 0 ) {
+		$zd_all      = zad_brands();
+		$zd_badges[] = array( $zd_all[ $zd_b ]['ar'], ( 0 + $zd_d ) . '%' );
+	}
+}
 ?>
-<section class="zd-hero<?php echo $zd_custom ? '' : ' zd-hero--dark'; ?>" aria-roledescription="carousel" aria-label="عروض <?php bloginfo( 'name' ); ?>" data-zd-slider data-autoplay="6500">
-	<div class="zd-hero__track">
-		<?php foreach ( $zd_slides as $zd_i => $zd_s ) : ?>
-			<div class="zd-slide<?php echo 0 === $zd_i ? ' is-active' : ''; ?><?php echo $zd_s['tone'] ? ' zd-slide--' . esc_attr( $zd_s['tone'] ) : ''; ?><?php echo $zd_s['align'] ? ' zd-slide--' . esc_attr( $zd_s['align'] ) : ''; ?>" role="group" aria-roledescription="slide" aria-label="<?php echo esc_attr( ( $zd_i + 1 ) . ' من ' . count( $zd_slides ) ); ?>"<?php echo 0 === $zd_i ? '' : ' aria-hidden="true"'; ?>>
-				<div class="zd-slide__media">
-					<?php if ( 0 === $zd_i && $zd_custom ) : ?>
-						<img src="<?php echo esc_url( $zd_custom ); ?>" alt="" fetchpriority="high" decoding="async">
-					<?php else : ?>
-						<picture>
-							<?php if ( $zd_s['mobile'] ) : ?>
-								<source media="(max-width: 767px)" srcset="<?php echo esc_url( zad_img_url( $zd_s['mobile'], true ) ); ?> 550w, <?php echo esc_url( zad_img_url( $zd_s['mobile'] ) ); ?> 1100w" sizes="100vw">
-							<?php endif; ?>
-							<?php
-							echo zad_img( // phpcs:ignore WordPress.Security.EscapeOutput
-								$zd_s['image'],
-								'',
-								array(
-									'sizes'         => '100vw',
-									'loading'       => 0 === $zd_i ? 'eager' : 'lazy',
-									'fetchpriority' => 0 === $zd_i ? 'high' : '',
-								)
-							);
-							?>
-						</picture>
-					<?php endif; ?>
-				</div>
-				<div class="zd-container zd-slide__inner">
-					<div class="zd-slide__content">
-						<p class="zd-slide__kicker"><?php echo esc_html( $zd_s['kicker'] ); ?></p>
-						<?php if ( 0 === $zd_i ) : ?>
-							<h1 class="zd-slide__title"><?php echo esc_html( $zd_s['title'] ); ?></h1>
-						<?php else : ?>
-							<h2 class="zd-slide__title"><?php echo esc_html( $zd_s['title'] ); ?></h2>
-						<?php endif; ?>
-						<p class="zd-slide__text"><?php echo esc_html( $zd_s['text'] ); ?></p>
-						<div class="zd-slide__actions">
-							<a class="zd-btn zd-btn--dark zd-btn--lg" href="<?php echo esc_url( $zd_s['primary'][1] ); ?>"<?php echo 0 === $zd_i ? '' : ' tabindex="-1"'; ?>><?php echo esc_html( $zd_s['primary'][0] ); ?></a>
-							<?php if ( $zd_s['second'] ) : ?>
-								<a class="zd-btn zd-btn--outline zd-btn--lg" href="<?php echo esc_url( $zd_s['second'][1] ); ?>"<?php echo 0 === strpos( $zd_s['second'][1], 'https://wa.me' ) ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo esc_html( $zd_s['second'][0] ); ?></a>
-							<?php endif; ?>
-						</div>
-					</div>
-				</div>
+<section class="zd-hero5" aria-labelledby="zd-hero-title">
+	<div class="zd-container zd-hero5__grid">
+		<div class="zd-hero5__copy">
+			<p class="zd-hero5__kicker"><span class="zd-hero5__dot" aria-hidden="true"></span><?php echo esc_html( zad_opt( 'hero_kicker' ) ); ?></p>
+			<h1 class="zd-hero5__title" id="zd-hero-title"><?php echo esc_html( zad_opt( 'hero_title' ) ); ?></h1>
+			<p class="zd-hero5__text"><?php echo esc_html( zad_opt( 'hero_text' ) ); ?></p>
+			<div class="zd-hero5__actions">
+				<a class="zd-btn zd-btn--dark zd-btn--lg" href="<?php echo esc_url( $zd_primary[1] ); ?>"><?php echo esc_html( $zd_primary[0] ); ?></a>
+				<a class="zd-btn zd-btn--outline zd-btn--lg" href="<?php echo esc_url( $zd_second[1] ); ?>"><?php echo esc_html( $zd_second[0] ); ?></a>
 			</div>
-		<?php endforeach; ?>
-	</div>
-	<button type="button" class="zd-hero__arrow zd-hero__arrow--prev" data-zd-slide="prev" aria-label="الشريحة السابقة"></button>
-	<button type="button" class="zd-hero__arrow zd-hero__arrow--next" data-zd-slide="next" aria-label="الشريحة التالية"></button>
-	<div class="zd-hero__dots" role="group" aria-label="اختر شريحة">
-		<?php foreach ( $zd_slides as $zd_i => $zd_s ) : ?>
-			<button type="button" class="zd-hero__dot<?php echo 0 === $zd_i ? ' is-active' : ''; ?>" data-zd-slide="<?php echo (int) $zd_i; ?>" aria-label="<?php echo esc_attr( 'الشريحة ' . ( $zd_i + 1 ) ); ?>"<?php echo 0 === $zd_i ? ' aria-current="true"' : ''; ?>></button>
-		<?php endforeach; ?>
+			<ul class="zd-hero5__trust">
+				<li><?php zad_the_icon( 'box', '', 20 ); ?><span><b><?php echo esc_html( '+' . $zd_count ); ?></b> صنفاً بالجملة</span></li>
+				<li><?php zad_the_icon( 'truck', '', 20 ); ?><span>توصيل مجاني <b>داخل إسطنبول</b></span></li>
+				<li><?php zad_the_icon( 'wallet', '', 20 ); ?><span>نقداً عند الاستلام <b>في إسطنبول</b></span></li>
+			</ul>
+		</div>
+		<div class="zd-hero5__media">
+			<?php if ( $zd_custom ) : ?>
+				<img src="<?php echo esc_url( $zd_custom ); ?>" alt="" width="1600" height="1200" fetchpriority="high" decoding="async">
+			<?php else : ?>
+				<?php
+				echo zad_img( // phpcs:ignore WordPress.Security.EscapeOutput
+					'hero-v5',
+					'كراتين جملة من الكيك والبسكويت والشيبس والسكاكر',
+					array(
+						'sizes'         => '(min-width: 1024px) 50vw, 100vw',
+						'loading'       => 'eager',
+						'fetchpriority' => 'high',
+					)
+				);
+				?>
+			<?php endif; ?>
+			<?php foreach ( $zd_badges as $zd_i => $zd_bd ) : ?>
+				<span class="zd-hero5__badge zd-hero5__badge--<?php echo (int) $zd_i; ?>"><small>خصم دائم</small><b><?php echo esc_html( $zd_bd[0] ); ?> <span><?php echo esc_html( $zd_bd[1] ); ?></span></b></span>
+			<?php endforeach; ?>
+		</div>
 	</div>
 </section>

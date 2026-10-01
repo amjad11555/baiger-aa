@@ -1,970 +1,897 @@
 <?php
 /**
- * استيراد صور المنتجات الرسمية من مواقع العلامات (إيتي، أولكر، بونوتشي).
+ * صور المنتجات تلقائياً من الإنترنت (يعمل على استضافتك).
  *
- * يعمل على استضافتك مباشرة:
- * 1) صفحات مصدر محفوظة لكل منتج (inc/data/image-sources.php): وُجدت بالبحث عن اسم كل منتج،
- *    الصفحة الرسمية أولاً ثم صفحته في متاجر تركية كبرى (A101، Migros).
- * 2) للمنتجات غير المذكورة: فهرسة موقع العلامة (sitemap أو زحف محدود) ومطابقة الاسم التركي.
- * 3) استخراج صورة المنتج من الصفحة (بيانات Product أو og:image أو أنسب <img>).
- * 4) مراجعة النتائج ثم تنزيل الصور وتعيينها صورة رئيسية للمنتج.
+ * لكل منتج بلا صورة:
+ * 1) بحث صور باسمه التركي مع العلامة والوزن (Trendyol، ثم Bing Images، ثم DuckDuckGo، ثم Open Food Facts).
+ * 2) ترتيب النتائج: تطابق كلمات الاسم والعلامة والوزن، والمتاجر التركية الموثوقة أولاً،
+ *    واستبعاد مواقع الصور العامة والتواصل الاجتماعي.
+ * 3) تنزيل أفضل صورة صالحة، وتوحيدها: مربع 800×800 بخلفية بيضاء بصيغة WebP (أو JPG).
+ * 4) تعيينها صورة رئيسية للمنتج، مع حفظ باقي النتائج لزر «صورة أخرى».
  *
- * لوحة التحكم: المنتجات ← الصور الرسمية   |   WP-CLI: wp zad images
+ * يعمل وحده في الخلفية (دفعات كل دقيقة) بعد إضافة المنتجات، ومن لوحة التحكم:
+ * المنتجات ← صور المنتجات (مراجعة، صورة أخرى، لصق رابط صورة). سطر الأوامر: wp zad images
  *
  * @package Zad
  */
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * مصادر الصور لكل علامة (قابلة للتعديل عبر الفلتر zad_image_sources).
- *
- * @return array
- */
-function zad_image_sources() {
-	return apply_filters(
-		'zad_image_sources',
-		array(
-			'eti'     => array(
-				'base'  => 'https://www.etietieti.com',
-				'start' => array( 'https://www.etietieti.com/tr-tr' ),
-			),
-			'ulker'   => array(
-				'base'  => 'https://www.ulker.com.tr',
-				'start' => array( 'https://www.ulker.com.tr/tr' ),
-			),
-			'bonucci' => array(
-				'base'  => 'https://www.bonuccisweet.com',
-				'start' => array( 'https://www.bonuccisweet.com/tr/' ),
-			),
-		)
-	);
-}
+/* -------------------------------------------------------------------------
+ * أدوات
+ * ---------------------------------------------------------------------- */
 
 /**
- * صفحات المصدر المحفوظة لمنتج (حسب SKU)، قابلة للتعديل عبر الفلتر zad_image_hints.
+ * طلب HTTP بمتصفح عادي.
  *
- * @param int $product_id رقم المنتج.
- * @return array روابط مرتبة.
+ * @param string $url     الرابط.
+ * @param array  $headers ترويسات إضافية.
+ * @param int    $timeout المهلة.
+ * @return array|WP_Error
  */
-function zad_img_hints( $product_id ) {
-	static $map = null;
-	if ( null === $map ) {
-		$map = (array) apply_filters( 'zad_image_hints', include ZAD_DIR . '/inc/data/image-sources.php' );
-	}
-	$sku = (string) get_post_meta( $product_id, '_sku', true );
-	return ( $sku && ! empty( $map[ $sku ] ) ) ? array_values( (array) $map[ $sku ] ) : array();
-}
-
-/**
- * جلب صفحة/ملف عبر HTTP بأمان (يمنع العناوين الداخلية).
- *
- * @param string $url الرابط.
- * @return string المحتوى أو فارغ.
- */
-function zad_img_get( $url, &$final_url = null ) {
-	$final_url = $url;
-	$res       = wp_safe_remote_get(
+function zad_img_http( $url, $headers = array(), $timeout = 15 ) {
+	return wp_safe_remote_get(
 		$url,
 		array(
-			'timeout'     => 20,
-			'redirection' => 5,
-			'user-agent'  => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
-			'headers'     => array( 'Accept-Language' => 'tr-TR,tr;q=0.9,en;q=0.6' ),
+			'timeout'     => $timeout,
+			'redirection' => 4,
+			'user-agent'  => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36',
+			'headers'     => array_merge(
+				array(
+					'Accept-Language' => 'tr-TR,tr;q=0.9,en;q=0.7',
+					'Accept'          => 'text/html,application/json,image/avif,image/webp,image/*,*/*;q=0.8',
+				),
+				$headers
+			),
 		)
 	);
-	if ( is_wp_error( $res ) || 200 !== (int) wp_remote_retrieve_response_code( $res ) ) {
-		return '';
-	}
-	// الرابط النهائي بعد التحويلات (لحساب الروابط النسبية بشكل صحيح).
-	if ( isset( $res['http_response'] ) && is_object( $res['http_response'] ) && method_exists( $res['http_response'], 'get_response_object' ) ) {
-		$obj = $res['http_response']->get_response_object();
-		if ( is_object( $obj ) && ! empty( $obj->url ) ) {
-			$final_url = $obj->url;
-		}
-	}
-	return (string) wp_remote_retrieve_body( $res );
 }
 
 /**
- * المضيف بدون www.
+ * نص مبسّط للمقارنة: أحرف لاتينية صغيرة بلا علامات تركية.
+ *
+ * @param string $text النص.
+ * @return string
+ */
+function zad_img_fold( $text ) {
+	$text = strtr( (string) $text, array( 'İ' => 'i', 'I' => 'i', 'ı' => 'i', 'Ş' => 's', 'ş' => 's', 'Ğ' => 'g', 'ğ' => 'g', 'Ü' => 'u', 'ü' => 'u', 'Ö' => 'o', 'ö' => 'o', 'Ç' => 'c', 'ç' => 'c', 'Â' => 'a', 'â' => 'a' ) );
+	$text = strtolower( remove_accents( $text ) );
+	return trim( preg_replace( '/[^a-z0-9]+/', ' ', $text ) );
+}
+
+/**
+ * كلمات الاسم المهمة (بلا وحدات وأرقام وكلمات عامة).
+ *
+ * @param string $tr الاسم التركي.
+ * @return array
+ */
+function zad_img_tokens( $tr ) {
+	$stop = array( 'g', 'gr', 'ml', 'adet', 'li', 'lu', 'lik', 'aile', 'boy', 'kek', 'biskuvi', 'cikolatali', 'sakiz', 'seker', 'and', 'ile', 've', 'the' );
+	$out  = array();
+	foreach ( explode( ' ', zad_img_fold( $tr ) ) as $w ) {
+		if ( strlen( $w ) >= 3 && ! ctype_digit( $w ) && ! in_array( $w, $stop, true ) ) {
+			$out[] = $w;
+		}
+	}
+	return array_values( array_unique( $out ) );
+}
+
+/**
+ * عبارة البحث لمنتج.
+ *
+ * @param int $product_id المنتج.
+ * @return string
+ */
+function zad_img_query( $product_id ) {
+	$q = (string) get_post_meta( $product_id, '_zad_img_query', true );
+	if ( '' !== $q ) {
+		return $q;
+	}
+	$tr = (string) get_post_meta( $product_id, '_zad_tr', true );
+	if ( '' === $tr ) {
+		$tr = get_the_title( $product_id );
+	}
+	return trim( preg_replace( '/[()]+/', ' ', $tr ) );
+}
+
+/**
+ * المضيف بلا www.
  *
  * @param string $url الرابط.
  * @return string
  */
 function zad_img_host( $url ) {
-	$host = strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) );
-	return preg_replace( '/^www\./', '', $host );
+	return preg_replace( '/^www\./', '', strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) ) );
 }
 
 /**
- * تحويل رابط نسبي إلى مطلق.
+ * مواقع موثوقة لصور المنتجات التركية (تُفضَّل)، ومواقع تُستبعد.
  *
- * @param string $url  الرابط.
- * @param string $base رابط الصفحة.
- * @return string
+ * @return array [مفضّلة، مستبعدة]
  */
-function zad_img_abs( $url, $base ) {
-	$url = trim( html_entity_decode( $url, ENT_QUOTES, 'UTF-8' ) );
-	if ( '' === $url || 0 === strpos( $url, 'data:' ) || 0 === strpos( $url, 'javascript:' ) || 0 === strpos( $url, '#' ) ) {
-		return '';
-	}
-	if ( 0 === strpos( $url, '//' ) ) {
-		return 'https:' . $url;
-	}
-	return WP_Http::make_absolute_url( $url, $base );
-}
-
-/**
- * تقسيم نص إلى كلمات مبسّطة (بدون أحرف تركية خاصة).
- *
- * @param string $text النص.
- * @return array
- */
-function zad_img_tokens( $text ) {
-	$text = strtr(
-		mb_strtolower( rawurldecode( (string) $text ), 'UTF-8' ),
+function zad_img_hosts() {
+	return apply_filters(
+		'zad_img_hosts',
 		array(
-			'ç' => 'c',
-			'ğ' => 'g',
-			'ı' => 'i',
-			'i̇' => 'i',
-			'ö' => 'o',
-			'ş' => 's',
-			'ü' => 'u',
-			'â' => 'a',
-			'î' => 'i',
+			array( 'migros', 'migrosone', 'a101', 'carrefoursa', 'sokmarket', 'getir', 'dsmcdn', 'trendyol', 'hepsiburada', 'cimri', 'akakce', 'n11', 'istegelsin', 'macroonline', 'bizimtoptan', 'etietieti', 'ulker', 'elvan', 'solen', 'bonucci', 'simsek', 'toptan', 'market', 'gida', 'sepet', 'cdn' ),
+			array( 'pinterest', 'pinimg', 'facebook', 'fbsbx', 'instagram', 'cdninstagram', 'youtube', 'ytimg', 'tiktok', 'twitter', 'twimg', 'alamy', 'shutterstock', 'dreamstime', 'freepik', 'istockphoto', 'gettyimages', 'depositphotos', '123rf', 'vecteezy', 'wikipedia', 'wikimedia', 'reddit', 'blogspot', 'wordpress.com', 'aliexpress', 'alibaba', 'ebay', 'amazon' ),
 		)
 	);
-	$parts = preg_split( '/[^a-z0-9]+/', $text, -1, PREG_SPLIT_NO_EMPTY );
-	return array_values( array_unique( $parts ) );
 }
 
-/**
- * هل الكلمتان متطابقتان (مع تسامح في اللواحق التركية)؟
- *
- * @param string $a كلمة.
- * @param string $b كلمة.
- * @return bool
- */
-function zad_img_token_match( $a, $b ) {
-	if ( $a === $b ) {
-		return true;
-	}
-	if ( strlen( $a ) >= 5 && strlen( $b ) >= 4 ) {
-		$n = min( 5, strlen( $a ), strlen( $b ) );
-		return substr( $a, 0, $n ) === substr( $b, 0, $n );
-	}
-	return false;
-}
+/* -------------------------------------------------------------------------
+ * مصادر البحث
+ * ---------------------------------------------------------------------- */
 
 /**
- * كلمات وصفية (نكهة/تغليف/نوع): لا تصلح اسماً للخط، وتعارضها في رابط الصفحة يُبطل المطابقة.
+ * بحث Trendyol (أكبر متجر تركي، صور منتجات نظيفة على خلفية بيضاء).
  *
- * @param string $t كلمة.
- * @return bool
- */
-function zad_img_is_desc( $t ) {
-	static $descriptors = array( 'cikolatali', 'cikolata', 'kakaolu', 'kakao', 'muzlu', 'cilekli', 'cilek', 'limonlu', 'portakalli', 'portakal', 'findikli', 'findik', 'sutlu', 'sut', 'bitter', 'beyaz', 'meyveli', 'karamelli', 'kremali', 'dolgulu', 'kapli', 'kaplamali', 'mini', 'sade', 'acili', 'baharatli', 'peynirli', 'susamli', 'orijinal', 'soslu', 'joleli', 'antep', 'fistikli', 'fistigi', 'visneli', 'uzumlu', 'kayisili', 'frambuazli', 'mozaik', 'extra', 'ekstra', 'klasik', 'yulaf', 'kirmizi', 'tam', 'bugdayli', 'lifli', 'karisik', 'cokodamla', 'aromali', 'kek', 'biskuvi', 'gofret', 'kraker', 'cips', 'bar', 'tablet', 'jelibon', 'misir' );
-	foreach ( $descriptors as $d ) {
-		if ( zad_img_token_match( $t, $d ) ) {
-			return true;
-		}
-	}
-	return false;
-}
-
-/**
- * كلمات الاسم التركي للمنتج بدون اسم العلامة وحروف الربط.
- *
- * @param string $tr الاسم التركي.
+ * @param string $q العبارة.
  * @return array
  */
-function zad_img_product_tokens( $tr ) {
-	return array_values( array_diff( zad_img_tokens( $tr ), array( 'eti', 'ulker', 'bonucci', 've', 'ile' ) ) );
-}
-
-/**
- * اسم الخط: أول كلمة غير وصفية (مثل popkek، browni، crax، أو gofret عند غيابها).
- *
- * @param array $tokens كلمات المنتج.
- * @return string
- */
-function zad_img_line_token( $tokens ) {
-	foreach ( $tokens as $t ) {
-		if ( strlen( $t ) >= 3 && ! zad_img_is_desc( $t ) && ! ctype_digit( $t ) ) {
-			return $t;
+function zad_img_search_trendyol( $q ) {
+	$res  = zad_img_http(
+		'https://public.trendyol.com/discovery-web-searchgw-service/v2/api/infinite-scroll/sr?q=' . rawurlencode( $q ) . '&qt=' . rawurlencode( $q ) . '&st=' . rawurlencode( $q ) . '&os=1&pi=1&culture=tr-TR&searchStrategyType=DEFAULT',
+		array(
+			'Accept'  => 'application/json',
+			'Origin'  => 'https://www.trendyol.com',
+			'Referer' => 'https://www.trendyol.com/',
+		)
+	);
+	$data = is_wp_error( $res ) ? null : json_decode( (string) wp_remote_retrieve_body( $res ), true );
+	$out  = array();
+	foreach ( isset( $data['result']['products'] ) ? (array) $data['result']['products'] : array() as $p ) {
+		if ( empty( $p['images'][0] ) ) {
+			continue;
 		}
-	}
-	return $tokens ? (string) end( $tokens ) : '';
-}
-
-/* -------------------------------------------------------------------------
- * 1) الفهرسة
- * ---------------------------------------------------------------------- */
-
-/**
- * فهرسة روابط موقع علامة.
- *
- * @param string $brand المفتاح.
- * @return array ['count'=>int, 'method'=>string]
- */
-function zad_img_build_index( $brand ) {
-	$sources = zad_image_sources();
-	if ( ! isset( $sources[ $brand ] ) ) {
-		return array(
-			'count'  => 0,
-			'method' => 'none',
+		$img   = (string) $p['images'][0];
+		$out[] = array(
+			'url'   => 0 === strpos( $img, 'http' ) ? $img : 'https://cdn.dsmcdn.com' . $img,
+			'thumb' => '',
+			'page'  => isset( $p['url'] ) ? 'https://www.trendyol.com' . $p['url'] : '',
+			'title' => trim( ( isset( $p['brand']['name'] ) ? $p['brand']['name'] . ' ' : '' ) . ( isset( $p['name'] ) ? $p['name'] : '' ) ),
+			'src'   => 'trendyol',
 		);
-	}
-	$src  = $sources[ $brand ];
-	$host = zad_img_host( $src['base'] );
-	$urls = array();
-
-	// أ) خرائط الموقع.
-	$queue = array( trailingslashit( $src['base'] ) . 'sitemap.xml', trailingslashit( $src['base'] ) . 'sitemap_index.xml' );
-	$robots = zad_img_get( trailingslashit( $src['base'] ) . 'robots.txt' );
-	if ( $robots && preg_match_all( '/^\s*Sitemap:\s*(\S+)/mi', $robots, $m ) ) {
-		$queue = array_merge( $m[1], $queue );
-	}
-	$seen = array();
-	while ( $queue && count( $seen ) < 40 && count( $urls ) < 6000 ) {
-		$sm = array_shift( $queue );
-		if ( isset( $seen[ $sm ] ) ) {
-			continue;
-		}
-		$seen[ $sm ] = true;
-		$xml         = zad_img_get( $sm );
-		if ( ! $xml || ! preg_match_all( '#<loc>\s*(?:<!\[CDATA\[)?\s*([^<\]\s]+)#i', $xml, $locs ) ) {
-			continue;
-		}
-		foreach ( $locs[1] as $loc ) {
-			$loc = html_entity_decode( $loc, ENT_QUOTES, 'UTF-8' );
-			if ( false !== stripos( $xml, '<sitemapindex' ) || preg_match( '/\.xml(\.gz)?(\?|$)/i', $loc ) ) {
-				$queue[] = $loc;
-			} elseif ( zad_img_host( $loc ) === $host ) {
-				$urls[ $loc ] = true;
-			}
-		}
-	}
-	$method = 'sitemap';
-
-	// ب) زحف محدود إن لم توجد خريطة موقع مفيدة.
-	if ( count( $urls ) < 10 ) {
-		$method  = 'crawl';
-		$visited = array();
-		$frontier = array_map(
-			static function ( $u ) {
-				return array( $u, 0 );
-			},
-			(array) $src['start']
-		);
-		while ( $frontier && count( $visited ) < 250 ) {
-			list( $page, $depth ) = array_shift( $frontier );
-			if ( isset( $visited[ $page ] ) ) {
-				continue;
-			}
-			$visited[ $page ] = true;
-			$final            = $page;
-			$html             = zad_img_get( $page, $final );
-			if ( ! $html ) {
-				continue;
-			}
-			$visited[ $final ] = true;
-			$urls[ $final ]    = true;
-			$page              = $final;
-			if ( $depth >= 2 || ! preg_match_all( '#<a\s[^>]*href=["\']([^"\']+)["\']#i', $html, $links ) ) {
-				continue;
-			}
-			foreach ( $links[1] as $href ) {
-				$abs = zad_img_abs( $href, $page );
-				$abs = preg_replace( '/#.*$/', '', $abs );
-				if ( ! $abs || zad_img_host( $abs ) !== $host || preg_match( '/\.(jpe?g|png|gif|webp|svg|pdf|zip|css|js|xml|mp4)(\?|$)/i', $abs ) ) {
-					continue;
-				}
-				if ( ! isset( $visited[ $abs ] ) ) {
-					$frontier[] = array( $abs, $depth + 1 );
-				}
-			}
-		}
-	}
-
-	$list = array_slice( array_keys( $urls ), 0, 6000 );
-	update_option( 'zad_img_index_' . $brand, $list, false );
-
-	// صورة المشاركة العامة للموقع (لاستبعادها إن تكررت في كل الصفحات).
-	$home = zad_img_get( reset( $src['start'] ) );
-	update_option( 'zad_img_site_og_' . $brand, $home ? zad_img_meta_image( $home, reset( $src['start'] ) ) : '', false );
-
-	return array(
-		'count'  => count( $list ),
-		'method' => $method,
-	);
-}
-
-/* -------------------------------------------------------------------------
- * 2) المطابقة
- * ---------------------------------------------------------------------- */
-
-/**
- * إيجاد أفضل صفحة رسمية لمنتج.
- *
- * @param int $product_id رقم المنتج.
- * @return array ['url'=>string, 'score'=>float]
- */
-function zad_img_match_product( $product_id ) {
-	$none  = array(
-		'url'   => '',
-		'score' => 0,
-	);
-	$info  = zad_product_info( $product_id );
-	$index = $info['brand'] ? (array) get_option( 'zad_img_index_' . $info['brand'], array() ) : array();
-	if ( ! $index || ! $info['tr'] ) {
-		return $none;
-	}
-	$tokens = zad_img_product_tokens( $info['tr'] );
-	if ( ! $tokens ) {
-		return $none;
-	}
-	$line = zad_img_line_token( $tokens );
-
-	$best = $none;
-	foreach ( $index as $url ) {
-		$path = (string) wp_parse_url( $url, PHP_URL_PATH );
-		$ut   = array_values( array_diff( zad_img_tokens( $path ), array( 'tr', 'en', 'ar', 'urunler', 'urun', 'products', 'product', 'markalar', 'our', 'brands', 'html', 'php', 'index', 'eti', 'ulker', 'bonucci' ) ) );
-		if ( ! $ut ) {
-			continue;
-		}
-		$hit_line = false;
-		$matched  = 0;
-		$used     = array();
-		foreach ( $tokens as $t ) {
-			foreach ( $ut as $i => $u ) {
-				if ( zad_img_token_match( $t, $u ) ) {
-					++$matched;
-					$used[ $i ] = true;
-					if ( $t === $line ) {
-						$hit_line = true;
-					}
-					break;
-				}
-			}
-		}
-		if ( ! $hit_line ) {
-			continue;
-		}
-		$score = $matched / count( $tokens );
-		foreach ( $ut as $i => $u ) {
-			if ( isset( $used[ $i ] ) ) {
-				continue;
-			}
-			// نكهة مختلفة في رابط الصفحة (مثل peynirli لمنتج acili) تعني منتجاً آخر.
-			$score -= ( zad_img_is_desc( $u ) && ! in_array( $u, array( 'kek', 'biskuvi', 'gofret', 'kraker', 'krakerler', 'cips' ), true ) ) ? 0.5 : 0.04;
-		}
-		if ( $score > $best['score'] ) {
-			$best = array(
-				'url'   => $url,
-				'score' => round( $score, 3 ),
-			);
-		}
-	}
-	return $best['score'] >= 0.5 ? $best : array(
-		'url'   => '',
-		'score' => $best['score'],
-	);
-}
-
-/* -------------------------------------------------------------------------
- * 3) استخراج الصورة من الصفحة
- * ---------------------------------------------------------------------- */
-
-/**
- * صورة المشاركة (og:image / twitter:image) في الصفحة.
- *
- * @param string $html HTML.
- * @param string $page الرابط.
- * @return string
- */
-function zad_img_meta_image( $html, $page ) {
-	foreach ( array( 'og:image:secure_url', 'og:image', 'twitter:image' ) as $prop ) {
-		if ( preg_match( '#<meta[^>]+(?:property|name)=["\']' . preg_quote( $prop, '#' ) . '["\'][^>]*content=["\']([^"\']+)["\']#i', $html, $m )
-			|| preg_match( '#<meta[^>]+content=["\']([^"\']+)["\'][^>]*(?:property|name)=["\']' . preg_quote( $prop, '#' ) . '["\']#i', $html, $m ) ) {
-			return zad_img_abs( $m[1], $page );
-		}
-	}
-	return '';
-}
-
-/**
- * استخراج أنسب صورة منتج من صفحة.
- *
- * @param string $html    HTML.
- * @param string $page    رابط الصفحة.
- * @param array  $tokens  كلمات المنتج.
- * @param string $site_og صورة المشاركة العامة للموقع (تُستبعد).
- * @return string
- */
-function zad_img_extract( $html, $page, $tokens, $site_og = '' ) {
-	$cands = array();
-	$add   = static function ( $url, $score ) use ( &$cands, $page ) {
-		$url = zad_img_abs( $url, $page );
-		if ( ! $url ) {
-			return;
-		}
-		$cands[ $url ] = max( isset( $cands[ $url ] ) ? $cands[ $url ] : -99, $score );
-	};
-
-	// بيانات Product المنظمة.
-	if ( preg_match_all( '#<script[^>]+application/ld\+json[^>]*>(.*?)</script>#is', $html, $blocks ) ) {
-		foreach ( $blocks[1] as $json ) {
-			if ( false !== stripos( $json, '"Product"' ) && preg_match( '#"image"\s*:\s*(?:\[\s*)?"([^"]+)"#i', $json, $m ) ) {
-				$add( stripslashes( $m[1] ), 8 );
-			}
-		}
-	}
-	$meta = zad_img_meta_image( $html, $page );
-	if ( $meta ) {
-		$add( $meta, 5 );
-	}
-
-	if ( preg_match_all( '#<img\b[^>]*>#i', $html, $imgs ) ) {
-		foreach ( $imgs[0] as $tag ) {
-			$src = '';
-			foreach ( array( 'data-zoom-image', 'data-large', 'data-src', 'data-lazy-src', 'data-original', 'src' ) as $attr ) {
-				if ( preg_match( '#\s' . $attr . '=["\']([^"\']+)["\']#i', $tag, $m ) && 0 !== strpos( $m[1], 'data:' ) ) {
-					$src = $m[1];
-					break;
-				}
-			}
-			if ( ! $src && preg_match( '#\ssrcset=["\']([^"\'\s,]+)#i', $tag, $m ) ) {
-				$src = $m[1];
-			}
-			if ( ! $src ) {
-				continue;
-			}
-			$alt   = preg_match( '#\salt=["\']([^"\']*)["\']#i', $tag, $m ) ? $m[1] : '';
-			$score = 0;
-			$words = array_merge( zad_img_tokens( $src ), zad_img_tokens( $alt ) );
-			foreach ( $tokens as $t ) {
-				foreach ( $words as $w ) {
-					if ( zad_img_token_match( $t, $w ) ) {
-						$score += 2;
-						break;
-					}
-				}
-			}
-			if ( preg_match( '#(urun|product|upload|media|content|images?/p)#i', $src ) ) {
-				++$score;
-			}
-			if ( preg_match( '#(logo|icon|favicon|sprite|banner|flag|social|facebook|instagram|twitter|youtube|linkedin|arrow|header|footer|bg[-_]|background|placeholder|loader)#i', $src ) ) {
-				$score -= 6;
-			}
-			if ( preg_match( '#\.svg(\?|$)#i', $src ) ) {
-				$score -= 6;
-			} elseif ( preg_match( '#\.gif(\?|$)#i', $src ) ) {
-				$score -= 2;
-			}
-			$add( $src, $score );
-		}
-	}
-
-	if ( $site_og && isset( $cands[ $site_og ] ) ) {
-		$cands[ $site_og ] -= 10;
-	}
-	arsort( $cands );
-	foreach ( $cands as $url => $score ) {
-		if ( $score > 0 ) {
-			return $url;
-		}
-	}
-	return '';
-}
-
-/**
- * صورة المشاركة العامة لموقع (شعار المتجر غالباً) لاستبعادها من النتائج.
- *
- * @param string $url   رابط صفحة في الموقع.
- * @param string $brand علامة المنتج.
- * @return string
- */
-function zad_img_site_og( $url, $brand ) {
-	$host    = zad_img_host( $url );
-	$sources = zad_image_sources();
-	if ( $brand && isset( $sources[ $brand ] ) && zad_img_host( $sources[ $brand ]['base'] ) === $host && get_option( 'zad_img_site_og_' . $brand ) ) {
-		return (string) get_option( 'zad_img_site_og_' . $brand );
-	}
-	$parts = wp_parse_url( $url );
-	$home  = ( isset( $parts['scheme'] ) ? $parts['scheme'] : 'https' ) . '://' . ( isset( $parts['host'] ) ? $parts['host'] : '' ) . ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' ) . '/';
-	$key   = 'zad_img_og_' . md5( $home );
-	$og    = get_transient( $key );
-	if ( false === $og ) {
-		$html = zad_img_get( $home );
-		$og   = $html ? zad_img_meta_image( $html, $home ) : '';
-		set_transient( $key, $og, $html ? WEEK_IN_SECONDS : HOUR_IN_SECONDS );
-	}
-	return (string) $og;
-}
-
-/**
- * هل الصفحة التي وصلنا إليها ما زالت صفحة هذا المنتج؟
- * إن حوّلنا المتجر إلى مسار آخر (منتج محذوف ← الرئيسية أو قسم) نشترط ظهور اسم الخط في الرابط أو العنوان.
- *
- * @param string $asked  الرابط المطلوب.
- * @param string $final  الرابط بعد التحويلات.
- * @param string $html   HTML.
- * @param array  $tokens كلمات المنتج.
- * @return bool
- */
-function zad_img_page_is_product( $asked, $final, $html, $tokens ) {
-	$path = static function ( $u ) {
-		return untrailingslashit( strtolower( (string) wp_parse_url( $u, PHP_URL_PATH ) ) );
-	};
-	if ( $path( $asked ) === $path( $final ) ) {
-		return true;
-	}
-	$line = zad_img_line_token( $tokens );
-	if ( ! $line ) {
-		return false;
-	}
-	$title = preg_match( '#<title[^>]*>(.*?)</title>#is', $html, $m ) ? html_entity_decode( $m[1], ENT_QUOTES, 'UTF-8' ) : '';
-	foreach ( array_merge( zad_img_tokens( $path( $final ) ), zad_img_tokens( $title ) ) as $w ) {
-		if ( zad_img_token_match( $line, $w ) ) {
-			return true;
-		}
-	}
-	return false;
-}
-
-/**
- * البحث عن صورة منتج واحد.
- *
- * ترتيب الصفحات المجرَّبة: الرابط اليدوي/المحفوظ ← صفحات المصدر المحفوظة للمنتج ← مطابقة فهرس موقع العلامة.
- * تُستخدم أول صفحة تُرجع صورة منتج.
- *
- * @param int    $product_id رقم المنتج.
- * @param string $only_page  تجربة هذه الصفحة وحدها (رابط يدوي).
- * @return array ['page'=>string, 'image'=>string]
- */
-function zad_img_find( $product_id, $only_page = '' ) {
-	$info  = zad_product_info( $product_id );
-	$saved = $only_page ? $only_page : (string) get_post_meta( $product_id, '_zad_img_page', true );
-	$pages = array_merge( $saved ? array( $saved ) : array(), $only_page ? array() : zad_img_hints( $product_id ) );
-	if ( ! $saved ) {
-		$match = zad_img_match_product( $product_id );
-		if ( $match['url'] ) {
-			$pages[] = $match['url'];
-		}
-	}
-	$pages  = array_values( array_unique( array_filter( $pages ) ) );
-	$tokens = zad_img_product_tokens( $info['tr'] );
-	$result = array(
-		'page'  => $pages ? $pages[0] : '',
-		'image' => '',
-	);
-
-	foreach ( array_slice( $pages, 0, 5 ) as $page ) {
-		$final = $page;
-		$html  = zad_img_get( $page, $final );
-		if ( ! $html || ! zad_img_page_is_product( $page, $final, $html, $tokens ) ) {
-			continue;
-		}
-		$image = zad_img_extract( $html, $final, $tokens, zad_img_site_og( $final, $info['brand'] ) );
-		if ( $image ) {
-			$result = array(
-				'page'  => $final,
-				'image' => $image,
-			);
+		if ( count( $out ) >= 20 ) {
 			break;
 		}
 	}
+	return $out;
+}
 
-	if ( $result['page'] ) {
-		update_post_meta( $product_id, '_zad_img_page', $result['page'] );
+/**
+ * بحث صور Bing (يقرأ بيانات النتائج من الصفحة نفسها).
+ *
+ * @param string $q العبارة.
+ * @return array
+ */
+function zad_img_search_bing( $q ) {
+	$url = add_query_arg(
+		array(
+			'q'       => rawurlencode( $q ),
+			'form'    => 'HDRSC2',
+			'first'   => 1,
+			'setmkt'  => 'tr-TR',
+			'setlang' => 'tr',
+		),
+		'https://www.bing.com/images/search'
+	);
+	$res = zad_img_http( $url, array( 'Cookie' => 'SRCHHPGUSR=ADLT=OFF&NRSLT=35' ) );
+	if ( is_wp_error( $res ) || 200 !== (int) wp_remote_retrieve_response_code( $res ) ) {
+		return array();
 	}
-	update_post_meta( $product_id, '_zad_img_found', $result['image'] );
-	return $result;
+	$html = (string) wp_remote_retrieve_body( $res );
+	$out  = array();
+	if ( preg_match_all( '/\bm="(\{[^"]+\})"/', $html, $m ) ) {
+		foreach ( $m[1] as $raw ) {
+			$d = json_decode( html_entity_decode( $raw, ENT_QUOTES, 'UTF-8' ), true );
+			if ( empty( $d['murl'] ) ) {
+				continue;
+			}
+			$out[] = array(
+				'url'   => $d['murl'],
+				'thumb' => isset( $d['turl'] ) ? $d['turl'] : '',
+				'page'  => isset( $d['purl'] ) ? $d['purl'] : '',
+				'title' => isset( $d['t'] ) ? wp_strip_all_tags( $d['t'] ) : '',
+				'src'   => 'bing',
+			);
+			if ( count( $out ) >= 30 ) {
+				break;
+			}
+		}
+	}
+	return $out;
+}
+
+/**
+ * بحث صور DuckDuckGo (احتياطي).
+ *
+ * @param string $q العبارة.
+ * @return array
+ */
+function zad_img_search_ddg( $q ) {
+	$res = zad_img_http( 'https://duckduckgo.com/?q=' . rawurlencode( $q ) . '&iax=images&ia=images' );
+	if ( is_wp_error( $res ) || ! preg_match( '/vqd=["\']?([0-9-]+)/', (string) wp_remote_retrieve_body( $res ), $m ) ) {
+		return array();
+	}
+	$res = zad_img_http(
+		'https://duckduckgo.com/i.js?l=tr-tr&o=json&q=' . rawurlencode( $q ) . '&vqd=' . rawurlencode( $m[1] ) . '&f=,,,,,&p=1',
+		array( 'Referer' => 'https://duckduckgo.com/' )
+	);
+	$data = is_wp_error( $res ) ? null : json_decode( (string) wp_remote_retrieve_body( $res ), true );
+	$out  = array();
+	foreach ( isset( $data['results'] ) ? (array) $data['results'] : array() as $r ) {
+		if ( empty( $r['image'] ) ) {
+			continue;
+		}
+		$out[] = array(
+			'url'   => $r['image'],
+			'thumb' => isset( $r['thumbnail'] ) ? $r['thumbnail'] : '',
+			'page'  => isset( $r['url'] ) ? $r['url'] : '',
+			'title' => isset( $r['title'] ) ? wp_strip_all_tags( $r['title'] ) : '',
+			'src'   => 'ddg',
+		);
+		if ( count( $out ) >= 30 ) {
+			break;
+		}
+	}
+	return $out;
+}
+
+/**
+ * Open Food Facts (قاعدة منتجات مفتوحة، فيها كثير من منتجات إيتي وأولكر).
+ *
+ * @param string $q العبارة.
+ * @return array
+ */
+function zad_img_search_off( $q ) {
+	$res  = zad_img_http( 'https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&json=1&page_size=12&fields=product_name,brands,quantity,image_front_url,url&search_terms=' . rawurlencode( $q ), array(), 20 );
+	$data = is_wp_error( $res ) ? null : json_decode( (string) wp_remote_retrieve_body( $res ), true );
+	$out  = array();
+	foreach ( isset( $data['products'] ) ? (array) $data['products'] : array() as $p ) {
+		if ( empty( $p['image_front_url'] ) ) {
+			continue;
+		}
+		$out[] = array(
+			'url'   => $p['image_front_url'],
+			'thumb' => '',
+			'page'  => isset( $p['url'] ) ? $p['url'] : '',
+			'title' => trim( ( isset( $p['brands'] ) ? $p['brands'] . ' ' : '' ) . ( isset( $p['product_name'] ) ? $p['product_name'] : '' ) . ' ' . ( isset( $p['quantity'] ) ? $p['quantity'] : '' ) ),
+			'src'   => 'off',
+		);
+	}
+	return $out;
+}
+
+/**
+ * نقاط ملاءمة نتيجة لمنتج.
+ *
+ * @param array  $c      النتيجة.
+ * @param array  $tokens كلمات الاسم.
+ * @param string $brand  اسم العلامة اللاتيني (مبسّطاً).
+ * @param string $weight الوزن (رقم) إن وُجد.
+ * @return float -1 = مستبعدة.
+ */
+function zad_img_score( $c, $tokens, $brand, $weight ) {
+	list( $good, $bad ) = zad_img_hosts();
+	$host               = zad_img_host( $c['url'] ) . ' ' . zad_img_host( $c['page'] );
+	foreach ( $bad as $b ) {
+		if ( false !== strpos( $host, $b ) ) {
+			return -1;
+		}
+	}
+	$hay = ' ' . zad_img_fold( $c['title'] . ' ' . rawurldecode( $c['page'] ) . ' ' . rawurldecode( $c['url'] ) ) . ' ';
+	$hit = 0;
+	foreach ( $tokens as $t ) {
+		// «findikli» تطابق «findik»، و«cilekli» تطابق «cilek».
+		if ( false !== strpos( $hay, $t ) || ( strlen( $t ) >= 6 && false !== strpos( $hay, substr( $t, 0, 5 ) ) ) ) {
+			++$hit;
+		}
+	}
+	$ratio = $tokens ? $hit / count( $tokens ) : 0.6;
+	// أقل من نصف كلمات الاسم: صنف آخر غالباً.
+	if ( $ratio < 0.5 ) {
+		return -1;
+	}
+	$score = $ratio;
+	if ( $brand && false !== strpos( $hay, $brand ) ) {
+		$score += 0.35;
+	}
+	if ( $weight && preg_match( '/(^|\D)' . preg_quote( $weight, '/' ) . '\s?(g|gr|ml|\D|$)/', $hay ) ) {
+		$score += 0.25;
+	}
+	foreach ( $good as $g ) {
+		if ( false !== strpos( $host, $g ) ) {
+			$score += 0.3;
+			break;
+		}
+	}
+	if ( preg_match( '/\.(jpe?g|png|webp)(\?|$)/i', $c['url'] ) ) {
+		$score += 0.05;
+	}
+	if ( 'off' === $c['src'] ) {
+		$score -= 0.1;
+	}
+	return $score;
+}
+
+/**
+ * البحث وترتيب النتائج لمنتج.
+ *
+ * @param int $product_id المنتج.
+ * @return array النتائج مرتبة (الأفضل أولاً).
+ */
+function zad_img_candidates( $product_id ) {
+	$q      = zad_img_query( $product_id );
+	$tr     = (string) get_post_meta( $product_id, '_zad_tr', true );
+	$bslug  = (string) get_post_meta( $product_id, '_zad_brand', true );
+	$brands = zad_brands();
+	$brand  = ( $bslug && isset( $brands[ $bslug ] ) ) ? zad_img_fold( $brands[ $bslug ]['latin'] ) : '';
+	// كلمات الاسم بلا اسم العلامة (للعلامة نقاط مستقلة).
+	$tokens = array_values( array_diff( zad_img_tokens( $tr ? $tr : $q ), explode( ' ', $brand ) ) );
+	$weight = preg_match( '/(\d+(?:[.,]\d+)?)\s*(g|gr|ml)\b/i', $tr, $m ) ? str_replace( ',', '.', $m[1] ) : '';
+
+	$all = array();
+	foreach ( apply_filters( 'zad_img_engines', array( 'zad_img_search_trendyol', 'zad_img_search_bing', 'zad_img_search_ddg', 'zad_img_search_off' ) ) as $engine ) {
+		foreach ( (array) call_user_func( $engine, $q ) as $c ) {
+			$c['score'] = zad_img_score( $c, $tokens, $brand, $weight );
+			if ( $c['score'] >= 0.9 && ! isset( $all[ $c['url'] ] ) ) {
+				$all[ $c['url'] ] = $c;
+			}
+		}
+		// نتائج كافية من المصدر الأول: لا داعي للباقي.
+		if ( count( $all ) >= 4 ) {
+			break;
+		}
+	}
+	$all = array_values( $all );
+	usort(
+		$all,
+		static function ( $a, $b ) {
+			return $b['score'] <=> $a['score'];
+		}
+	);
+	return array_slice( $all, 0, 12 );
 }
 
 /* -------------------------------------------------------------------------
- * 4) الاستيراد
+ * التنزيل والتوحيد
  * ---------------------------------------------------------------------- */
 
 /**
- * تنزيل صورة وتعيينها صورة رئيسية للمنتج.
+ * تنزيل صورة والتحقق منها.
  *
- * @param int    $product_id رقم المنتج.
- * @param string $url        رابط الصورة.
- * @return int|WP_Error رقم المرفق.
+ * @param string $url     الرابط.
+ * @param string $referer الصفحة المصدر.
+ * @return string|WP_Error البيانات.
  */
-function zad_img_sideload( $product_id, $url ) {
+function zad_img_download( $url, $referer = '' ) {
+	$res = zad_img_http( $url, $referer ? array( 'Referer' => $referer ) : array(), 20 );
+	if ( is_wp_error( $res ) ) {
+		return $res;
+	}
+	if ( 200 !== (int) wp_remote_retrieve_response_code( $res ) ) {
+		return new WP_Error( 'zad_img_http', 'HTTP ' . (int) wp_remote_retrieve_response_code( $res ) );
+	}
+	$body = (string) wp_remote_retrieve_body( $res );
+	if ( strlen( $body ) < 3000 || strlen( $body ) > 12 * MB_IN_BYTES ) {
+		return new WP_Error( 'zad_img_size', 'حجم الملف غير مناسب' );
+	}
+	$info = @getimagesizefromstring( $body ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+	if ( ! $info || ! in_array( $info[2], array( IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP, IMAGETYPE_GIF ), true ) ) {
+		return new WP_Error( 'zad_img_type', 'ليس صورة JPG/PNG/WEBP' );
+	}
+	list( $w, $h ) = $info;
+	if ( min( $w, $h ) < 220 || $w / max( 1, $h ) > 2.6 || $h / max( 1, $w ) > 2.6 ) {
+		return new WP_Error( 'zad_img_dim', sprintf( 'مقاس غير مناسب %d×%d', $w, $h ) );
+	}
+	return $body;
+}
+
+/**
+ * توحيد الصورة: مربع بخلفية بيضاء وهامش صغير، 800px، WebP إن أمكن.
+ *
+ * @param string $bytes البيانات.
+ * @return array [bytes, ext]
+ */
+function zad_img_normalize( $bytes ) {
+	if ( ! function_exists( 'imagecreatefromstring' ) ) {
+		$info = getimagesizefromstring( $bytes );
+		return array( $bytes, image_type_to_extension( $info[2], false ) );
+	}
+	$src = @imagecreatefromstring( $bytes ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+	if ( ! $src ) {
+		$info = getimagesizefromstring( $bytes );
+		return array( $bytes, image_type_to_extension( $info[2], false ) );
+	}
+	$w    = imagesx( $src );
+	$h    = imagesy( $src );
+	$side = 800;
+	$pad  = 40;
+	$box  = $side - 2 * $pad;
+	$k    = min( $box / $w, $box / $h, 2 );
+	$nw   = max( 1, (int) round( $w * $k ) );
+	$nh   = max( 1, (int) round( $h * $k ) );
+	$dst  = imagecreatetruecolor( $side, $side );
+	imagefill( $dst, 0, 0, imagecolorallocate( $dst, 255, 255, 255 ) );
+	imagealphablending( $dst, true );
+	imagecopyresampled( $dst, $src, (int) ( ( $side - $nw ) / 2 ), (int) ( ( $side - $nh ) / 2 ), 0, 0, $nw, $nh, $w, $h );
+	ob_start();
+	$ext = 'jpg';
+	if ( function_exists( 'imagewebp' ) && imagewebp( $dst, null, 82 ) ) {
+		$ext = 'webp';
+	} else {
+		ob_clean();
+		imagejpeg( $dst, null, 86 );
+	}
+	$out = (string) ob_get_clean();
+	imagedestroy( $src );
+	imagedestroy( $dst );
+	return array( $out, $ext );
+}
+
+/**
+ * حفظ الصورة في المكتبة وتعيينها صورة رئيسية (تحل محل صورة سابقة من المستورد نفسه).
+ *
+ * @param int    $product_id المنتج.
+ * @param string $bytes      البيانات.
+ * @param array  $c          النتيجة (للمصدر).
+ * @return int|WP_Error المرفق.
+ */
+function zad_img_attach( $product_id, $bytes, $c ) {
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 	require_once ABSPATH . 'wp-admin/includes/media.php';
 	require_once ABSPATH . 'wp-admin/includes/image.php';
 
-	$tmp = download_url( $url, 30 );
-	if ( is_wp_error( $tmp ) ) {
-		return $tmp;
-	}
-	$mime = function_exists( 'wp_get_image_mime' ) ? wp_get_image_mime( $tmp ) : '';
-	$exts = array(
-		'image/jpeg' => 'jpg',
-		'image/png'  => 'png',
-		'image/webp' => 'webp',
-		'image/gif'  => 'gif',
+	list( $data, $ext ) = zad_img_normalize( $bytes );
+	$tmp                = wp_tempnam( 'zad-img' );
+	file_put_contents( $tmp, $data ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	$tr   = (string) get_post_meta( $product_id, '_zad_tr', true );
+	$name = sanitize_title( str_replace( '%', '', $tr ? $tr : get_the_title( $product_id ) ) );
+	$att  = media_handle_sideload(
+		array(
+			'name'     => ( $name ? $name : 'product-' . $product_id ) . '.' . $ext,
+			'tmp_name' => $tmp,
+		),
+		$product_id,
+		get_the_title( $product_id )
 	);
-	if ( ! isset( $exts[ $mime ] ) ) {
-		wp_delete_file( $tmp );
-		return new WP_Error( 'zad_img_type', 'الملف ليس صورة JPG/PNG/WEBP.' );
-	}
-	$info = zad_product_info( $product_id );
-	$name = sanitize_title( str_replace( '%', '', $info['tr'] ? $info['tr'] : get_the_title( $product_id ) ) );
-	$file = array(
-		'name'     => ( $name ? $name : 'product-' . $product_id ) . '.' . $exts[ $mime ],
-		'tmp_name' => $tmp,
-	);
-	$att = media_handle_sideload( $file, $product_id, get_the_title( $product_id ) );
 	if ( is_wp_error( $att ) ) {
 		wp_delete_file( $tmp );
 		return $att;
 	}
-	update_post_meta( $att, '_wp_attachment_image_alt', get_the_title( $product_id ) );
+	update_post_meta( $att, '_wp_attachment_image_alt', get_the_title( $product_id ) . ( $tr ? ' – ' . $tr : '' ) );
+	update_post_meta( $att, '_zad_auto_img', 1 );
+	$old = (int) get_post_thumbnail_id( $product_id );
 	set_post_thumbnail( $product_id, $att );
-	update_post_meta( $product_id, '_zad_img_src', esc_url_raw( $url ) );
+	if ( $old && $old !== $att && get_post_meta( $old, '_zad_auto_img', true ) ) {
+		wp_delete_attachment( $old, true );
+	}
+	update_post_meta( $product_id, '_zad_img_src', esc_url_raw( $c['url'] ) );
+	update_post_meta( $product_id, '_zad_img_page', esc_url_raw( $c['page'] ) );
+	update_post_meta( $product_id, '_zad_img_status', 'ok' );
+	zad_cache_flush();
 	if ( function_exists( 'wc_delete_product_transients' ) ) {
 		wc_delete_product_transients( $product_id );
 	}
 	return (int) $att;
 }
 
+/**
+ * إيجاد صورة لمنتج وتعيينها.
+ *
+ * @param int  $product_id المنتج.
+ * @param bool $next       تجاوز الصورة الحالية إلى النتيجة التالية.
+ * @return array [ok, message]
+ */
+function zad_img_fetch_for( $product_id, $next = false ) {
+	$saved = $next ? get_post_meta( $product_id, '_zad_img_cands', true ) : array();
+	$cands = is_array( $saved ) ? array_values(
+		array_filter(
+			$saved,
+			static function ( $c ) {
+				return is_array( $c ) && ! empty( $c['url'] );
+			}
+		)
+	) : array();
+	if ( ! $cands ) {
+		$cands = zad_img_candidates( $product_id );
+	}
+	$current = (string) get_post_meta( $product_id, '_zad_img_src', true );
+	update_post_meta( $product_id, '_zad_img_try', time() );
+	$tries = 0;
+	while ( $cands && $tries < 5 ) {
+		$c = array_shift( $cands );
+		if ( $next && $c['url'] === $current ) {
+			continue;
+		}
+		++$tries;
+		$bytes = zad_img_download( $c['url'], $c['page'] );
+		// المصدر يمنع التنزيل؟ نسخة Bing المصغّرة بمقاس أكبر.
+		if ( is_wp_error( $bytes ) && ! empty( $c['thumb'] ) ) {
+			$bytes = zad_img_download( add_query_arg( array( 'w' => 800, 'h' => 800, 'c' => 7 ), $c['thumb'] ) );
+		}
+		if ( is_wp_error( $bytes ) ) {
+			continue;
+		}
+		$att = zad_img_attach( $product_id, $bytes, $c );
+		if ( ! is_wp_error( $att ) ) {
+			update_post_meta( $product_id, '_zad_img_cands', $cands );
+			return array( true, zad_img_host( $c['page'] ? $c['page'] : $c['url'] ) );
+		}
+	}
+	update_post_meta( $product_id, '_zad_img_cands', $cands );
+	if ( ! get_post_thumbnail_id( $product_id ) ) {
+		update_post_meta( $product_id, '_zad_img_status', 'fail' );
+	}
+	return array( false, 'لم توجد صورة مناسبة' );
+}
+
+/**
+ * تعيين صورة من رابط يلصقه المدير.
+ *
+ * @param int    $product_id المنتج.
+ * @param string $url        الرابط.
+ * @return array [ok, message]
+ */
+function zad_img_from_url( $product_id, $url ) {
+	$bytes = zad_img_download( $url );
+	if ( is_wp_error( $bytes ) ) {
+		return array( false, $bytes->get_error_message() );
+	}
+	$att = zad_img_attach(
+		$product_id,
+		$bytes,
+		array(
+			'url'  => $url,
+			'page' => '',
+		)
+	);
+	return is_wp_error( $att ) ? array( false, $att->get_error_message() ) : array( true, zad_img_host( $url ) );
+}
+
 /* -------------------------------------------------------------------------
- * لوحة التحكم
+ * العمل في الخلفية
+ * ---------------------------------------------------------------------- */
+
+/**
+ * المنتجات التي تحتاج صورة (بلا صورة، ولم تفشل خلال آخر 3 أيام).
+ *
+ * @param int $limit العدد.
+ * @return int[]
+ */
+function zad_img_pending_ids( $limit = 10 ) {
+	return get_posts(
+		array(
+			'post_type'      => 'product',
+			'post_status'    => 'publish',
+			'posts_per_page' => $limit,
+			'fields'         => 'ids',
+			'orderby'        => array(
+				'menu_order' => 'ASC',
+				'ID'         => 'ASC',
+			),
+			// phpcs:ignore WordPress.DB.SlowDBQuery
+			'meta_query'     => array(
+				'relation' => 'AND',
+				array(
+					'key'     => '_thumbnail_id',
+					'compare' => 'NOT EXISTS',
+				),
+				array(
+					'relation' => 'OR',
+					array(
+						'key'     => '_zad_img_try',
+						'compare' => 'NOT EXISTS',
+					),
+					array(
+						'key'     => '_zad_img_try',
+						'value'   => time() - 3 * DAY_IN_SECONDS,
+						'compare' => '<',
+						'type'    => 'NUMERIC',
+					),
+				),
+			),
+		)
+	);
+}
+
+/**
+ * عدد المنتجات بلا صورة.
+ *
+ * @return array [بلا صورة، الكل]
+ */
+function zad_img_counts() {
+	$all  = (int) wp_count_posts( 'product' )->publish;
+	$none = count(
+		get_posts(
+			array(
+				'post_type'      => 'product',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				// phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_query'     => array(
+					array(
+						'key'     => '_thumbnail_id',
+						'compare' => 'NOT EXISTS',
+					),
+				),
+			)
+		)
+	);
+	return array( $none, $all );
+}
+
+/**
+ * دفعة من الصور ضمن مهلة.
+ *
+ * @param int $budget الثواني.
+ * @return array [معالَج، وُجد]
+ */
+function zad_img_run( $budget = 25 ) {
+	if ( get_transient( 'zad_img_lock' ) ) {
+		return array( 0, 0 );
+	}
+	set_transient( 'zad_img_lock', 1, $budget + 40 );
+	$until = microtime( true ) + $budget;
+	$done  = 0;
+	$found = 0;
+	foreach ( zad_img_pending_ids( 30 ) as $pid ) {
+		if ( microtime( true ) > $until ) {
+			break;
+		}
+		list( $ok ) = zad_img_fetch_for( $pid );
+		++$done;
+		$found += $ok ? 1 : 0;
+	}
+	delete_transient( 'zad_img_lock' );
+	if ( ! zad_img_pending_ids( 1 ) ) {
+		wp_clear_scheduled_hook( 'zad_img_cron' );
+	}
+	return array( $done, $found );
+}
+
+/**
+ * بدء العمل في الخلفية.
+ */
+function zad_img_schedule() {
+	if ( ! wp_next_scheduled( 'zad_img_cron' ) && zad_img_pending_ids( 1 ) ) {
+		wp_schedule_event( time() + 20, 'zad_minute', 'zad_img_cron' );
+	}
+}
+add_action( 'zad_catalog_done', 'zad_img_schedule' );
+add_action( 'after_switch_theme', 'zad_img_schedule' );
+add_action(
+	'zad_img_cron',
+	static function () {
+		zad_img_run( 25 );
+	}
+);
+// إن توقفت المهمة (استضافة بلا زيارات)، تُعاد جدولتها عند دخول المدير.
+add_action(
+	'admin_init',
+	static function () {
+		if ( ! wp_doing_ajax() && ! get_transient( 'zad_img_checked' ) ) {
+			set_transient( 'zad_img_checked', 1, HOUR_IN_SECONDS );
+			zad_img_schedule();
+		}
+	}
+);
+
+/* -------------------------------------------------------------------------
+ * لوحة التحكم: المنتجات ← صور المنتجات
  * ---------------------------------------------------------------------- */
 
 /**
  * القائمة.
  */
 function zad_img_menu() {
-	add_submenu_page( 'edit.php?post_type=product', 'الصور الرسمية للمنتجات', 'الصور الرسمية', 'manage_woocommerce', 'zad-images', 'zad_img_page' );
+	add_submenu_page( 'edit.php?post_type=product', 'صور المنتجات', 'صور المنتجات', 'manage_woocommerce', 'zad-images', 'zad_img_page' );
 }
 add_action( 'admin_menu', 'zad_img_menu', 60 );
 
 /**
- * صف في جدول المراجعة.
- *
- * @param WC_Product $p المنتج.
- * @return array
- */
-function zad_img_row( $p ) {
-	$brands = zad_brands();
-	$brand  = zad_product_brand( $p->get_id() );
-	return array(
-		'id'      => $p->get_id(),
-		'name'    => $p->get_name(),
-		'tr'      => (string) get_post_meta( $p->get_id(), '_zad_tr', true ),
-		'brand'   => isset( $brands[ $brand ] ) ? $brands[ $brand ]['ar'] : '—',
-		'current' => $p->get_image_id() ? wp_get_attachment_image_url( $p->get_image_id(), 'thumbnail' ) : '',
-		'page'    => (string) get_post_meta( $p->get_id(), '_zad_img_page', true ),
-		'found'   => (string) get_post_meta( $p->get_id(), '_zad_img_found', true ),
-		'edit'    => get_edit_post_link( $p->get_id(), 'raw' ),
-	);
-}
-
-/**
- * صفحة الأداة.
+ * الصفحة.
  */
 function zad_img_page() {
 	if ( ! current_user_can( 'manage_woocommerce' ) ) {
 		return;
 	}
-	$products = wc_get_products(
-		array(
-			'status'  => array( 'publish', 'draft', 'private' ),
-			'limit'   => -1,
-			'orderby' => 'menu_order',
-			'order'   => 'ASC',
-		)
+	list( $none, $all ) = zad_img_counts();
+	$filter             = isset( $_GET['show'] ) ? sanitize_key( wp_unslash( $_GET['show'] ) ) : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$args               = array(
+		'limit'   => -1,
+		'status'  => 'publish',
+		'orderby' => 'menu_order',
+		'order'   => 'ASC',
 	);
-	$rows     = array_map( 'zad_img_row', $products );
-	$counts   = array();
-	foreach ( array_keys( zad_image_sources() ) as $b ) {
-		$counts[ $b ] = count( (array) get_option( 'zad_img_index_' . $b, array() ) );
-	}
-	// تُفهرس فقط مواقع العلامات التي لها منتجات بلا صفحات مصدر محفوظة.
-	$hinted = 0;
-	$index  = array();
-	foreach ( $products as $p ) {
-		if ( zad_img_hints( $p->get_id() ) ) {
-			++$hinted;
-		} elseif ( ! $p->get_image_id() ) {
-			$index[ zad_product_brand( $p->get_id() ) ] = true;
-		}
-	}
-	$config = array(
-		'ajax'   => admin_url( 'admin-ajax.php' ),
-		'nonce'  => wp_create_nonce( 'zad_img' ),
-		'brands' => array_values( array_intersect( array_keys( zad_image_sources() ), array_keys( $index ) ) ),
-		'rows'   => $rows,
-	);
+	$products           = wc_get_products( $args );
 	?>
-	<div class="wrap zd-img-wrap" dir="rtl">
-		<h1>الصور الرسمية للمنتجات</h1>
-		<p>تجلب هذه الأداة صورة كل منتج مباشرة من استضافتك وتعيّنها صورةً رئيسية له. لكل منتج صفحات مصدر محفوظة مسبقاً (<strong><?php echo (int) $hinted; ?></strong> منتجاً): صفحته الرسمية على etietieti.com أو ulker.com.tr، أو صفحته في متاجر A101 وMigros، وللباقي تُفهرس المواقع الرسمية ويُطابَق الاسم. راجع الصور قبل الاستيراد، وأدخل رابطاً يدوياً لأي منتج لم تُوجد صورته.</p>
-		<p class="description">المنتجات المفهرسة حالياً:
-			<?php foreach ( $counts as $b => $n ) : ?>
-				<strong><?php echo esc_html( $b ); ?></strong>: <?php echo (int) $n; ?> رابط &nbsp;
+	<div class="wrap zad-img" dir="rtl">
+		<h1>صور المنتجات</h1>
+		<p>يبحث القالب عن صورة كل منتج باسمه التركي في متاجر تركيا، ويوحّد مقاسها (مربع بخلفية بيضاء). يعمل وحده في الخلفية، ويمكنك تسريعه من هنا أو تبديل أي صورة.</p>
+		<p class="zad-img__stats"><strong><?php echo (int) ( $all - $none ); ?></strong> من <strong><?php echo (int) $all; ?></strong> منتجاً لها صورة.
+			<?php if ( $none ) : ?>
+				<button type="button" class="button button-primary" id="zad-img-run">ابحث عن الصور الناقصة الآن (<?php echo (int) $none; ?>)</button>
+				<span id="zad-img-progress" aria-live="polite"></span>
+			<?php endif; ?>
+		</p>
+		<p>
+			<a href="<?php echo esc_url( remove_query_arg( 'show' ) ); ?>" class="<?php echo 'all' === $filter ? 'current' : ''; ?>">الكل</a> |
+			<a href="<?php echo esc_url( add_query_arg( 'show', 'missing' ) ); ?>" class="<?php echo 'missing' === $filter ? 'current' : ''; ?>">بلا صورة</a>
+		</p>
+		<div class="zad-img__grid">
+			<?php foreach ( $products as $p ) : ?>
+				<?php
+				$thumb = $p->get_image_id();
+				if ( 'missing' === $filter && $thumb ) {
+					continue;
+				}
+				$src = (string) $p->get_meta( '_zad_img_page' );
+				$src = $src ? $src : (string) $p->get_meta( '_zad_img_src' );
+				?>
+				<figure class="zad-img__card" data-id="<?php echo (int) $p->get_id(); ?>">
+					<div class="zad-img__pic"><?php echo $thumb ? wp_get_attachment_image( $thumb, 'thumbnail' ) : '<span>بلا صورة</span>'; ?></div>
+					<figcaption>
+						<strong><?php echo esc_html( $p->get_name() ); ?></strong>
+						<small dir="ltr"><?php echo esc_html( (string) $p->get_meta( '_zad_tr' ) ); ?></small>
+						<?php if ( $src ) : ?>
+							<a class="zad-img__src" href="<?php echo esc_url( $src ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( zad_img_host( $src ) ); ?></a>
+						<?php endif; ?>
+						<span class="zad-img__actions">
+							<button type="button" class="button button-small" data-act="next"><?php echo $thumb ? 'صورة أخرى' : 'ابحث'; ?></button>
+							<button type="button" class="button button-small" data-act="url">رابط صورة</button>
+							<a class="button button-small" href="<?php echo esc_url( get_edit_post_link( $p->get_id() ) ); ?>">رفع</a>
+						</span>
+						<span class="zad-img__msg" aria-live="polite"></span>
+					</figcaption>
+				</figure>
 			<?php endforeach; ?>
-		</p>
-		<p class="zd-img-actions">
-			<button type="button" class="button button-primary button-hero" id="zd-img-auto">البحث عن صور كل المنتجات</button>
-			<button type="button" class="button button-hero" id="zd-img-import" disabled>استيراد الصور المحددة</button>
-		</p>
-		<div class="zd-img-progress" hidden><div class="zd-img-bar"><span></span></div><p class="zd-img-status" aria-live="polite"></p></div>
-		<table class="widefat striped zd-img-table">
-			<thead><tr>
-				<th style="width:28px"><input type="checkbox" id="zd-img-all" aria-label="تحديد الكل"></th>
-				<th>المنتج</th><th style="width:80px">الحالية</th><th style="width:110px">الصورة الرسمية</th><th>الصفحة الرسمية / رابط يدوي</th><th style="width:120px">الحالة</th>
-			</tr></thead>
-			<tbody id="zd-img-rows"></tbody>
-		</table>
+		</div>
 	</div>
 	<style>
-		.zd-img-wrap .zd-img-table img{width:64px;height:64px;object-fit:contain;background:#fff;border:1px solid #ddd;border-radius:8px}
-		.zd-img-wrap .zd-img-table td{vertical-align:middle}
-		.zd-img-wrap .zd-img-manual{display:flex;gap:6px;margin-top:6px}
-		.zd-img-wrap .zd-img-manual input{flex:1;direction:ltr}
-		.zd-img-wrap .zd-img-bar{height:10px;background:#eee;border-radius:99px;overflow:hidden;max-width:640px}
-		.zd-img-wrap .zd-img-bar span{display:block;height:100%;width:0;background:#CE0006;transition:width .3s}
-		.zd-img-wrap .zd-ok{color:#1c9a52;font-weight:600}.zd-img-wrap .zd-bad{color:#b00005}
-		.zd-img-wrap .zd-img-actions .button{margin-inline-end:8px}
+		.zad-img__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:12px}
+		.zad-img__card{margin:0;background:#fff;border:1px solid #dcdcde;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px}
+		.zad-img__pic{aspect-ratio:1;display:grid;place-items:center;background:#f6f7f7;border-radius:6px;overflow:hidden}
+		.zad-img__pic img{width:100%;height:100%;object-fit:contain}
+		.zad-img__card figcaption{display:flex;flex-direction:column;gap:4px;font-size:12px}
+		.zad-img__actions{display:flex;gap:4px;flex-wrap:wrap}
+		.zad-img__msg{color:#2271b1}
+		.zad-img .current{font-weight:700}
 	</style>
 	<script>
-	(function(){
-		var C = <?php echo wp_json_encode( $config ); ?>;
-		var rows = {}; C.rows.forEach(function(r){ rows[r.id] = r; });
-		var $ = function(s){ return document.querySelector(s); };
-		function esc(s){ return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
-		function post(action, data){
-			var body = new URLSearchParams(Object.assign({action: action, _ajax_nonce: C.nonce}, data||{}));
-			return fetch(C.ajax, {method:'POST', credentials:'same-origin', body: body}).then(function(r){ return r.json(); }).then(function(j){ if(!j || !j.success){ throw new Error((j && j.data) || 'خطأ'); } return j.data; });
+	( function () {
+		var nonce = <?php echo wp_json_encode( wp_create_nonce( 'zad_img' ) ); ?>;
+		function post( data ) {
+			var b = new FormData(); b.append( 'nonce', nonce );
+			Object.keys( data ).forEach( function ( k ) { b.append( k, data[ k ] ); } );
+			return fetch( ajaxurl, { method: 'POST', body: b, credentials: 'same-origin' } ).then( function ( r ) { return r.json(); } );
 		}
-		function status(t, pct){ $('.zd-img-progress').hidden = false; $('.zd-img-status').textContent = t; if (pct != null) { $('.zd-img-bar span').style.width = pct + '%'; } }
-		function render(){
-			var html = '';
-			C.rows.forEach(function(r){
-				var st = r.current && !r.found ? '<span class="zd-ok">لها صورة</span>' : (r.found ? '<span class="zd-ok">وُجدت صورة</span>' : (r.page ? '<span class="zd-bad">لم تُستخرج صورة</span>' : '<span class="zd-bad">غير مطابق</span>'));
-				html += '<tr data-id="'+r.id+'"><td><input type="checkbox" class="zd-img-cb" '+(r.found ? '' : 'disabled')+' '+(r.found && !r.current ? 'checked' : '')+'></td>'+
-					'<td><a href="'+esc(r.edit)+'"><strong>'+esc(r.name)+'</strong></a><br><small dir="ltr">'+esc(r.tr)+'</small> · <small>'+esc(r.brand)+'</small></td>'+
-					'<td>'+(r.current ? '<img src="'+esc(r.current)+'" alt="">' : '—')+'</td>'+
-					'<td>'+(r.found ? '<a href="'+esc(r.found)+'" target="_blank" rel="noopener"><img src="'+esc(r.found)+'" alt="" referrerpolicy="no-referrer"></a>' : '—')+'</td>'+
-					'<td>'+(r.page ? '<a href="'+esc(r.page)+'" target="_blank" rel="noopener" dir="ltr">'+esc(r.page.replace(/^https?:\/\//,''))+'</a>' : '')+
-					'<div class="zd-img-manual"><input type="url" placeholder="الصق رابط صفحة المنتج أو رابط الصورة مباشرة" aria-label="رابط يدوي"><button type="button" class="button zd-img-save">جلب</button></div></td>'+
-					'<td>'+st+'</td></tr>';
-			});
-			$('#zd-img-rows').innerHTML = html;
-			$('#zd-img-import').disabled = !document.querySelector('.zd-img-cb:checked');
+		document.querySelectorAll( '.zad-img__card' ).forEach( function ( card ) {
+			card.addEventListener( 'click', function ( e ) {
+				var btn = e.target.closest( 'button[data-act]' ); if ( ! btn ) { return; }
+				var msg = card.querySelector( '.zad-img__msg' ), data = { action: 'zad_img_one', id: card.dataset.id, act: btn.dataset.act };
+				if ( 'url' === btn.dataset.act ) { var u = prompt( 'الصق رابط الصورة (jpg / png / webp):' ); if ( ! u ) { return; } data.url = u; }
+				msg.textContent = 'جارٍ…'; btn.disabled = true;
+				post( data ).then( function ( r ) {
+					btn.disabled = false;
+					msg.textContent = r && r.data ? r.data.message : 'تعذّر';
+					if ( r && r.success && r.data.thumb ) { card.querySelector( '.zad-img__pic' ).innerHTML = r.data.thumb; }
+				} ).catch( function () { btn.disabled = false; msg.textContent = 'تعذّر الاتصال'; } );
+			} );
+		} );
+		var run = document.getElementById( 'zad-img-run' ), prog = document.getElementById( 'zad-img-progress' );
+		if ( run ) {
+			run.addEventListener( 'click', function () {
+				run.disabled = true;
+				( function step() {
+					post( { action: 'zad_img_batch' } ).then( function ( r ) {
+						if ( ! r || ! r.success ) { prog.textContent = 'توقف، أعد المحاولة.'; run.disabled = false; return; }
+						prog.textContent = 'بقي ' + r.data.left + ' منتجاً بلا صورة';
+						if ( r.data.left > 0 && r.data.done > 0 ) { setTimeout( step, 300 ); } else { prog.textContent += ' — انتهى. حدّث الصفحة لرؤية الصور.'; run.disabled = false; }
+					} ).catch( function () { setTimeout( step, 3000 ); } );
+				} )();
+			} );
 		}
-		async function batch(action, ids, size, label){
-			for (var i = 0; i < ids.length; i += size){
-				status(label + ' (' + Math.min(i+size, ids.length) + ' / ' + ids.length + ')', Math.round((i+size)/ids.length*100));
-				try {
-					var res = await post(action, {ids: ids.slice(i, i+size).join(',')});
-					res.forEach(function(r){ rows[r.id] && Object.assign(rows[r.id], r); });
-				} catch(e) { status(label + ': ' + e.message); }
-				render();
-			}
-		}
-		$('#zd-img-auto').addEventListener('click', async function(){
-			this.disabled = true;
-			for (var i = 0; i < C.brands.length; i++){
-				status('فهرسة موقع ' + C.brands[i] + '…', Math.round(i / C.brands.length * 30));
-				try { var r = await post('zad_img_scan', {brand: C.brands[i]}); status('فهرسة ' + C.brands[i] + ': ' + r.count + ' رابط (' + r.method + ')'); } catch(e) { status('تعذّرت فهرسة ' + C.brands[i] + ': ' + e.message); }
-			}
-			var ids = C.rows.filter(function(r){ return !r.current; }).map(function(r){ return r.id; });
-			await batch('zad_img_find', ids, 2, 'البحث عن الصور');
-			var found = C.rows.filter(function(r){ return r.found; }).length;
-			status('انتهى البحث: وُجدت صور ' + found + ' من أصل ' + C.rows.length + ' منتج. راجع الجدول ثم اضغط «استيراد الصور المحددة».', 100);
-			this.disabled = false;
-		});
-		$('#zd-img-import').addEventListener('click', async function(){
-			var ids = Array.prototype.map.call(document.querySelectorAll('.zd-img-cb:checked'), function(cb){ return cb.closest('tr').getAttribute('data-id'); });
-			if (!ids.length) { return; }
-			this.disabled = true;
-			await batch('zad_img_import', ids, 2, 'استيراد الصور');
-			status('تم استيراد الصور. افتح المتجر لرؤيتها.', 100);
-		});
-		document.addEventListener('change', function(e){
-			if (e.target.id === 'zd-img-all') { document.querySelectorAll('.zd-img-cb:not(:disabled)').forEach(function(cb){ cb.checked = e.target.checked; }); }
-			$('#zd-img-import').disabled = !document.querySelector('.zd-img-cb:checked');
-		});
-		document.addEventListener('click', async function(e){
-			if (!e.target.classList.contains('zd-img-save')) { return; }
-			var tr = e.target.closest('tr'), id = tr.getAttribute('data-id'), url = tr.querySelector('input[type=url]').value.trim();
-			if (!url) { return; }
-			e.target.disabled = true;
-			try { var r = await post('zad_img_manual', {id: id, url: url}); Object.assign(rows[id], r); render(); status('تم تحديث «' + rows[id].name + '».'); }
-			catch(err) { status('تعذّر الجلب: ' + err.message); e.target.disabled = false; }
-		});
-		render();
-	})();
+	} )();
 	</script>
 	<?php
 }
 
 /**
- * تحقق مشترك لطلبات AJAX.
+ * التحقق من صلاحية طلبات AJAX.
  */
 function zad_img_ajax_guard() {
-	check_ajax_referer( 'zad_img' );
 	if ( ! current_user_can( 'manage_woocommerce' ) ) {
-		wp_send_json_error( 'غير مسموح', 403 );
+		wp_send_json_error( array( 'message' => 'غير مسموح' ), 403 );
 	}
+	check_ajax_referer( 'zad_img', 'nonce' );
 	if ( function_exists( 'set_time_limit' ) ) {
 		@set_time_limit( 120 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
 	}
 }
 
-/**
- * أرقام المنتجات من الطلب.
- *
- * @return array
- */
-function zad_img_ajax_ids() {
-	$raw = isset( $_POST['ids'] ) ? sanitize_text_field( wp_unslash( $_POST['ids'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-	return array_slice( array_filter( array_map( 'absint', explode( ',', $raw ) ) ), 0, 10 );
-}
-
 add_action(
-	'wp_ajax_zad_img_scan',
+	'wp_ajax_zad_img_one',
 	static function () {
 		zad_img_ajax_guard();
-		$brand = isset( $_POST['brand'] ) ? sanitize_key( wp_unslash( $_POST['brand'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-		wp_send_json_success( zad_img_build_index( $brand ) );
-	}
-);
-
-add_action(
-	'wp_ajax_zad_img_find',
-	static function () {
-		zad_img_ajax_guard();
-		$out = array();
-		foreach ( zad_img_ajax_ids() as $id ) {
-			if ( ! get_post_meta( $id, '_zad_img_manual', true ) ) {
-				delete_post_meta( $id, '_zad_img_page' );
-			}
-			$r     = zad_img_find( $id );
-			$out[] = array(
-				'id'    => $id,
-				'page'  => $r['page'],
-				'found' => $r['image'],
-			);
-		}
-		wp_send_json_success( $out );
-	}
-);
-
-add_action(
-	'wp_ajax_zad_img_import',
-	static function () {
-		zad_img_ajax_guard();
-		$out = array();
-		foreach ( zad_img_ajax_ids() as $id ) {
-			$url = (string) get_post_meta( $id, '_zad_img_found', true );
-			if ( ! $url ) {
-				continue;
-			}
-			$att   = zad_img_sideload( $id, $url );
-			$out[] = array(
-				'id'      => $id,
-				'current' => is_wp_error( $att ) ? '' : wp_get_attachment_image_url( $att, 'thumbnail' ),
-				'found'   => is_wp_error( $att ) ? $url : '',
-			);
-		}
-		wp_send_json_success( $out );
-	}
-);
-
-add_action(
-	'wp_ajax_zad_img_manual',
-	static function () {
-		zad_img_ajax_guard();
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		$id  = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
-		$url = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
-		// phpcs:enable
-		if ( ! $id || ! $url || ! wc_get_product( $id ) ) {
-			wp_send_json_error( 'رابط غير صالح' );
+		$act = isset( $_POST['act'] ) ? sanitize_key( wp_unslash( $_POST['act'] ) ) : 'next';
+		if ( ! $id || 'product' !== get_post_type( $id ) ) {
+			wp_send_json_error( array( 'message' => 'منتج غير موجود' ) );
 		}
-		update_post_meta( $id, '_zad_img_manual', 1 );
-		if ( preg_match( '/\.(jpe?g|png|webp|gif)(\?|$)/i', $url ) ) {
-			update_post_meta( $id, '_zad_img_found', $url );
-			wp_send_json_success(
-				array(
-					'id'    => $id,
-					'found' => $url,
-				)
-			);
+		if ( 'url' === $act ) {
+			$url = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
+			list( $ok, $msg ) = $url ? zad_img_from_url( $id, $url ) : array( false, 'رابط غير صالح' );
+		} else {
+			list( $ok, $msg ) = zad_img_fetch_for( $id, (bool) get_post_thumbnail_id( $id ) );
 		}
-		update_post_meta( $id, '_zad_img_page', $url );
-		$r = zad_img_find( $id, $url );
-		if ( ! $r['image'] ) {
-			wp_send_json_error( 'لم نجد صورة منتج في هذه الصفحة. جرّب لصق رابط الصورة نفسها.' );
-		}
+		$res = array(
+			'message' => $ok ? 'تم ✓ ' . $msg : $msg,
+			'thumb'   => $ok ? wp_get_attachment_image( get_post_thumbnail_id( $id ), 'thumbnail' ) : '',
+		);
+		$ok ? wp_send_json_success( $res ) : wp_send_json_error( $res );
+	}
+);
+
+add_action(
+	'wp_ajax_zad_img_batch',
+	static function () {
+		zad_img_ajax_guard();
+		list( $done, $found ) = zad_img_run( 20 );
+		list( $none )         = zad_img_counts();
 		wp_send_json_success(
 			array(
-				'id'    => $id,
-				'page'  => $r['page'],
-				'found' => $r['image'],
+				'done'  => $done,
+				'found' => $found,
+				'left'  => $none,
 			)
 		);
 	}
 );
 
-/* -------------------------------------------------------------------------
- * WP-CLI: wp zad images [--brand=eti] [--import] [--force] [--skip-index]
- * ---------------------------------------------------------------------- */
+/**
+ * تنبيه التقدّم في لوحة التحكم.
+ */
+function zad_img_notice() {
+	if ( ! current_user_can( 'manage_woocommerce' ) || ! wp_next_scheduled( 'zad_img_cron' ) ) {
+		return;
+	}
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( $screen && 'product_page_zad-images' === $screen->id ) {
+		return;
+	}
+	list( $none, $all ) = zad_img_counts();
+	printf(
+		'<div class="notice notice-info" dir="rtl"><p><strong>بسكاتو:</strong> يجري البحث عن صور المنتجات في الخلفية — %1$d من %2$d لها صورة. <a href="%3$s">صور المنتجات</a></p></div>',
+		(int) ( $all - $none ),
+		(int) $all,
+		esc_url( admin_url( 'edit.php?post_type=product&page=zad-images' ) )
+	);
+}
+add_action( 'admin_notices', 'zad_img_notice' );
+
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	WP_CLI::add_command(
 		'zad images',
 		static function ( $args, $assoc ) {
-			$brands = isset( $assoc['brand'] ) ? array( sanitize_key( $assoc['brand'] ) ) : array_keys( zad_image_sources() );
-			foreach ( empty( $assoc['skip-index'] ) ? $brands : array() as $b ) {
-				$r = zad_img_build_index( $b );
-				WP_CLI::log( sprintf( 'فهرسة %s: %d رابط (%s)', $b, $r['count'], $r['method'] ) );
-			}
-			$products = wc_get_products(
+			$limit = isset( $assoc['limit'] ) ? max( 1, (int) $assoc['limit'] ) : 1000;
+			$ids   = ! empty( $assoc['redo'] ) ? wc_get_products(
 				array(
+					'limit'  => $limit,
+					'return' => 'ids',
 					'status' => 'publish',
-					'limit'  => -1,
 				)
-			);
-			$found    = 0;
-			$imported = 0;
-			foreach ( $products as $p ) {
-				if ( ! in_array( zad_product_brand( $p->get_id() ), $brands, true ) ) {
-					continue;
-				}
-				if ( $p->get_image_id() && empty( $assoc['force'] ) ) {
-					continue;
-				}
-				if ( ! get_post_meta( $p->get_id(), '_zad_img_manual', true ) ) {
-					delete_post_meta( $p->get_id(), '_zad_img_page' );
-				}
-				$r = zad_img_find( $p->get_id() );
-				WP_CLI::log( sprintf( '%s %s → %s', $r['image'] ? '✓' : '✗', $p->get_sku(), $r['image'] ? $r['image'] : ( $r['page'] ? 'صفحة بلا صورة: ' . $r['page'] : 'غير مطابق' ) ) );
-				if ( $r['image'] ) {
-					++$found;
-					if ( ! empty( $assoc['import'] ) ) {
-						$att = zad_img_sideload( $p->get_id(), $r['image'] );
-						if ( is_wp_error( $att ) ) {
-							WP_CLI::warning( $p->get_sku() . ': ' . $att->get_error_message() );
-						} else {
-							++$imported;
-						}
-					}
-				}
+			) : zad_img_pending_ids( $limit );
+			$found = 0;
+			foreach ( $ids as $pid ) {
+				list( $ok, $msg ) = zad_img_fetch_for( $pid, ! empty( $assoc['redo'] ) );
+				$found           += $ok ? 1 : 0;
+				WP_CLI::log( ( $ok ? '✓ ' : '✗ ' ) . get_the_title( $pid ) . ' — ' . $msg );
 			}
-			WP_CLI::success( sprintf( 'وُجدت %d صورة، واستُوردت %d.', $found, $imported ) );
+			WP_CLI::success( sprintf( 'وُجدت %1$d صورة من %2$d.', $found, count( $ids ) ) );
 		},
-		array( 'shortdesc' => 'جلب صور المنتجات الرسمية من مواقع العلامات.' )
+		array( 'shortdesc' => 'البحث عن صور المنتجات وتعيينها (--limit=N، --redo لإعادة البحث للكل).' )
 	);
 }

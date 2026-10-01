@@ -23,6 +23,8 @@ $zd_tabs = array_intersect_key( zad_categories(), array_flip( array( 'cake', 'bi
 		<?php foreach ( $zd_tabs as $zd_slug => $zd_cat ) : ?>
 			<div class="zd-tab-panel" role="tabpanel" id="zd-panel-<?php echo esc_attr( $zd_slug ); ?>" aria-labelledby="zd-tab-<?php echo esc_attr( $zd_slug ); ?>"<?php echo $zd_first ? '' : ' hidden'; ?>>
 				<?php
+				// التبويبات المخفية داخل <template>: لا تُرسم ولا تُحمَّل صورها حتى يفتحها الزائر (صفحة أخف وأسرع).
+				ob_start();
 				zad_product_grid(
 					array(
 						'category' => array( $zd_slug ),
@@ -34,6 +36,10 @@ $zd_tabs = array_intersect_key( zad_categories(), array_flip( array( 'cake', 'bi
 				);
 				?>
 				<p class="zd-center"><a class="zd-btn zd-btn--outline" href="<?php echo esc_url( zad_cat_url( $zd_slug ) ); ?>">كل أصناف <?php echo esc_html( $zd_cat['title'] ); ?> (<?php echo esc_html( zad_n_items( zad_cat_count( $zd_slug ) ) ); ?>)</a></p>
+				<?php
+				$zd_html = ob_get_clean();
+				echo $zd_first ? $zd_html : '<template data-zd-lazy>' . $zd_html . '</template>'; // phpcs:ignore WordPress.Security.EscapeOutput
+				?>
 			</div>
 			<?php $zd_first = false; ?>
 		<?php endforeach; ?>

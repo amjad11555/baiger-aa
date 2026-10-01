@@ -41,9 +41,7 @@ function zad_setup() {
 			),
 		)
 	);
-	add_theme_support( 'wc-product-gallery-zoom' );
-	add_theme_support( 'wc-product-gallery-lightbox' );
-	add_theme_support( 'wc-product-gallery-slider' );
+	// صورة واحدة لكل منتج: لا حاجة لسكربتات التكبير والعرض المنزلق (jQuery + 4 ملفات أقل في صفحة المنتج).
 
 	register_nav_menus(
 		array(
@@ -102,7 +100,7 @@ function zad_assets() {
 	$css_ver  = ZAD_VERSION . '.' . ( file_exists( $css_file ) ? filemtime( $css_file ) : '0' );
 	$js_ver   = ZAD_VERSION . '.' . ( file_exists( $js_file ) ? filemtime( $js_file ) : '0' );
 
-	// خطوط Google (Tajawal + Poppins + Amiri + Libre Baskerville) مستضافة داخل القالب: أسرع ولا تعتمد على خدمة خارجية.
+	// خطا Tajawal وPoppins مستضافان داخل القالب: أسرع ولا يعتمدان على خدمة خارجية.
 	wp_enqueue_style( 'zad-fonts', ZAD_URI . '/assets/css/fonts.css', array(), ZAD_VERSION );
 	wp_enqueue_style( 'zad-main', ZAD_URI . '/assets/css/main.css', array( 'zad-fonts' ), $css_ver );
 
@@ -170,7 +168,6 @@ function zad_assets() {
 			'ds'     => wc_get_price_decimal_separator(),
 			'ts'     => wc_get_price_thousand_separator(),
 		);
-		wp_enqueue_script( 'wc-cart-fragments' );
 	}
 
 	wp_add_inline_script( 'zad-main', 'window.ZAD=' . wp_json_encode( $config ) . ';', 'before' );
@@ -180,6 +177,27 @@ function zad_assets() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'zad_assets', 20 );
+
+/**
+ * صفحات أخف: القالب يحدّث الطلبية بسكربته الخاص (zad_sync_cart)، فلا حاجة لسكربتات ووكومرس العامة
+ * ولا لـ jQuery خارج صفحات السلة والدفع والحساب. يوفّر طلب «cart-fragments» عند كل زيارة،
+ * ونحو 120 كيلوبايت من JavaScript، ويُسرّع ظهور الصفحة على الجوال.
+ */
+function zad_trim_frontend_assets() {
+	if ( is_admin() || ! class_exists( 'WooCommerce' ) ) {
+		return;
+	}
+	if ( is_cart() || is_checkout() || is_account_page() ) {
+		return;
+	}
+	foreach ( array( 'wc-cart-fragments', 'wc-add-to-cart', 'woocommerce', 'wc-jquery-blockui', 'wc-js-cookie', 'sourcebuster-js', 'wc-order-attribution', 'wc-single-product', 'wc-add-to-cart-variation', 'wc-zoom', 'wc-flexslider', 'wc-photoswipe', 'wc-photoswipe-ui-default' ) as $handle ) {
+		wp_dequeue_script( $handle );
+	}
+	foreach ( array( 'wc-blocks-style', 'wp-block-library', 'global-styles', 'classic-theme-styles', 'photoswipe', 'photoswipe-default-skin' ) as $handle ) {
+		wp_dequeue_style( $handle );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'zad_trim_frontend_assets', 99 );
 
 /**
  * تحميل مسبق لملفي الخط العربي الأساسيين لتسريع ظهور النصوص.
@@ -310,6 +328,55 @@ function zad_migrate_to_biskato() {
 }
 add_action( 'after_switch_theme', 'zad_migrate_to_biskato' );
 add_action( 'init', 'zad_migrate_to_biskato', 1 );
+
+/**
+ * ترحيل الإصدار 5 (مرة واحدة): الأسعار للحسابات المؤكَّدة فقط، والدفع حسب المنطقة،
+ * وأسعار بكسور (لخصم إيتي وأولكر)، ولا كميات مخزون، والشحن الدولي، ونصوص الواجهة الجديدة.
+ * استبدال المنتجات نفسه يتم على دفعات في inc/catalog.php.
+ */
+function zad_migrate_v5() {
+	if ( get_option( 'zad_migrated_v8' ) || ! class_exists( 'WooCommerce' ) ) {
+		return;
+	}
+	set_theme_mod( 'zad_members_prices', true );
+	set_theme_mod( 'zad_require_account', true );
+	// نصوص الواجهة القديمة (إن لم يغيّرها صاحب المتجر) تُستبدل بالجديدة.
+	$old = array(
+		'announcement' => array( 'أسعار جملة للحسابات التجارية · توريد إلى جميع الولايات التركية · تصدير بالحاويات' ),
+		'hero_kicker' => array( 'بسكاتو للتجارة · جملة وتوزيع', 'زاد للتجارة · جملة وتوزيع' ),
+		'hero_title'  => array( 'مورّدك الثابت للكيك والبسكويت والشيبس بالجملة' ),
+		'hero_text'   => array( 'نوفّر لمتجرك أكثر من 130 صنفاً من إيتي وأولكر وبونوتشي بأسعار الجملة، مع توريد منتظم إلى كل الولايات وتصدير بالحاويات. اطلب بالكرتونة أو بالطبلية، ونتولى نحن التجهيز والتوصيل.' ),
+	);
+	foreach ( $old as $key => $values ) {
+		if ( in_array( get_theme_mod( 'zad_' . $key ), $values, true ) ) {
+			remove_theme_mod( 'zad_' . $key );
+		}
+	}
+	update_option( 'woocommerce_price_num_decimals', 2 );
+	update_option( 'woocommerce_stock_format', 'no_amount' );
+	update_option( 'woocommerce_manage_stock', 'no' );
+	update_option( 'woocommerce_allowed_countries', 'all' );
+	if ( function_exists( 'zad_setup_gateways' ) ) {
+		zad_setup_gateways();
+	}
+	if ( function_exists( 'zad_seed_world_shipping' ) ) {
+		zad_seed_world_shipping();
+	}
+	update_option( 'zad_migrated_v8', 1, true );
+}
+add_action( 'init', 'zad_migrate_v5', 2 );
+
+/**
+ * الإصدار 5.0: نصوص صفحتي «من نحن» و«التوصيل» الجديدة (الدفع حسب المنطقة)، إن لم يعدّلها صاحب المتجر.
+ */
+function zad_migrate_v5_pages() {
+	if ( get_option( 'zad_migrated_v9' ) || ! function_exists( 'zad_refresh_default_pages' ) ) {
+		return;
+	}
+	zad_refresh_default_pages();
+	update_option( 'zad_migrated_v9', 1, true );
+}
+add_action( 'admin_init', 'zad_migrate_v5_pages' );
 
 /**
  * ترحيل مكمّل: حالة «تم الإعداد» وصور الموقع المجلوبة في قالب «الشامي».

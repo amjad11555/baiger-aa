@@ -40,7 +40,7 @@ function zad_seed_notice() {
 		return;
 	}
 	printf(
-		'<div class="notice notice-info"><p><strong>مرحباً بك في قالب بسكاتو!</strong> أنشئ الأقسام والصفحات وأكثر من 130 منتجاً (إيتي، أولكر، بونوتشي) بضغطة واحدة. <a class="button button-primary" href="%s">ابدأ الإعداد</a></p></div>',
+		'<div class="notice notice-info"><p><strong>مرحباً بك في قالب بسكاتو!</strong> أنشئ الأقسام التسعة والصفحات وأكثر من 330 منتجاً بأسعارها (إيتي، أولكر، بونجو، الوان…) بضغطة واحدة. <a class="button button-primary" href="%s">ابدأ الإعداد</a></p></div>',
 		esc_url( admin_url( 'themes.php?page=zad-setup' ) )
 	);
 }
@@ -93,7 +93,7 @@ function zad_seed_page() {
 
 			<div class="card" style="max-width:760px">
 				<h2>1) الإعداد الكامل (موصى به أول مرة)</h2>
-				<p>يضبط العملة (الليرة التركية)، الدفع عند الاستلام، حقول الدفع المختصرة، منطقة الشحن، ويُنشئ الأقسام الخمسة (كيك، بسكويت، شيبسات، تسالي، عروض)، العلامات التجارية، الصفحات (الرئيسية، الطلب السريع، طلب منتج غير متوفر، التصدير، تواصل معنا، من نحن، التوصيل)، القوائم، وجميع المنتجات.</p>
+				<p>يضبط العملة (الليرة التركية)، والدفع حسب المنطقة (نقداً عند الاستلام داخل إسطنبول، وتحويل بنكي خارجها)، ومناطق الشحن، ويُنشئ الأقسام التسعة (الكيك، البسكويت، الشوكولاتة والويفر، الشيبس، السكاكر، العلكة، الألعاب، العصائر، العروض)، والعلامات التجارية، والصفحات (الرئيسية، قائمة الأسعار، طلب توريد خاص، التصدير، تواصل معنا، من نحن، التوصيل)، والقوائم، وجميع المنتجات بأسعارها مع خصم إيتي وأولكر.</p>
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<?php wp_nonce_field( 'zad_seed' ); ?>
 					<input type="hidden" name="action" value="zad_seed">
@@ -117,8 +117,9 @@ function zad_seed_page() {
 				<h2>الخطوات التالية</h2>
 				<ol>
 					<li>أدخل رقم واتساب والهاتف والعنوان من <a href="<?php echo esc_url( admin_url( 'customize.php?autofocus[panel]=zad_panel' ) ); ?>">المظهر ← تخصيص ← إعدادات متجر بسكاتو</a>.</li>
-					<li>راجع الأسعار (الأسعار المضافة تقديرية) من المنتجات، أو استورد ملف CSV المرفق مع القالب بعد تعديله.</li>
-					<li>ارفع صور المنتجات الحقيقية (اختياري) — إلى ذلك الحين يعرض القالب رسومات عبوات أنيقة تلقائياً.</li>
+					<li>أضف رقم الآيبان (IBAN) من <a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=bacs' ) ); ?>">ووكومرس ← الإعدادات ← المدفوعات ← تحويل بنكي</a>: هو طريقة الدفع الوحيدة للطلبات خارج إسطنبول.</li>
+					<li>صور المنتجات تُجلب تلقائياً في الخلفية (تابع التقدّم أو غيّر أي صورة من <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=product&page=zad-images' ) ); ?>">المنتجات ← صور المنتجات</a>).</li>
+					<li>نسب خصم إيتي وأولكر وتأكيد الحسابات عبر واتساب من المظهر ← تخصيص ← إعدادات متجر بسكاتو.</li>
 					<li>اجعل لغة الموقع «العربية» من الإعدادات ← عام لتنزيل ترجمة ووكومرس الكاملة.</li>
 				</ol>
 			</div>
@@ -208,12 +209,11 @@ function zad_seed_settings() {
 	$opts = array(
 		'woocommerce_currency'                          => 'TRY',
 		'woocommerce_currency_pos'                      => 'right_space',
-		'woocommerce_price_num_decimals'                => 0,
+		'woocommerce_price_num_decimals'                => 2,
 		'woocommerce_price_thousand_sep'                => ',',
 		'woocommerce_price_decimal_sep'                 => '.',
 		'woocommerce_default_country'                   => 'TR:TR34',
-		'woocommerce_allowed_countries'                 => 'specific',
-		'woocommerce_specific_allowed_countries'        => array( 'TR' ),
+		'woocommerce_allowed_countries'                 => 'all',
 		'woocommerce_ship_to_countries'                 => '',
 		'woocommerce_ship_to_destination'               => 'billing_only',
 		'woocommerce_enable_guest_checkout'             => 'yes',
@@ -231,25 +231,14 @@ function zad_seed_settings() {
 		'woocommerce_store_pages_only'                  => 'no',
 		'woocommerce_weight_unit'                       => 'kg',
 		'woocommerce_manage_stock'                      => 'no',
+		'woocommerce_stock_format'                      => 'no_amount',
 		'woocommerce_enable_myaccount_registration'     => 'yes',
 	);
 	foreach ( $opts as $k => $v ) {
 		update_option( $k, $v );
 	}
 
-	$cod = (array) get_option( 'woocommerce_cod_settings', array() );
-	$cod = array_merge(
-		$cod,
-		array(
-			'enabled'            => 'yes',
-			'title'              => 'الدفع عند الاستلام',
-			'description'        => 'لا دفع مسبق: تدفع للمندوب حين تصل الكراتين إلى محلك.',
-			'instructions'       => 'سنتواصل معك هاتفياً أو عبر واتساب لتأكيد الطلب وموعد التوصيل.',
-			'enable_for_methods' => array(),
-			'enable_for_virtual' => 'yes',
-		)
-	);
-	update_option( 'woocommerce_cod_settings', $cod );
+	zad_setup_gateways();
 
 	update_option( 'woocommerce_checkout_privacy_policy_text', 'نستخدم بياناتك لمعالجة طلبك والتواصل معك بخصوصه فقط، كما هو موضّح في [privacy_policy].' );
 	update_option( 'woocommerce_registration_privacy_policy_text', 'نستخدم بياناتك لإدارة حسابك وطلباتك فقط، كما هو موضّح في [privacy_policy].' );
@@ -285,7 +274,7 @@ function zad_seed_settings() {
  *
  * @return array
  */
-function zad_seed_terms() {
+function zad_seed_terms( $force = false ) {
 	$cats  = zad_categories();
 	$data  = include ZAD_DIR . '/inc/data/categories.php';
 	$done  = array();
@@ -298,7 +287,19 @@ function zad_seed_terms() {
 		);
 		if ( $term ) {
 			$id = (int) $term->term_id;
-			if ( ! $term->description && $args['description'] ) {
+			if ( $force ) {
+				wp_update_term(
+					$id,
+					'product_cat',
+					array(
+						'name'        => $cat['name'],
+						'description' => $args['description'],
+					)
+				);
+				if ( isset( $data[ $slug ] ) ) {
+					update_term_meta( $id, 'zad_seo_text', $data[ $slug ]['seo'] );
+				}
+			} elseif ( ! $term->description && $args['description'] ) {
 				wp_update_term( $id, 'product_cat', array( 'description' => $args['description'] ) );
 			}
 		} else {
@@ -323,13 +324,24 @@ function zad_seed_terms() {
 
 	if ( taxonomy_exists( 'product_brand' ) ) {
 		foreach ( zad_brands() as $slug => $b ) {
-			if ( ! get_term_by( 'slug', $slug, 'product_brand' ) ) {
+			$desc = trim( sprintf( 'منتجات %1$s (%2$s) بالجملة لمحلات إسطنبول. %3$s', $b['ar'], $b['latin'], $b['about'] ) );
+			$bt   = get_term_by( 'slug', $slug, 'product_brand' );
+			if ( ! $bt ) {
 				wp_insert_term(
 					$b['ar'],
 					'product_brand',
 					array(
 						'slug'        => $slug,
-						'description' => sprintf( 'منتجات %1$s (%2$s – %3$s) بالجملة لتجار التجزئة: %4$s', $b['ar'], $b['alt'], $b['latin'], $b['about'] ),
+						'description' => $desc,
+					)
+				);
+			} elseif ( $force && ( $bt->name !== $b['ar'] || $bt->description !== $desc ) ) {
+				wp_update_term(
+					$bt->term_id,
+					'product_brand',
+					array(
+						'name'        => $b['ar'],
+						'description' => $desc,
 					)
 				);
 			}
@@ -337,6 +349,66 @@ function zad_seed_terms() {
 		}
 	}
 	return implode( '، ', $done );
+}
+
+/**
+ * الطلبات خارج تركيا: طريقة شحن «نتفق على التكلفة» في منطقة «باقي الدول»، وإلا لا يكتمل الطلب.
+ */
+function zad_seed_world_shipping() {
+	if ( ! class_exists( 'WC_Shipping_Zone' ) ) {
+		return;
+	}
+	$zone = new WC_Shipping_Zone( 0 );
+	foreach ( $zone->get_shipping_methods() as $m ) {
+		if ( in_array( $m->id, array( 'flat_rate', 'free_shipping' ), true ) ) {
+			return;
+		}
+	}
+	$id = $zone->add_shipping_method( 'flat_rate' );
+	if ( $id ) {
+		update_option(
+			'woocommerce_flat_rate_' . $id . '_settings',
+			array(
+				'title'      => 'شحن دولي (نتفق معك على التكلفة)',
+				'tax_status' => 'none',
+				'cost'       => '0',
+			)
+		);
+	}
+	WC_Cache_Helper::get_transient_version( 'shipping', true );
+}
+
+/**
+ * تحديث النص الافتراضي لصفحة خاصة، فقط إن لم يعدّله المدير منذ إنشائها.
+ *
+ * @param int    $id      رقم الصفحة.
+ * @param string $default النص الافتراضي الجديد.
+ */
+function zad_refresh_page_content( $id, $default ) {
+	$hash    = (string) get_post_meta( $id, '_zad_default_hash', true );
+	$current = (string) get_post_field( 'post_content', $id );
+	if ( $default && $hash && md5( $current ) === $hash && md5( $default ) !== $hash ) {
+		wp_update_post(
+			array(
+				'ID'           => $id,
+				'post_content' => $default,
+			)
+		);
+		update_post_meta( $id, '_zad_default_hash', md5( (string) get_post_field( 'post_content', $id ) ) );
+	}
+}
+
+/**
+ * تحديث نصوص الصفحات الخاصة الموجودة (من نحن، التوصيل…) دون إنشاء شيء جديد.
+ */
+function zad_refresh_default_pages() {
+	$contents = include ZAD_DIR . '/inc/data/pages.php';
+	foreach ( array_keys( zad_special_pages() ) as $key ) {
+		$id = (int) get_option( 'zad_page_' . $key );
+		if ( $id && isset( $contents[ $key ] ) && get_post( $id ) ) {
+			zad_refresh_page_content( $id, $contents[ $key ] );
+		}
+	}
 }
 
 /**
@@ -352,19 +424,7 @@ function zad_seed_pages() {
 		list( $slug, $template, $title ) = $page;
 		$existing = (int) get_option( 'zad_page_' . $key );
 		if ( $existing && get_post( $existing ) && 'trash' !== get_post_status( $existing ) ) {
-			// تحديث النص الافتراضي فقط إن لم يعدّله المدير منذ إنشائه.
-			$default = isset( $contents[ $key ] ) ? $contents[ $key ] : '';
-			$hash    = (string) get_post_meta( $existing, '_zad_default_hash', true );
-			$current = (string) get_post_field( 'post_content', $existing );
-			if ( $default && $hash && md5( $current ) === $hash && md5( $default ) !== $hash ) {
-				wp_update_post(
-					array(
-						'ID'           => $existing,
-						'post_content' => $default,
-					)
-				);
-				update_post_meta( $existing, '_zad_default_hash', md5( (string) get_post_field( 'post_content', $existing ) ) );
-			}
+			zad_refresh_page_content( $existing, isset( $contents[ $key ] ) ? $contents[ $key ] : '' );
 			continue;
 		}
 		$found = get_page_by_path( $slug );
@@ -504,6 +564,7 @@ function zad_seed_shipping() {
 	if ( ! class_exists( 'WC_Shipping_Zones' ) ) {
 		return 'غير متاح';
 	}
+	zad_seed_world_shipping();
 	foreach ( WC_Shipping_Zones::get_zones() as $zone ) {
 		foreach ( $zone['zone_locations'] as $loc ) {
 			if ( 'country' === $loc->type && 'TR' === $loc->code ) {
@@ -533,24 +594,27 @@ function zad_seed_shipping() {
 }
 
 /**
- * سبب البيع حسب القسم (لوصف المنتج).
+ * أسباب إضافة الصنف إلى الرف حسب القسم.
  *
  * @param string $cat القسم.
  * @return array
  */
 function zad_seed_reasons( $cat ) {
 	$reasons = array(
-		'cake'     => array( 'وجبة خفيفة مشبعة يطلبها الطلاب والعمال يومياً', 'مغلّف فردياً ومناسب للبيع بالقطعة بجانب المشروبات', 'صلاحية مناسبة للعرض على الرف دون تبريد' ),
-		'biscuits' => array( 'من أكثر المنتجات دوراناً في البقالات طوال العام', 'مناسب للضيافة ووقت الشاي والمدارس', 'هامش ربح جيد عند البيع بالقطعة' ),
-		'chips'    => array( 'منتج شراء اندفاعي يرفع قيمة سلة الزبون', 'يزداد الطلب عليه في المساء وعطلات نهاية الأسبوع والمباريات', 'مثالي للعرض بجانب المشروبات الغازية' ),
-		'snacks'   => array( 'حلوى مفضلة للأطفال والشباب قرب الكاشير', 'حجم صغير وسعر مناسب يشجع الشراء المتكرر', 'مناسب للهدايا والمناسبات والضيافة' ),
-		'offers'   => array( 'توفير مباشر مقارنة بشراء الأصناف منفردة', 'تشكيلة جاهزة لتنويع الرف بسرعة', 'مناسبة للبقالات الجديدة ولتجربة أصناف جديدة' ),
+		'cake'     => array( 'وجبة خفيفة مشبعة يطلبها الطلاب والعمال يومياً', 'مغلّف فردياً ومناسب للبيع بالقطعة بجانب المشروبات', 'يُعرض على الرف دون تبريد' ),
+		'biscuits' => array( 'من أكثر الأصناف دوراناً في البقالات طوال العام', 'مناسب للضيافة ووقت الشاي والمدارس', 'هامش ربح جيد عند البيع بالقطعة' ),
+		'snacks'   => array( 'صنف شراء سريع قرب الكاشير', 'سعر القطعة صغير فيشجع الشراء المتكرر', 'مطلوب لدى الأطفال والشباب' ),
+		'chips'    => array( 'تسالي مالحة ترفع قيمة سلة الزبون', 'يزداد طلبها في المساء وأيام المباريات', 'تُعرض بجانب المشروبات الغازية' ),
+		'candy'    => array( 'يشتريها الأطفال بالقطعة كل يوم', 'سعر صغير ودوران سريع', 'تجذب الصغار إلى رف الكاشير' ),
+		'gum'      => array( 'أول صنف على الكاشير', 'تُباع طوال اليوم دون موسم', 'لا تحتاج مساحة كبيرة على الرف' ),
+		'toys'     => array( 'مفاجأة يحبها الأطفال', 'ربح جيد للقطعة الواحدة', 'تُعرض قرب الكاشير وتجذب العائلات' ),
+		'drinks'   => array( 'تكمل رف المشروبات', 'يطلبها الزبائن مع الكيك والبسكويت', 'عبوات مناسبة للبيع بالقطعة' ),
 	);
 	return isset( $reasons[ $cat ] ) ? $reasons[ $cat ] : $reasons['snacks'];
 }
 
 /**
- * وصف المنتج الطويل (غني بالكلمات المفتاحية وبشكل طبيعي).
+ * وصف المنتج الطويل: الاسمان العربي والتركي، والعلامة، والتعبئة، والتوصيل والدفع في إسطنبول.
  *
  * @param array $r بيانات المنتج.
  * @return string
@@ -558,125 +622,53 @@ function zad_seed_reasons( $cat ) {
 function zad_seed_description( $r ) {
 	$brands = zad_brands();
 	$cats   = zad_categories();
-	$flv    = zad_flavor( $r['flavor'] );
 	$city   = zad_opt( 'city' );
-	$b      = isset( $brands[ $r['brand'] ] ) ? $brands[ $r['brand'] ] : null;
+	$b      = ( $r['brand'] && isset( $brands[ $r['brand'] ] ) ) ? $brands[ $r['brand'] ] : null;
+	$unit   = ! empty( $r['unit'] ) ? $r['unit'] : 'علبة';
+	$cat    = isset( $cats[ $r['cat'] ] ) ? $cats[ $r['cat'] ] : null;
 
-	$html  = '<p><strong>' . esc_html( $r['name'] ) . '</strong> (<span lang="tr">' . esc_html( $r['tr'] ) . '</span>) — ' . esc_html( $r['desc'] ) . '.';
-	$html .= $b ? ' من إنتاج شركة ' . esc_html( $b['ar'] ) . ' التركية (' . esc_html( $b['alt'] ) . ' – ' . esc_html( $b['latin'] ) . ')، ومن المنتجات المطلوبة يومياً في البقالات والسوبرماركت والمقاصف.</p>' : ' باقة موفّرة مختارة من أكثر المنتجات مبيعاً في البقالات.</p>';
+	$html  = '<p><strong>' . esc_html( $r['name'] ) . '</strong> (<span lang="tr">' . esc_html( $r['tr'] ) . '</span>): ' . esc_html( $r['desc'] ) . '.';
+	$html .= $b ? ' من منتجات ' . esc_html( $b['ar'] ) . ' (' . esc_html( $b['latin'] ) . ')، متوفر عندنا بالجملة لمحلات البقالة والماركت في ' . esc_html( $city ) . '.</p>' : ' متوفر بالجملة لمحلات البقالة والماركت في ' . esc_html( $city ) . '.</p>';
 
-	$html .= '<h2>لماذا يضيف أصحاب البقالات ' . esc_html( $r['line'] ) . ' إلى رفوفهم؟</h2><ul>';
+	$html .= '<h2>تفاصيل البيع بالجملة</h2><ul>';
+	$html .= '<li>وحدة البيع: ' . esc_html( $unit ) . ( $r['units'] ? ' فيها ' . (int) $r['units'] . ' قطعة' : '' ) . '</li>';
+	if ( $r['pack'] ) {
+		$html .= '<li>التعبئة: ' . esc_html( $r['pack'] ) . '</li>';
+	}
+	if ( $cat ) {
+		$html .= '<li>القسم: ' . esc_html( $cat['title'] ) . '</li>';
+	}
+	if ( $b ) {
+		$html .= '<li>العلامة: ' . esc_html( $b['ar'] . ' · ' . $b['latin'] ) . '</li>';
+	}
+	$html .= '</ul>';
+
+	$html .= '<h2>لماذا يطلبه أصحاب المحلات؟</h2><ul>';
 	foreach ( zad_seed_reasons( $r['cat'] ) as $reason ) {
 		$html .= '<li>' . esc_html( $reason ) . '.</li>';
 	}
 	$html .= '</ul>';
 
-	$html .= '<h2>تفاصيل البيع بالجملة</h2><ul>';
-	$html .= '<li>التعبئة: ' . esc_html( $r['pack'] ) . '</li>';
-	$html .= $r['units'] ? '<li>وحدة البيع: كرتونة كاملة (' . (int) $r['units'] . ' قطعة)</li>' : '<li>وحدة البيع: باقة كاملة</li>';
-	if ( 'offers' !== $r['cat'] ) {
-		$html .= '<li>النكهة: ' . esc_html( $flv[0] ) . '</li>';
-	}
-	$html .= '<li>القسم: ' . esc_html( $cats[ $r['cat'] ]['name'] ) . '</li>';
-	$html .= '</ul>';
-
-	$html .= '<p>اطلب ' . esc_html( $r['name'] ) . ' بالجملة الآن من صفحة الطلب السريع أو عبر واتساب، ونوصله إلى محلك في ' . esc_html( $city ) . ' وجميع الولايات التركية مع الدفع عند الاستلام.';
-	if ( $b ) {
-		$html .= ' قد يبحث عنه زبائنك أيضاً باسم «' . esc_html( $r['tr'] ) . '» أو «' . esc_html( $b['alt'] . ' ' . $r['line'] ) . '».';
-	}
-	$html .= '</p>';
+	$html .= '<h2>التوصيل والدفع</h2><p>نوصل ' . esc_html( $r['name'] ) . ' إلى باب محلك أو نرتبه على الرف في كل مناطق ' . esc_html( $city ) . '، والدفع نقداً عند الاستلام. للطلبات خارج ' . esc_html( $city ) . ' أو خارج تركيا يكون الدفع بتحويل بنكي. تظهر الأسعار بعد فتح حساب جملة وتأكيده عبر واتساب.</p>';
+	$html .= '<p>يبحث عنه التجار أيضاً باسم «' . esc_html( $r['tr'] ) . '»' . ( $b ? '، و«' . esc_html( $b['alt'] . ' ' . $r['line'] ) . ' جملة»' : '' ) . '، و«' . esc_html( $r['line'] ) . ' جملة اسطنبول».</p>';
 	return $html;
 }
 
 /**
- * إنشاء المنتجات.
+ * إضافة منتجات الكتالوج وتحديثها: تبدأ المهمة وتُنفّذ أول دفعة، ويكمل الباقي في الخلفية
+ * (أو كاملةً من سطر الأوامر).
  *
  * @return string
  */
 function zad_seed_products() {
-	$rows    = include ZAD_DIR . '/inc/data/catalog.php';
-	$created = 0;
-	$skipped = 0;
-
-	$cat_ids = array();
-	foreach ( array_keys( zad_categories() ) as $slug ) {
-		$t                = get_term_by( 'slug', $slug, 'product_cat' );
-		$cat_ids[ $slug ] = $t ? (int) $t->term_id : 0;
+	if ( ! zad_catalog_job() ) {
+		zad_catalog_job_start( false );
 	}
-
-	wp_defer_term_counting( true );
-
-	// منتجات من نسخة سابقة من الكتالوج لا تُباع بهذا الاسم فعلياً، واستُبدلت بمنتجات حقيقية: تُنقل إلى المهملات.
-	$retired = 0;
-	foreach ( array( 'ETI-TOP-RAI', 'ETI-TOP-CAR', 'ETI-TUT-MIN', 'ETI-FRM-WHL', 'ETI-NEG-MIN', 'ETI-HOS-MLK', 'ETI-CRX-SES', 'ULK-DAN-BOR', 'ULK-DAN-LBA', 'ULK-HAN-RAI', 'ULK-CRZ-SWT', 'ULK-ASK-CLS', 'ULK-GRS-SES', 'ULK-CMS-CLS' ) as $old_sku ) {
-		$old_id = wc_get_product_id_by_sku( $old_sku );
-		if ( $old_id && wp_trash_post( $old_id ) ) {
-			++$retired;
-		}
-	}
-
-	foreach ( $rows as $i => $row ) {
-		$r = array_combine( array( 'sku', 'brand', 'cat', 'line', 'name', 'tr', 'flavor', 'pack', 'units', 'price', 'sale', 'best', 'desc' ), $row );
-
-		if ( wc_get_product_id_by_sku( $r['sku'] ) ) {
-			++$skipped;
-			continue;
-		}
-
-		$product = new WC_Product_Simple();
-		$product->set_name( $r['name'] );
-		// إزالة % لأن ووردبريس يعامل %XX كترميز في الرابط (مثل «%54» في Karam %54).
-		$product->set_slug( sanitize_title( str_replace( '%', '', $r['tr'] ) ) );
-		$product->set_status( 'publish' );
-		$product->set_catalog_visibility( 'visible' );
-		$product->set_sku( $r['sku'] );
-		$product->set_regular_price( (string) $r['price'] );
-		if ( $r['sale'] ) {
-			$product->set_sale_price( (string) $r['sale'] );
-		}
-		$product->set_featured( (bool) $r['best'] );
-		$product->set_manage_stock( false );
-		$product->set_stock_status( 'instock' );
-		$product->set_menu_order( $i );
-		$product->set_short_description( '<p>' . esc_html( $r['desc'] ) . '. التعبئة: ' . esc_html( $r['pack'] ) . '. متوفر بالجملة للبقالات بسعر الكرتونة مع توصيل سريع.</p>' );
-		$product->set_description( zad_seed_description( $r ) );
-
-		$cats = array();
-		if ( ! empty( $cat_ids[ $r['cat'] ] ) ) {
-			$cats[] = $cat_ids[ $r['cat'] ];
-		}
-		if ( ( $r['sale'] || 'offers' === $r['cat'] ) && ! empty( $cat_ids['offers'] ) ) {
-			$cats[] = $cat_ids['offers'];
-		}
-		$product->set_category_ids( array_values( array_unique( $cats ) ) );
-
-		$product->update_meta_data( '_zad_brand', $r['brand'] );
-		$product->update_meta_data( '_zad_line', $r['line'] );
-		$product->update_meta_data( '_zad_tr', $r['tr'] );
-		$product->update_meta_data( '_zad_flavor', $r['flavor'] );
-		$product->update_meta_data( '_zad_pack', $r['pack'] );
-		$product->update_meta_data( '_zad_units', (int) $r['units'] );
-		if ( 'offers' === $r['cat'] ) {
-			$product->update_meta_data( '_zad_bundle', 1 );
-		}
-		// الكتالوج الأولي ليس «وصل حديثاً»: تاريخ سابق وعلامة، حتى تظهر الأصناف التي تضيفها أنت لاحقاً كجديدة.
-		$product->update_meta_data( '_zad_seeded', 1 );
-		$product->set_date_created( time() - 120 * DAY_IN_SECONDS + $i * MINUTE_IN_SECONDS );
-		$id = $product->save();
-
-		if ( $id && $r['brand'] && taxonomy_exists( 'product_brand' ) ) {
-			$bt = get_term_by( 'slug', $r['brand'], 'product_brand' );
-			if ( $bt ) {
-				wp_set_object_terms( $id, array( (int) $bt->term_id ), 'product_brand' );
-			}
-		}
-		++$created;
-	}
-
-	wp_defer_term_counting( false );
-
-	$msg = sprintf( 'أُضيف %d منتجاً، وتم تخطي %d موجود مسبقاً', $created, $skipped );
-	return $retired ? $msg . sprintf( '، ونُقل %d منتجاً قديماً إلى المهملات', $retired ) : $msg;
+	$cli = defined( 'WP_CLI' ) && WP_CLI;
+	do {
+		$st = zad_catalog_job_step( $cli ? 120 : 20 );
+	} while ( $cli && empty( $st['done'] ) );
+	return isset( $st['message'] ) ? $st['message'] : '';
 }
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {

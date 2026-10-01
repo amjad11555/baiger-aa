@@ -3,7 +3,5 @@ https://openfontlicense.org
 
 - Tajawal — Copyright 2018 Boutros International
 - Poppins — Copyright 2020 The Poppins Project Authors (Indian Type Foundry)
-- Amiri — Copyright 2010-2022 The Amiri Project Authors (Khaled Hosny)
-- Libre Baskerville — Copyright 2012 Pablo Impallari, Rodrigo Fuenzalida
 
 يُسمح باستخدامها وتضمينها وإعادة توزيعها مع القالب وفق شروط الرخصة.

@@ -20,7 +20,7 @@ function zad_defaults() {
 		'address'         => '',
 		'city'            => 'إسطنبول',
 		'hours'           => 'السبت – الخميس · 9:00 – 19:00',
-		'announcement'    => 'أسعار جملة للحسابات التجارية · توريد إلى جميع الولايات التركية · تصدير بالحاويات',
+		'announcement'    => 'خصم دائم على إيتي وأولكر · توصيل مجاني لمحلات إسطنبول · نقداً عند الاستلام',
 		'show_prices'     => true,
 		'min_order'       => 0,
 		'min_cartons'     => 15,
@@ -28,10 +28,17 @@ function zad_defaults() {
 		'show_profit'     => true,
 		'retail_margin'   => 25,
 		'require_account' => true,
-		'members_prices'  => false,
-		'hero_kicker'     => 'بسكاتو للتجارة · جملة وتوزيع',
-		'hero_title'      => 'مورّدك الثابت للكيك والبسكويت والشيبس بالجملة',
-		'hero_text'       => 'نوفّر لمتجرك أكثر من 130 صنفاً من إيتي وأولكر وبونوتشي بأسعار الجملة، مع توريد منتظم إلى كل الولايات وتصدير بالحاويات. اطلب بالكرتونة أو بالطبلية، ونتولى نحن التجهيز والتوصيل.',
+		'members_prices'  => true,
+		'confirm_wa'      => true,
+		'wa_api_token'    => '',
+		'wa_api_phone'    => '',
+		'wa_api_template' => '',
+		'wa_api_lang'     => 'ar',
+		'disc_eti'        => 2,
+		'disc_ulker'      => 5,
+		'hero_kicker'     => 'جملة إسطنبول · كيك وبسكويت وشيبس',
+		'hero_title'      => 'رفّ محلك ممتلئ دائماً، بسعر الجملة',
+		'hero_text'       => 'أكثر من 330 صنفاً من إيتي وأولكر وبونجو والوان وشولين ووينر، تصل إلى باب محلك في إسطنبول والدفع نقداً عند الاستلام.',
 		'hero_image'      => '',
 		'force_rtl'       => true,
 		'instagram'       => '',
@@ -39,7 +46,7 @@ function zad_defaults() {
 		'tiktok'          => '',
 		'telegram'        => '',
 		'youtube'         => '',
-		'seo_tagline'     => 'جملة وتوزيع الكيك والبسكويت والشيبس لتجار التجزئة والموزعين',
+		'seo_tagline'     => 'كيك وبسكويت وشيبس بالجملة في إسطنبول',
 	);
 }
 
@@ -139,7 +146,7 @@ function zad_ar_date() {
 function zad_page_image( $page_id, $field = 'image' ) {
 	$map   = array(
 		'about'    => array( 'about-team', 'بسكاتو للتجارة · جملة وتوزيع' ),
-		'delivery' => array( 'step-deliver', 'شروط التعامل مع حسابات الجملة' ),
+		'delivery' => array( 'banner-delivery', 'التوصيل في إسطنبول والدفع' ),
 	);
 	$pages = zad_special_pages();
 	foreach ( $map as $key => $row ) {
@@ -167,8 +174,19 @@ function zad_page_url( $key ) {
 		return $cache[ $key ];
 	}
 	$pages = zad_special_pages();
-	$url   = '';
-	$id    = (int) get_option( 'zad_page_' . $key );
+	if ( ! $cache ) {
+		// تحميل كل الصفحات الخاصة باستعلام واحد بدل استعلام لكل رابط في الهيدر والفوتر.
+		$ids = array();
+		foreach ( array_keys( $pages ) as $k ) {
+			$ids[] = (int) get_option( 'zad_page_' . $k );
+		}
+		$ids = array_filter( $ids );
+		if ( $ids ) {
+			_prime_post_caches( $ids, false, false );
+		}
+	}
+	$url = '';
+	$id  = (int) get_option( 'zad_page_' . $key );
 	if ( $id && 'publish' === get_post_status( $id ) ) {
 		$url = get_permalink( $id );
 	} elseif ( isset( $pages[ $key ] ) ) {
@@ -198,22 +216,21 @@ function zad_page_url( $key ) {
  * @return array
  */
 function zad_brands() {
-	return array(
+	static $out = null;
+	if ( null !== $out ) {
+		return $out;
+	}
+	$out = array(
 		'eti'     => array(
 			'ar'    => 'إيتي',
 			'alt'   => 'ايتي',
 			'latin' => 'Eti',
 			'c1'       => '#CE0006',
 			'c2'       => '#EFB455',
-			'about'    => 'علامة تركية عريقة تأسست عام 1962 في مدينة إسكي شهير، ومن أشهر منتجاتها براوني وبوب كيك وتوب كيك وتوتكو وجين وكراكس.',
-			// الشعار (SVG) واللافتات (1600×1740) من صور العلامة بعد رفع جودتها.
+			'about'    => 'علامة تركية عريقة تأسست عام 1962 في إسكي شهير، ومن أشهر منتجاتها براوني وبوب كيك وبورشاك وتوتكو وجين وكراكس وهوشبيش.',
+			// الشعار (SVG) ولافتة صفحة العلامة.
 			'logo'     => array( 'eti.svg', 840, 540 ),
 			'hero'     => 'eti-cikolata',
-			'showcase' => array(
-				array( 'eti-hosbes', 'ويفر مقرمش', 'هوشبيش', 'بالشوكولاتة الداكنة، والفراولة، والحليب والكاكاو.', array( 'q' => 'هوشبيش' ), 'عبوات ويفر إيتي هوشبيش على خلفية حمراء' ),
-				array( 'eti-benimo', 'بسكويت طري بالشوكولاتة', 'بينيمو', 'من الأصناف التي يطلبها زبائن البقالة كل أسبوع.', array( 'q' => 'بينيمو' ), 'عبوات إيتي بينيمو على خلفية برتقالية' ),
-				array( 'eti-cikolata', 'شوكولاتة', 'شوكولاتة إيتي', 'كارام، وبيتيتو، وجانغا، ووانتد، وبوف.', array( 'section' => 'snacks' ), 'مربعات شوكولاتة إيتي بنكهات مختلفة' ),
-			),
 		),
 		'ulker'   => array(
 			'ar'    => 'أولكر',
@@ -221,17 +238,31 @@ function zad_brands() {
 			'latin' => 'Ülker',
 			'c1'    => '#1F3C88',
 			'c2'    => '#F4C542',
-			'about' => 'من أقدم وأكبر شركات البسكويت والشوكولاتة في تركيا منذ 1944، صاحبة بسكريم وشوكوبرنس وهالي وألبيني وويفر أولكر الشهير.',
+			'about' => 'من أقدم وأكبر شركات البسكويت والشوكولاتة في تركيا منذ 1944، صاحبة بيسكريم وهاللي وهانيملار وألبيني وميترو وديدو.',
 		),
 		'bonucci' => array(
-			'ar'    => 'بونوتشي',
-			'alt'   => 'بونوچي',
+			'ar'    => 'بونجو',
+			'alt'   => 'بونوتشي',
 			'latin' => 'Bonucci',
 			'c1'    => '#4A2412',
 			'c2'    => '#E6B36A',
-			'about' => 'علامة تركية متخصصة في الكيك المحشو والشوكولاتة الفاخرة، ومن منتجاتها كيك شوكيكس ورول كريموسو وشوكولاتة دبي بالكنافة.',
+			'about' => 'علامة تركية متخصصة في الكيك المحشو، ومن منتجاتها دولسي رول وشوكيكس وبيستاه ولوبيكس وسيكريت.',
 		),
 	);
+	// باقي العلامات من ملف البيانات (الاسم والألوان)، ونص تعريفي عام.
+	foreach ( (array) include ZAD_DIR . '/inc/data/brands.php' as $slug => $b ) {
+		if ( ! isset( $out[ $slug ] ) ) {
+			$out[ $slug ] = array(
+				'ar'    => $b[0],
+				'alt'   => $b[0],
+				'latin' => $b[1],
+				'c1'    => $b[2],
+				'c2'    => $b[3],
+				'about' => isset( $b[4] ) ? $b[4] : '',
+			);
+		}
+	}
+	return $out;
 }
 
 /**
@@ -258,29 +289,6 @@ function zad_brand_logo( $brand, $height = 36, $class = '' ) {
 }
 
 /**
- * رابط لافتة من لافتات العلامة: بحث باسم الصنف، أو صفحة العلامة مصفّاة بقسم.
- *
- * @param array $brand  العلامة.
- * @param array $target ['q' => …] أو ['section' => …].
- * @return string
- */
-function zad_showcase_url( $brand, $target ) {
-	if ( ! empty( $target['q'] ) ) {
-		return add_query_arg(
-			array(
-				's'         => $target['q'],
-				'post_type' => 'product',
-			),
-			home_url( '/' )
-		);
-	}
-	if ( ! empty( $target['section'] ) && ! empty( $brand['url'] ) ) {
-		return add_query_arg( 'section', $target['section'], $brand['url'] );
-	}
-	return ! empty( $brand['url'] ) ? $brand['url'] : home_url( '/' );
-}
-
-/**
  * أقسام المتجر الرئيسية بالترتيب.
  *
  * @return array
@@ -289,12 +297,12 @@ function zad_categories() {
 	return array(
 		'cake'     => array(
 			'name'  => 'كيك',
-			'title' => 'الكيك المغلّف',
+			'title' => 'الكيك والرول',
 			'icon'  => 'cake',
 			'image' => 'tile-cake',
 			'color' => '#124A39',
 			'tint'  => '#E4EDE8',
-			'line'  => 'براوني وبوب كيك ورول ومحشو، الأسرع دوراناً على الرف',
+			'line'  => 'سويس رول وكروسان وبراوني ومحشو، الأسرع دوراناً على الرف',
 		),
 		'biscuits' => array(
 			'name'  => 'بسكويت',
@@ -305,23 +313,59 @@ function zad_categories() {
 			'tint'  => '#F1E8D8',
 			'line'  => 'محشو وسادة ومغطّى، طلبه ثابت على مدار السنة',
 		),
+		'snacks'   => array(
+			'name'  => 'شوكولاتة',
+			'title' => 'الشوكولاتة والويفر',
+			'icon'  => 'candy',
+			'image' => 'tile-snacks',
+			'color' => '#4B2A1C',
+			'tint'  => '#EFE4DC',
+			'line'  => 'ألواح وويفر محشو، أصناف الكاشير والشراء السريع',
+		),
 		'chips'    => array(
-			'name'  => 'شيبسات',
+			'name'  => 'شيبس',
 			'title' => 'الشيبس والمقرمشات',
 			'icon'  => 'chips',
 			'image' => 'tile-chips',
 			'color' => '#8A5A1E',
 			'tint'  => '#F4EAD9',
-			'line'  => 'كراكرز وأصابع مملّحة وذرة، هامش جيد ودوران سريع',
+			'line'  => 'شيبس وينر وكراكس وغونغ، تسالي مالحة بهامش جيد',
 		),
-		'snacks'   => array(
-			'name'  => 'تسالي',
-			'title' => 'الشوكولاتة والتسالي',
-			'icon'  => 'candy',
-			'image' => 'tile-snacks',
-			'color' => '#4B2A1C',
-			'tint'  => '#EFE4DC',
-			'line'  => 'ألواح وويفر وحلوى، أصناف الكاشير والشراء السريع',
+		'candy'    => array(
+			'name'  => 'سكاكر',
+			'title' => 'السكاكر والجيلي',
+			'icon'  => 'lollipop',
+			'image' => 'tile-candy',
+			'color' => '#A0225A',
+			'tint'  => '#FBE6EF',
+			'line'  => 'جيلي ومارشميللو ومصاصات، يطلبها الأطفال كل يوم',
+		),
+		'gum'      => array(
+			'name'  => 'علكة',
+			'title' => 'العلكة',
+			'icon'  => 'gum',
+			'image' => 'tile-gum',
+			'color' => '#1F6E8C',
+			'tint'  => '#E2F2F7',
+			'line'  => 'فيرست ونازار وتاكسي وفالم، صنف الكاشير الأول',
+		),
+		'toys'     => array(
+			'name'  => 'ألعاب',
+			'title' => 'الألعاب والمفاجآت',
+			'icon'  => 'egg',
+			'image' => 'tile-toys',
+			'color' => '#5B3FA0',
+			'tint'  => '#ECE7F8',
+			'line'  => 'بيض المفاجآت والظروف والألعاب الصغيرة للأطفال',
+		),
+		'drinks'   => array(
+			'name'  => 'مشروبات',
+			'title' => 'العصائر والشاي',
+			'icon'  => 'cup',
+			'image' => 'tile-drinks',
+			'color' => '#B4541A',
+			'tint'  => '#FBEADF',
+			'line'  => 'عصائر جانم وسبيكو وشاي الفواكه',
 		),
 		'offers'   => array(
 			'name'  => 'عروض',
@@ -330,40 +374,7 @@ function zad_categories() {
 			'image' => 'tile-offers',
 			'color' => '#9A3B22',
 			'tint'  => '#F5E3DC',
-			'line'  => 'أسعار خاصة على كميات محددة، تتجدد كل أسبوع',
-		),
-	);
-}
-
-/**
- * الشرائح التي نورّد لها (قسم «لمن نورّد» في الرئيسية).
- *
- * @return array
- */
-function zad_segments() {
-	return array(
-		array(
-			'image' => 'stage-supermarket',
-			'title' => 'السوبرماركت والسلاسل',
-			'text'  => 'تشكيلة تغطي رف الكيك والبسكويت والشيبس بالكامل، وتوريد بجدول ثابت، وفاتورة نظامية مع كل شحنة.',
-		),
-		array(
-			'image' => 'stage-grocery',
-			'title' => 'البقالات والميني ماركت',
-			'text'  => zad_min_cartons() > 0
-				? sprintf( 'اطلب %d كرتونة مشكّلة من أي أصناف (ولو كرتونة واحدة من الصنف)، ونوصلها إلى باب المحل أو على الرف والدفع عند الاستلام.', zad_min_cartons() )
-				: 'اطلب من كرتونة واحدة لكل صنف، ونوصل الطلبية إلى باب المحل والدفع عند الاستلام.',
-		),
-		array(
-			'image' => 'stage-distributor',
-			'title' => 'الموزعون وتجار نصف الجملة',
-			'text'  => 'أسعار كميات بالطبلية، ونوصلها إلى مستودعك لتغذية شبكة التوزيع في منطقتك.',
-		),
-		array(
-			'image' => 'stage-export',
-			'title' => 'المستوردون خارج تركيا',
-			'text'  => 'حاويات 20 و40 قدماً أو طبليات مختلطة، مع شهادات المنشأ والحلال ومستندات التخليص.',
-			'page'  => 'export',
+			'line'  => 'خصم إيتي وأولكر الدائم، وعروض الأسبوع',
 		),
 	);
 }
@@ -376,53 +387,28 @@ function zad_segments() {
  */
 function zad_img_meta( $name ) {
 	$map = array(
-		'hero'              => array( 2400, 1340 ),
-		'hero-m'            => array( 1100, 1366 ),
-		'cat-cake'          => array( 900, 1117 ),
-		'cat-biscuits'      => array( 900, 1117 ),
-		'cat-chips'         => array( 900, 1117 ),
-		'cat-snacks'        => array( 900, 1117 ),
-		'cat-offers'        => array( 900, 1117 ),
 		'seg-supermarket'   => array( 1200, 805 ),
-		'seg-grocery'       => array( 1200, 805 ),
-		'seg-distributor'   => array( 1200, 805 ),
 		'seg-export'        => array( 1600, 1073 ),
-		'step-order'        => array( 1000, 671 ),
-		'step-pick'         => array( 1000, 671 ),
-		'step-deliver'      => array( 1000, 671 ),
 		'about-team'        => array( 1600, 893 ),
 		'sourcing'          => array( 1400, 939 ),
-		'quality'           => array( 1000, 671 ),
-		'cta-docks'         => array( 2400, 1018 ),
-		'texture'           => array( 1600, 893 ),
-		'flatlay'           => array( 1800, 1005 ),
 		'eti-cikolata'      => array( 1600, 1740 ),
-		'eti-benimo'        => array( 1600, 1740 ),
-		'eti-hosbes'        => array( 1600, 1740 ),
-		// صور الواجهة المصممة من صور إيتي (أسماء جديدة لا يغطيها مستورد صور الموقع).
-		'hero-eti-1'        => array( 2560, 1120 ),
-		'hero-eti-2'        => array( 2560, 1120 ),
-		'hero-eti-3'        => array( 2560, 1120 ),
-		'hero-eti-1-m'      => array( 1100, 1740 ),
-		'hero-eti-2-m'      => array( 1100, 1740 ),
-		'hero-eti-3-m'      => array( 1100, 1740 ),
-		'tile-snacks'       => array( 1000, 1500 ),
-		'tile-biscuits'     => array( 900, 1000 ),
-		'tile-cake'         => array( 900, 1000 ),
-		'tile-chips'        => array( 900, 1000 ),
-		'tile-offers'       => array( 900, 1000 ),
-		'banner-sourcing'   => array( 1400, 740 ),
-		'banner-export'     => array( 1400, 740 ),
-		'stage-supermarket' => array( 1200, 840 ),
-		'stage-grocery'     => array( 1200, 840 ),
-		'stage-distributor' => array( 1200, 840 ),
-		'stage-export'      => array( 1200, 840 ),
+		'hero-v5'           => array( 1600, 1200 ),
+		'banner-delivery'   => array( 1400, 780 ),
+		'tile-snacks'       => array( 900, 900 ),
+		'tile-biscuits'     => array( 900, 900 ),
+		'tile-cake'         => array( 900, 900 ),
+		'tile-chips'        => array( 900, 900 ),
+		'tile-offers'       => array( 900, 900 ),
+		'tile-candy'        => array( 900, 900 ),
+		'tile-gum'          => array( 900, 900 ),
+		'tile-toys'         => array( 900, 900 ),
+		'tile-drinks'       => array( 900, 900 ),
 		'stage-order'       => array( 1200, 800 ),
 		'stage-pick'        => array( 1200, 800 ),
 		'stage-deliver'     => array( 1200, 800 ),
 	);
 	$stored = function_exists( 'zad_site_images_stored' ) ? zad_site_images_stored() : array();
-	if ( ! empty( $stored[ $name ]['w'] ) ) {
+	if ( ! empty( $stored[ $name ]['w'] ) && function_exists( 'zad_site_image_imported_url' ) && zad_site_image_imported_url( $name ) ) {
 		return array( (int) $stored[ $name ]['w'], (int) $stored[ $name ]['h'] );
 	}
 	return isset( $map[ $name ] ) ? $map[ $name ] : array( 1200, 800 );
@@ -486,13 +472,52 @@ function zad_img( $name, $alt = '', $args = array() ) {
 }
 
 /**
+ * جلب تصنيف حسب الـ slug مع ذاكرة مؤقتة للطلب الحالي.
+ *
+ * تُحمَّل كل تصنيفات الأقسام/العلامات باستعلام واحد بدل استعلام لكل رابط
+ * (الصفحة الرئيسية وحدها كانت تنفذ نحو 40 استعلاماً من هذا النوع).
+ *
+ * @param string $slug slug.
+ * @param string $tax  التصنيف.
+ * @return WP_Term|null
+ */
+function zad_term_by_slug( $slug, $tax = 'product_cat' ) {
+	static $cache = array();
+	if ( ! isset( $cache[ $tax ] ) ) {
+		$cache[ $tax ] = array();
+		if ( taxonomy_exists( $tax ) ) {
+			$terms = get_terms(
+				array(
+					'taxonomy'               => $tax,
+					'hide_empty'             => false,
+					'update_term_meta_cache' => false,
+				)
+			);
+			if ( ! is_wp_error( $terms ) ) {
+				foreach ( $terms as $t ) {
+					$cache[ $tax ][ $t->slug ] = $t;
+				}
+			}
+		}
+	}
+	if ( ! isset( $cache[ $tax ][ $slug ] ) ) {
+		$t = get_term_by( 'slug', $slug, $tax );
+		if ( ! $t || is_wp_error( $t ) ) {
+			return null;
+		}
+		$cache[ $tax ][ $slug ] = $t;
+	}
+	return $cache[ $tax ][ $slug ];
+}
+
+/**
  * رابط قسم منتجات حسب الاسم اللطيف (slug).
  *
  * @param string $slug slug.
  * @return string
  */
 function zad_cat_url( $slug ) {
-	$term = get_term_by( 'slug', $slug, 'product_cat' );
+	$term = zad_term_by_slug( $slug );
 	if ( $term && ! is_wp_error( $term ) ) {
 		$link = get_term_link( $term );
 		if ( ! is_wp_error( $link ) ) {
@@ -509,7 +534,7 @@ function zad_cat_url( $slug ) {
  * @return int
  */
 function zad_cat_count( $slug ) {
-	$term = get_term_by( 'slug', $slug, 'product_cat' );
+	$term = zad_term_by_slug( $slug );
 	return ( $term && ! is_wp_error( $term ) ) ? (int) $term->count : 0;
 }
 
@@ -545,7 +570,7 @@ function zad_product_main_cat( $product_id ) {
 		return 'snacks';
 	}
 	$slugs = wp_list_pluck( $terms, 'slug' );
-	foreach ( array( 'cake', 'biscuits', 'chips', 'snacks' ) as $slug ) {
+	foreach ( array_diff( array_keys( zad_categories() ), array( 'offers' ) ) as $slug ) {
 		if ( in_array( $slug, $slugs, true ) ) {
 			return $slug;
 		}
@@ -585,26 +610,53 @@ function zad_money_plain( $amount ) {
 }
 
 /**
- * هل الأسعار ظاهرة للزائر الحالي؟
+ * حالة الأسعار للزائر الحالي:
+ * '' ظاهرة · 'login' زائر لم يسجّل · 'verify' حساب لم يُؤكَّد عبر واتساب · 'hidden' الأسعار مخفية للجميع.
  *
- * مخفية للجميع إن أُلغي «إظهار الأسعار»، أو لغير المسجلين إن فُعّل «إخفاء الأسعار عن غير المسجلين».
+ * @return string
+ */
+function zad_price_gate() {
+	if ( ! zad_opt( 'show_prices' ) ) {
+		return 'hidden';
+	}
+	if ( ! zad_opt( 'members_prices' ) ) {
+		return '';
+	}
+	if ( ! is_user_logged_in() ) {
+		return 'login';
+	}
+	return ( function_exists( 'zad_user_verified' ) && ! zad_user_verified() ) ? 'verify' : '';
+}
+
+/**
+ * هل الأسعار ظاهرة للزائر الحالي؟
  *
  * @return bool
  */
 function zad_show_prices() {
-	if ( ! zad_opt( 'show_prices' ) ) {
-		return false;
-	}
-	return ! ( zad_opt( 'members_prices' ) && ! is_user_logged_in() );
+	return '' === zad_price_gate();
 }
 
 /**
- * هل الأسعار مخفية لأن الزائر لم يسجّل دخوله فقط؟
+ * هل الأسعار مخفية حتى يسجّل الزائر دخوله أو يؤكّد حسابه؟
  *
  * @return bool
  */
 function zad_prices_need_login() {
-	return zad_opt( 'show_prices' ) && zad_opt( 'members_prices' ) && ! is_user_logged_in();
+	return in_array( zad_price_gate(), array( 'login', 'verify' ), true );
+}
+
+/**
+ * رابط ونص الدعوة لإظهار السعر حسب الحالة.
+ *
+ * @return array [الرابط، النص القصير]
+ */
+function zad_price_cta() {
+	$account = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/' );
+	if ( 'verify' === zad_price_gate() ) {
+		return array( $account . '#zd-verify', 'أكّد حسابك لرؤية السعر' );
+	}
+	return array( add_query_arg( 'tab', 'register', $account ), 'سجّل لرؤية سعر الجملة' );
 }
 
 /**
@@ -779,8 +831,9 @@ function zad_cart_qty_cached() {
  * @return string
  */
 function zad_brand_url( $slug ) {
-	if ( taxonomy_exists( 'product_brand' ) ) {
-		$link = get_term_link( $slug, 'product_brand' );
+	$term = zad_term_by_slug( $slug, 'product_brand' );
+	if ( $term ) {
+		$link = get_term_link( $term );
 		if ( ! is_wp_error( $link ) ) {
 			return $link;
 		}
@@ -849,5 +902,71 @@ function zad_section_head( $title, $sub = '', $id = '', $tag = 'h2' ) {
 		$id ? ' id="' . esc_attr( $id ) . '"' : '',
 		esc_html( $title ),
 		$sub ? '<p class="zd-stitle__sub">' . esc_html( $sub ) . '</p>' : ''
+	);
+}
+
+/* -------------------------------------------------------------------------
+ * ذاكرة مؤقتة خفيفة لأجزاء الصفحات الثقيلة (تُفرَّغ عند أي تعديل في المنتجات أو الأقسام)
+ * ---------------------------------------------------------------------- */
+
+/**
+ * مفتاح الذاكرة المؤقتة مع رقم إصدار يتغير عند التفريغ.
+ *
+ * @param string $key المفتاح.
+ * @return string
+ */
+function zad_cache_key( $key ) {
+	return 'zad_c' . (int) get_option( 'zad_cache_v', 1 ) . '_' . md5( $key . '|' . ZAD_VERSION );
+}
+
+/**
+ * قراءة قيمة مخزنة، أو حسابها وتخزينها.
+ *
+ * @param string   $key      المفتاح.
+ * @param callable $callback دالة الحساب.
+ * @param int      $ttl      المدة بالثواني.
+ * @return mixed
+ */
+function zad_cache_remember( $key, $callback, $ttl = 6 * HOUR_IN_SECONDS ) {
+	$k   = zad_cache_key( $key );
+	$val = get_transient( $k );
+	if ( false === $val ) {
+		$val = call_user_func( $callback );
+		set_transient( $k, $val, $ttl );
+	}
+	return $val;
+}
+
+/**
+ * تفريغ الذاكرة المؤقتة كلها (برفع رقم الإصدار، فتنتهي القيم القديمة وحدها).
+ */
+function zad_cache_flush() {
+	update_option( 'zad_cache_v', (int) get_option( 'zad_cache_v', 1 ) + 1, true );
+}
+foreach ( array( 'save_post_product', 'deleted_post', 'edited_product_cat', 'created_product_cat', 'edited_product_brand', 'created_product_brand', 'customize_save_after', 'woocommerce_update_product' ) as $zad_hook ) {
+	add_action( $zad_hook, 'zad_cache_flush' );
+}
+
+/**
+ * جزء قالب مخزّن مؤقتاً للزوار غير المسجلين (أغلب الزيارات وزحف جوجل): يُرسم مرة ويُقدَّم من الذاكرة.
+ * لا يُخزَّن للمسجلين لأن بطاقات المنتجات عندهم تحمل الأسعار وكميات طلبيتهم.
+ *
+ * @param string $slug مسار الجزء (template-parts/...).
+ * @param int    $ttl  المدة بالثواني.
+ */
+function zad_cached_part( $slug, $ttl = 6 * HOUR_IN_SECONDS ) {
+	$cacheable = ! is_user_logged_in() && 'login' === zad_price_gate() && ! ( function_exists( 'WC' ) && WC()->cart && WC()->cart->get_cart_contents_count() );
+	if ( ! $cacheable ) {
+		get_template_part( $slug );
+		return;
+	}
+	echo zad_cache_remember( // phpcs:ignore WordPress.Security.EscapeOutput
+		'part:' . $slug,
+		static function () use ( $slug ) {
+			ob_start();
+			get_template_part( $slug );
+			return (string) ob_get_clean();
+		},
+		$ttl
 	);
 }

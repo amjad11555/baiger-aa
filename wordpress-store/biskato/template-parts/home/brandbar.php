@@ -16,6 +16,14 @@ $zd_brands = array_filter(
 if ( ! $zd_brands ) {
 	return;
 }
+// أكبر عشر علامات في التشكيلة، والباقي في صفحة «كل العلامات».
+uasort(
+	$zd_brands,
+	static function ( $a, $b ) {
+		return $b['count'] <=> $a['count'];
+	}
+);
+$zd_brands = array_slice( $zd_brands, 0, 10, true );
 ?>
 <section class="zd-brandbar" aria-label="العلامات في تشكيلتنا">
 	<div class="zd-container">

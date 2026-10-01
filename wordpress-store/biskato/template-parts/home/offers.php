@@ -14,7 +14,7 @@ if ( ! $zd_sale_ids ) {
 ?>
 <section class="zd-section zd-offers" aria-labelledby="zd-offers-title">
 	<div class="zd-container">
-		<?php zad_section_head( 'عروض الجملة', 'خصومات على سعر الكرتونة لأصناف مختارة هذا الأسبوع', 'zd-offers-title' ); ?>
+		<?php zad_section_head( 'عروض الجملة', 'خصم دائم على أصناف إيتي وأولكر، وعروض الأسبوع', 'zd-offers-title' ); ?>
 		<?php
 		zad_product_grid(
 			array(

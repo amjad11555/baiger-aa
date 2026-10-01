@@ -56,6 +56,28 @@ function zad_current_template_key() {
 }
 
 /**
+ * الوصف المختصر للموقع (عنوان الرئيسية في نتائج البحث).
+ *
+ * يُقدَّم ما كتبه المدير في المظهر ← تخصيص، ثم «الوصف» في الإعدادات العامة،
+ * ثم الافتراضي. الوصف القديم الذي كتبه معالج الإعداد لا يُحتسب لأنه بلا ذكر للمدينة.
+ *
+ * @return string
+ */
+function zad_seo_tagline() {
+	$mod = (string) get_theme_mod( 'zad_seo_tagline', '' );
+	if ( '' !== trim( $mod ) ) {
+		return $mod;
+	}
+	$desc = (string) get_option( 'blogdescription', '' );
+	// أوصاف افتراضية قديمة كتبها معالج الإعداد في إصدارات سابقة.
+	$old  = array( '', 'جملة وتوزيع الكيك والبسكويت والشيبس لتجار التجزئة والموزعين', 'جملة وتوزيع الحلويات والتسالي التركية لتجار التجزئة والموزعين', 'Just another WordPress site', 'موقع ووردبريس عربي آخر' );
+	if ( ! in_array( trim( $desc ), $old, true ) ) {
+		return $desc;
+	}
+	return zad_opt( 'seo_tagline' );
+}
+
+/**
  * عنوان الصفحة.
  *
  * @param array $parts أجزاء العنوان.
@@ -70,38 +92,47 @@ function zad_title_parts( $parts ) {
 	if ( is_front_page() ) {
 		return array(
 			'title'   => $site,
-			'tagline' => zad_opt( 'seo_tagline' ),
+			'tagline' => zad_seo_tagline(),
 		);
 	}
+	$city = zad_opt( 'city' );
 
 	if ( is_search() ) {
 		$parts['title'] = sprintf( 'نتائج البحث عن «%s»', get_search_query( false ) );
 	} elseif ( function_exists( 'is_checkout' ) && is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
 		$parts['title'] = 'إتمام الطلبية';
 	} elseif ( function_exists( 'is_product' ) && is_product() ) {
-		$parts['title'] = single_post_title( '', false ) . ' بالجملة';
+		// الاسم العربي أولاً (بحث العرب في إسطنبول)، ثم الاسم التركي كما هو مكتوب على العبوة إن اتسع العنوان.
+		$name           = single_post_title( '', false );
+		$tr             = (string) get_post_meta( get_queried_object_id(), '_zad_tr', true );
+		$parts['title'] = $name . ' بالجملة في ' . $city;
+		if ( $tr && mb_strlen( $parts['title'] . $tr ) < 72 ) {
+			$parts['title'] .= ' – ' . $tr;
+		}
 	} elseif ( function_exists( 'is_product_category' ) && is_product_category() ) {
 		$term = get_queried_object();
 		if ( 'offers' === $term->slug ) {
-			$parts['title'] = 'عروض الجملة على الكيك والبسكويت والشيبس';
+			$parts['title'] = sprintf( 'عروض الجملة في %s: خصم دائم على إيتي وأولكر', $city );
 		} else {
 			$cats           = zad_categories();
 			$name           = isset( $cats[ $term->slug ] ) ? $cats[ $term->slug ]['title'] : $term->name;
-			$parts['title'] = sprintf( '%s بالجملة – توريد إيتي وأولكر وبونوتشي لتجار التجزئة', $name );
+			$parts['title'] = sprintf( '%1$s بالجملة في %2$s – إيتي وأولكر وبونجو', $name, $city );
 		}
 	} elseif ( is_tax( 'product_brand' ) ) {
 		$term           = get_queried_object();
-		$parts['title'] = sprintf( 'موزّع منتجات %s بالجملة – كيك وبسكويت وتسالي', $term->name );
+		$brands         = zad_brands();
+		$latin          = isset( $brands[ $term->slug ]['latin'] ) ? $brands[ $term->slug ]['latin'] : '';
+		$parts['title'] = sprintf( 'منتجات %1$s بالجملة في %2$s%3$s', $term->name, $city, $latin ? ' (' . $latin . ' Toptan)' : '' );
 	} elseif ( function_exists( 'is_shop' ) && is_shop() && ! is_search() ) {
 		$parts['title'] = function_exists( 'zad_is_new_view' ) && zad_is_new_view()
 			? 'الأصناف الجديدة بالجملة'
-			: 'كل الأصناف بأسعار الجملة: كيك، بسكويت، شيبس وشوكولاتة تركية';
+			: sprintf( 'كل الأصناف بسعر الجملة في %s: كيك وبسكويت وشيبس تركي', $city );
 	} else {
 		$titles = array(
-			'quick_order'     => 'قائمة أسعار الجملة – اطلب بالكرتونة والطبلية',
+			'quick_order'     => sprintf( 'قائمة أسعار الجملة في %s – كيك وبسكويت وشيبس بالكرتونة', $city ),
 			'special_request' => 'طلب توريد خاص – نؤمّن الأصناف غير المتوفرة من المصدر',
 			'export'          => 'تصدير كيك وبسكويت وشيبس تركي بالجملة – حاويات مختلطة وشحن دولي',
-			'contact'         => 'تواصل مع قسم المبيعات – حسابات الجملة وأسعار الكميات',
+			'contact'         => sprintf( 'تواصل معنا – تاجر جملة كيك وبسكويت في %s', $city ),
 		);
 		$key = zad_current_template_key();
 		if ( $key && isset( $titles[ $key ] ) ) {
@@ -133,7 +164,9 @@ function zad_meta_description() {
 	$city = zad_opt( 'city' );
 
 	if ( is_front_page() ) {
-		return zad_seo_trim( sprintf( '%1$s للتجارة: جملة وتوزيع الكيك والبسكويت والشيبس للسوبرماركت والبقالات والموزعين — كيك وبسكويت وشيبس وشوكولاتة من إيتي وأولكر وبونوتشي بسعر الكرتونة، وتوريد منتظم في %2$s وكل تركيا، وتصدير بالحاويات.', $site, $city ) );
+		$count = (int) wp_count_posts( 'product' )->publish;
+		$count = $count >= 20 ? (int) floor( $count / 10 ) * 10 : 0;
+		return zad_seo_trim( sprintf( 'كيك وبسكويت وشيبس وشوكولاتة بالجملة في %1$s لأصحاب المحلات: %2$sإيتي وأولكر وبونجو بخصم دائم، توصيل مجاني للمحل والدفع نقداً عند الاستلام.', $city, $count ? '+' . $count . ' صنفاً من ' : '' ), 160 );
 	}
 
 	if ( function_exists( 'is_product' ) && is_product() ) {
@@ -141,15 +174,19 @@ function zad_meta_description() {
 		if ( $product ) {
 			$info  = zad_product_info( $product->get_id() );
 			$price = zad_show_prices() && $product->get_price() ? ' سعر الكرتونة ' . zad_money_plain( wc_get_price_to_display( $product ) ) . '.' : '';
+			$disc  = function_exists( 'zad_brand_discount' ) ? zad_brand_discount( $info['brand'] ) : 0;
+			$brand = $info['brand'] && isset( zad_brands()[ $info['brand'] ] );
 			return zad_seo_trim(
 				sprintf(
-					'%1$s%2$s بالجملة%3$s.%4$s توريد لتجار التجزئة في %5$s وكل تركيا، بفاتورة نظامية والدفع عند الاستلام.',
+					'%1$s%2$s بالجملة في %5$s%3$s.%4$s%6$s توصيل مجاني للمحل والدفع عند الاستلام.',
 					$product->get_name(),
 					$info['tr'] ? ' (' . $info['tr'] . ')' : '',
-					$info['pack'] ? ' – التعبئة ' . $info['pack'] : '',
+					$info['pack'] ? '، الكرتونة ' . $info['pack'] : '',
 					$price,
-					$city
-				)
+					$city,
+					$disc > 0 && $brand ? ' خصم دائم ' . ( 0 + $disc ) . '%.' : ''
+				),
+				160
 			);
 		}
 	}
@@ -160,11 +197,11 @@ function zad_meta_description() {
 		if ( $desc ) {
 			return zad_seo_trim( $desc );
 		}
-		return zad_seo_trim( sprintf( '%1$s بالجملة من %2$s للتجارة: أسعار الكرتونة والطبلية، وتوريد منتظم لتجار التجزئة والموزعين.', $term->name, $site ) );
+		return zad_seo_trim( sprintf( '%1$s بالجملة في %3$s من %2$s: البيع بالكرتونة لأصحاب المحلات، توصيل مجاني والدفع نقداً عند الاستلام.', $term->name, $site, $city ) );
 	}
 
 	if ( function_exists( 'is_shop' ) && is_shop() ) {
-		return zad_seo_trim( sprintf( 'كل أصناف %1$s بأسعار الجملة: كيك وبسكويت وشيبس وشوكولاتة تركية من إيتي وأولكر وبونوتشي بسعر الكرتونة للسوبرماركت والبقالات والموزعين.', $site ) );
+		return zad_seo_trim( sprintf( 'كل أصناف %1$s بسعر الجملة في %2$s: كيك وبسكويت وشيبس وشوكولاتة وسكاكر من إيتي وأولكر وبونجو والوان، بالكرتونة مع توصيل مجاني لمحلك.', $site, $city ) );
 	}
 
 	if ( is_singular() ) {
@@ -173,10 +210,10 @@ function zad_meta_description() {
 			return zad_seo_trim( $custom );
 		}
 		$descs = array(
-			'quick_order'     => 'قائمة أسعار الجملة الكاملة: كل أصناف الكيك والبسكويت والشيبس والشوكولاتة بسعر الكرتونة وسعر القطعة. حدّد الكميات وأرسل الطلبية عبر الموقع أو واتساب.',
+			'quick_order'     => sprintf( 'قائمة أسعار الجملة في %s: كل أصناف الكيك والبسكويت والشيبس والشوكولاتة بسعر الكرتونة. سجّل حسابك، حدّد الكميات وأرسل الطلبية في دقيقة.', $city ),
 			'special_request' => 'صنف غير موجود في القائمة؟ أرسل اسمه والكمية ويؤمّنه فريق المشتريات من المصدر بسعر الجملة — أي علامة تركية أو مستوردة.',
-			'export'          => 'تصدير كيك وبسكويت وشيبس تركي بالجملة خارج تركيا: بسكويت وكيك وشيبس وشوكولاتة من إيتي وأولكر وبونوتشي. حاويات 20 و40 قدم وطبليات مختلطة مع شهادات المنشأ والحلال.',
-			'contact'         => sprintf( 'تواصل مع قسم المبيعات في %s لفتح حساب جملة، وأسعار الكميات، وجداول التوريد، وطلبات التصدير.', $site ),
+			'export'          => 'تصدير كيك وبسكويت وشيبس تركي بالجملة خارج تركيا: بسكويت وكيك وشيبس وشوكولاتة من إيتي وأولكر وبونجو. حاويات 20 و40 قدم وطبليات مختلطة مع شهادات المنشأ والحلال.',
+			'contact'         => sprintf( 'تواصل مع %1$s في %2$s عبر واتساب أو الهاتف: فتح حساب جملة، أسعار الكميات، مواعيد التوصيل وطلبات التصدير.', $site, $city ),
 		);
 		$key = zad_current_template_key();
 		if ( $key && isset( $descs[ $key ] ) ) {
@@ -188,7 +225,7 @@ function zad_meta_description() {
 		}
 	}
 
-	return zad_seo_trim( zad_opt( 'seo_tagline' ) );
+	return zad_seo_trim( zad_seo_tagline() );
 }
 
 /**
@@ -443,19 +480,21 @@ function zad_faqs( $context = 'home' ) {
 		: 'الحد الأدنى كرتونة واحدة من كل صنف.';
 
 	$home = array(
-		array( 'كيف أفتح حساب جملة لدى بسكاتو؟', 'يكفي أن ترسل أول طلبية من قائمة الأسعار، أو تتواصل مع قسم المبيعات عبر واتساب باسم المتجر والعنوان. نسجّل بياناتك ونرسل لك الأسعار والعروض الدورية مباشرة.' ),
+		array( 'كيف أفتح حساب جملة لدى بسكاتو؟', 'سجّل مجاناً باسم المحل ورقم واتساب والمنطقة، ثم أكّد حسابك برسالة واتساب واحدة. بعد التأكيد تظهر لك أسعار الجملة وتستطيع إرسال طلبيتك مباشرة من قائمة الأسعار.' ),
 		array( 'ما الحد الأدنى للطلبية؟', $min_answer . $min_text . ' وللطلب بالطبلية أو بكميات شهرية ثابتة نقدّم أسعار كميات خاصة.' ),
-		array( 'كيف تتم عملية الدفع؟', 'نقداً عند الاستلام فقط: تدفع للمندوب حين تصل الكراتين إلى محلك، بلا دفع مسبق. نصدر فاتورة نظامية مع كل طلبية.' ),
+		array( 'كيف تتم عملية الدفع؟', 'داخل إسطنبول: نقداً عند الاستلام فقط، تدفع للمندوب حين تصل الكراتين إلى محلك بلا دفع مسبق. خارج إسطنبول وخارج تركيا: بتحويل إلى حسابنا البنكي الرسمي، ونرسل لك بيانات الحساب مع تأكيد الطلبية. نصدر فاتورة نظامية مع كل طلبية.' ),
 		array( 'متى تصل الطلبية؟', sprintf( 'داخل %s غالباً خلال 24 إلى 48 ساعة من التأكيد، وإلى باقي الولايات وفق جدول التوزيع. نؤكد موعد التسليم قبل خروج الشحنة.', $city ) ),
 		array( 'هل أستلم الطلبية من المستودع؟', 'لا حاجة لذلك: الطلب أونلاين فقط، والتوصيل مجاني إلى محلك. تختار عند تأكيد الطلبية أن نسلّمك الكراتين عند باب المحل، أو أن ندخلها ونرتّب الأصناف على رفوفك.' ),
-		array( 'هل المنتجات أصلية وصلاحيتها حديثة؟', 'نعم. كل الأصناف أصلية من إيتي (Eti) وأولكر (Ülker) وبونوتشي (Bonucci) وغيرها، ونختار دفعات إنتاج حديثة ونراجع تواريخ الصلاحية قبل الشحن.' ),
+		array( 'هل المنتجات أصلية وصلاحيتها حديثة؟', 'نعم. كل الأصناف أصلية من إيتي (Eti) وأولكر (Ülker) وبونجو (Bonucci) والوان (Elvan) وغيرها، ونختار دفعات إنتاج حديثة ونراجع تواريخ الصلاحية قبل الشحن.' ),
 		array( 'أحتاج صنفاً غير موجود في القائمة، ماذا أفعل؟', 'أرسل اسمه والكمية من صفحة «طلب توريد خاص»، ويعود إليك فريق المشتريات بالسعر والتوفر وموعد التوريد.' ),
+		array( 'لماذا لا تظهر الأسعار في الموقع؟', 'أسعارنا أسعار جملة خاصة بأصحاب المحلات، لذلك تظهر بعد فتح حساب مجاني وتأكيده برسالة واتساب. التسجيل يأخذ أقل من دقيقة، والتأكيد غالباً خلال دقائق في أوقات العمل.' ),
+		array( 'هل توصلون إلى كل مناطق إسطنبول؟', 'نعم، نوصل مجاناً إلى المحلات في كل مناطق إسطنبول على الجانبين الأوروبي والآسيوي: الفاتح وإسنيورت وباشاك شهير وباغجلار وسلطان غازي وإسنلر وأفجلار وزيتون بورنو وغيرها.' ),
 		array( 'هل تصدّرون خارج تركيا؟', 'نعم، نصدّر إلى الأسواق العربية وأوروبا بطبليات مختلطة أو حاويات 20 و40 قدماً، مع شهادات المنشأ والحلال. اطلب عرض سعر من صفحة «التصدير».' ),
 	);
 
 	$export = array(
 		array( 'ما الحد الأدنى لطلبات التصدير؟', 'نبدأ من طبليات مختلطة (Mixed Pallets) للطلبات التجريبية، والأوفر لك حاوية 20 أو 40 قدم. نساعدك في توزيع الأصناف لتعبئة الحاوية بأفضل شكل.' ),
-		array( 'هل يمكن خلط عدة منتجات وعلامات في حاوية واحدة؟', 'نعم، نوفر حاويات مختلطة (Mix Container) تجمع الكيك والبسكويت والشيبسات والشوكولاتة من إيتي وأولكر وبونوتشي وعلامات أخرى في شحنة واحدة.' ),
+		array( 'هل يمكن خلط عدة منتجات وعلامات في حاوية واحدة؟', 'نعم، نوفر حاويات مختلطة (Mix Container) تجمع الكيك والبسكويت والشيبسات والشوكولاتة من إيتي وأولكر وبونجو وعلامات أخرى في شحنة واحدة.' ),
 		array( 'ما المستندات التي توفرونها مع الشحنة؟', 'الفاتورة التجارية وقائمة التعبئة وشهادة المنشأ، إضافة إلى الشهادات الصحية وشهادات الحلال المتوفرة لدى المصنّعين حسب متطلبات بلد الوصول.' ),
 		array( 'ما شروط التسليم المتاحة؟', 'نعمل بشروط EXW وFOB من الموانئ التركية وCIF حتى ميناء الوصول، ويمكن ترتيب DAP حتى مستودعكم في بعض الدول.' ),
 		array( 'كم تستغرق مدة تجهيز الطلبية؟', 'تُحدد المدة بدقة في عرض السعر حسب الكمية وتوفر الأصناف، وغالباً ما تكون بين أسبوع وثلاثة أسابيع قبل التحميل.' ),
@@ -504,48 +543,105 @@ function zad_render_faqs( $context, $title = 'الأسئلة الشائعة' ) {
  * ---------------------------------------------------------------------- */
 
 /**
- * بيانات المتجر.
+ * بيانات المتجر: متجر جملة محلي في إسطنبول يخدم كل أحيائها، ويشحن داخل تركيا وخارجها.
  *
  * @return array
  */
 function zad_schema_store() {
+	$city   = zad_opt( 'city' );
+	$served = array(
+		array(
+			'@type'          => 'City',
+			'name'           => 'İstanbul',
+			'alternateName'  => array( 'إسطنبول', 'اسطنبول', 'Istanbul' ),
+			'containedInPlace' => array(
+				'@type' => 'Country',
+				'name'  => 'Türkiye',
+			),
+		),
+	);
+	if ( function_exists( 'zad_districts' ) ) {
+		foreach ( zad_districts() as $slug => $d ) {
+			if ( 'other' === $slug || empty( $d[1] ) ) {
+				continue;
+			}
+			$served[] = array(
+				'@type'         => 'AdministrativeArea',
+				'name'          => $d[1] . ', İstanbul',
+				'alternateName' => $d[0],
+			);
+		}
+	}
+	$served[] = array(
+		'@type' => 'Country',
+		'name'  => 'Türkiye',
+	);
+
+	$catalog = array();
+	foreach ( zad_categories() as $slug => $cat ) {
+		if ( 'offers' === $slug ) {
+			continue;
+		}
+		$catalog[] = array(
+			'@type' => 'OfferCatalog',
+			'name'  => $cat['title'] . ' بالجملة',
+			'url'   => zad_cat_url( $slug ),
+		);
+	}
+
+	$brands = array();
+	foreach ( array_slice( zad_brands(), 0, 12, true ) as $b ) {
+		$brands[] = $b['latin'];
+	}
+
 	$store = array(
 		'@type'              => 'WholesaleStore',
 		'@id'                => home_url( '/#store' ),
 		'name'               => get_bloginfo( 'name' ),
-		'description'        => zad_opt( 'seo_tagline' ),
+		'alternateName'      => 'Biskato',
+		'description'        => sprintf( 'تاجر جملة كيك وبسكويت وشيبس وشوكولاتة تركية في %s لأصحاب المحلات والبقالات العربية، مع توصيل مجاني للمحل.', $city ),
+		'slogan'             => zad_seo_tagline(),
 		'url'                => home_url( '/' ),
 		'currenciesAccepted' => function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'TRY',
-		'paymentAccepted'    => 'Cash, Bank Transfer',
+		'paymentAccepted'    => 'Cash on delivery (İstanbul), Bank transfer',
 		'priceRange'         => '₺₺',
-		'areaServed'         => array(
-			array(
-				'@type' => 'Country',
-				'name'  => 'Türkiye',
-			),
-			array(
-				'@type' => 'Place',
-				'name'  => 'Middle East, Europe (Export)',
-			),
+		'areaServed'         => $served,
+		'knowsLanguage'      => array( 'ar', 'tr' ),
+		'knowsAbout'         => array_merge( $brands, array( 'كيك بالجملة', 'بسكويت بالجملة', 'شيبس بالجملة', 'شوكولاتة بالجملة', 'سكاكر بالجملة', 'جملة إسطنبول', 'toptan bisküvi', 'toptan kek' ) ),
+		'hasOfferCatalog'    => array(
+			'@type'           => 'OfferCatalog',
+			'name'            => 'أصناف الجملة',
+			'itemListElement' => $catalog,
 		),
-		'knowsAbout'         => array( 'Eti', 'Ülker', 'Bonucci', 'كيك وبسكويت وشيبس بالجملة', 'بسكويت', 'كيك', 'شيبس', 'تسالي' ),
 	);
-	$image = zad_og_image();
-	if ( $image ) {
-		$store['image'] = $image;
-		$store['logo']  = $image;
+	$logo = has_custom_logo() ? wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'full' ) : false;
+	$og   = file_exists( ZAD_DIR . '/assets/img/og-default.jpg' ) ? ZAD_URI . '/assets/img/og-default.jpg' : '';
+	if ( $og ) {
+		$store['image'] = $og;
 	}
-	if ( zad_opt( 'phone' ) ) {
-		$store['telephone'] = zad_opt( 'phone' );
-	} elseif ( zad_wa_number() ) {
-		$store['telephone'] = '+' . zad_wa_number();
+	if ( $logo ) {
+		$store['logo'] = $logo[0];
+	} elseif ( $og ) {
+		$store['logo'] = $og;
+	}
+	$phone = zad_opt( 'phone' ) ? zad_opt( 'phone' ) : ( zad_wa_number() ? '+' . zad_wa_number() : '' );
+	if ( $phone ) {
+		$store['telephone']    = $phone;
+		$store['contactPoint'] = array(
+			'@type'             => 'ContactPoint',
+			'contactType'       => 'sales',
+			'telephone'         => $phone,
+			'areaServed'        => 'TR',
+			'availableLanguage' => array( 'Arabic', 'Turkish' ),
+		);
 	}
 	if ( zad_opt( 'email' ) ) {
 		$store['email'] = zad_opt( 'email' );
 	}
 	$address = array(
 		'@type'           => 'PostalAddress',
-		'addressLocality' => zad_opt( 'city' ),
+		'addressLocality' => $city,
+		'addressRegion'   => 'İstanbul',
 		'addressCountry'  => 'TR',
 	);
 	if ( zad_opt( 'address' ) ) {
@@ -603,6 +699,60 @@ function zad_schema_output() {
 				),
 			),
 		);
+	}
+
+	// صفحات الأقسام والعلامات والمتجر: مسار التنقل + قائمة المنتجات المعروضة (ItemList).
+	if ( function_exists( 'is_product_taxonomy' ) && ( is_product_taxonomy() || ( is_shop() && ! is_search() ) ) ) {
+		$crumbs = array(
+			array(
+				'@type'    => 'ListItem',
+				'position' => 1,
+				'name'     => 'الرئيسية',
+				'item'     => home_url( '/' ),
+			),
+			array(
+				'@type'    => 'ListItem',
+				'position' => 2,
+				'name'     => 'كل الأصناف',
+				'item'     => wc_get_page_permalink( 'shop' ),
+			),
+		);
+		if ( is_product_taxonomy() ) {
+			$term = get_queried_object();
+			$link = $term instanceof WP_Term ? get_term_link( $term ) : '';
+			if ( $link && ! is_wp_error( $link ) ) {
+				$crumbs[] = array(
+					'@type'    => 'ListItem',
+					'position' => 3,
+					'name'     => $term->name,
+					'item'     => $link,
+				);
+			}
+		}
+		$graph[] = array(
+			'@type'           => 'BreadcrumbList',
+			'itemListElement' => $crumbs,
+		);
+
+		global $wp_query;
+		$items = array();
+		$pos   = 1 + max( 0, (int) get_query_var( 'paged' ) - 1 ) * max( 1, (int) $wp_query->get( 'posts_per_page' ) );
+		foreach ( (array) $wp_query->posts as $p ) {
+			$items[] = array(
+				'@type'    => 'ListItem',
+				'position' => $pos++,
+				'url'      => get_permalink( $p ),
+				'name'     => get_the_title( $p ),
+			);
+		}
+		if ( $items ) {
+			$graph[] = array(
+				'@type'           => 'ItemList',
+				'name'            => wp_get_document_title(),
+				'numberOfItems'   => count( $items ),
+				'itemListElement' => $items,
+			);
+		}
 	}
 
 	// الأسئلة الشائعة المعروضة في هذه الصفحة.

@@ -17,47 +17,19 @@ defined( 'ABSPATH' ) || exit;
 function zad_site_image_sources() {
 	$base = 'https://d8j0ntlcm91z4.cloudfront.net/user_3HMjZPgpKCsHgo8BLC9DovmF1SX/hf_';
 	$ids  = array(
-		'hero'              => array( '20260928_150213_fd44b848-7fd0-42b4-b8c5-6db3da86fc8f', 2400 ),
-		'hero-m'            => array( '20260928_150214_d8b8f104-2f8b-4733-9608-ec17b64c6604', 1100 ),
-		'cat-cake'          => array( '20260928_150213_092c504a-1fb9-401d-b3ff-1f1561534176', 900 ),
-		'cat-biscuits'      => array( '20260928_150216_13844631-9953-4c55-9701-a0390cc1a15d', 900 ),
-		'cat-chips'         => array( '20260928_150215_37026964-f3cc-4b8b-8ba7-87dcc4fa2ecd', 900 ),
-		'cat-snacks'        => array( '20260928_150536_e8ac65f8-06ce-4a66-b7c4-b398be90719c', 900 ),
-		'cat-offers'        => array( '20260928_150218_7ae267f2-59f3-4364-afc6-7d83f04bff89', 900 ),
-		'seg-supermarket'   => array( '20260928_150213_cd9346d5-60a2-45de-ad66-e59d1bb4ab17', 1200 ),
-		'seg-grocery'       => array( '20260928_150214_b3500843-63de-4887-aef8-c8379eb20975', 1200 ),
-		'seg-distributor'   => array( '20260928_150212_a3db1fa3-6cb1-4f56-b0c2-2f699c85c168', 1200 ),
-		'seg-export'        => array( '20260928_150214_c175752c-52c2-4a6d-ad85-360f477ae863', 1600 ),
-		'step-order'        => array( '20260928_150219_f818c341-fd83-4642-9f5e-67f03bbd8b07', 1000 ),
-		'step-pick'         => array( '20260928_150536_9b1ab5f9-d6d3-44d6-8bef-e993044e40e6', 1000 ),
-		'step-deliver'      => array( '20260928_150536_32140017-8135-4b0e-9ab5-e20e99c64e4d', 1000 ),
-		'about-team'        => array( '20260928_150538_ad505396-ad3d-4175-94b0-7ab444e4561e', 1600 ),
-		'sourcing'          => array( '20260928_150536_d05e6213-008a-4dad-b0b2-9ef8904d5806', 1400 ),
-		'quality'           => array( '20260928_150536_6071e71b-d1c0-478f-99ee-727398dd950d', 1000 ),
-		'cta-docks'         => array( '20260928_150536_91d9b086-b145-4130-bc14-05928feb6ba3', 2400 ),
-		'texture'           => array( '20260928_150537_e4147041-fa62-4bdc-a139-216b13afb610', 1600 ),
-		'flatlay'           => array( '20260928_150538_e4b8fd25-b7cf-4967-a687-1628c8eced43', 1800 ),
-		// الصفحة الرئيسية 2026 (Nano Banana Pro): ألوان حيوية ولحظات حركة، وتحل محل الصور المؤقتة المضمّنة بالأسماء نفسها.
-		'hero-eti-1'        => array( '20260929_151915_bc3cbeb0-3883-472c-b9b2-7358de652f16', 2560 ),
-		'hero-eti-1-m'      => array( '20260929_151915_7ac5cabf-1ce0-42e0-8e7d-0225abef55c4', 1100 ),
-		'hero-eti-2'        => array( '20260929_151915_fa00235b-9241-4a9f-be13-8b716b5b3ef0', 2560 ),
-		'hero-eti-2-m'      => array( '20260929_151915_6aa1befa-7bf5-4556-bf1a-d5ac164da535', 1100 ),
-		'hero-eti-3'        => array( '20260929_151915_3ecca5da-6e4e-4e84-9ad7-c6e0642096c4', 2560 ),
-		'hero-eti-3-m'      => array( '20260929_152023_08d0646f-aad7-4d77-a3bd-92a0034e4f22', 1100 ),
-		'tile-snacks'       => array( '20260929_151716_7aeec3a8-da5d-4bb8-b7c5-8c885819325d', 1000 ),
-		'tile-biscuits'     => array( '20260929_151717_547dcef6-e8fe-4ee8-a809-b58a0dd1548e', 900 ),
-		'tile-cake'         => array( '20260929_151718_6a942f40-31fe-4258-9e76-059e98167c32', 900 ),
-		'tile-chips'        => array( '20260929_151717_184018f4-377f-416e-a8e3-98f3e007a6b6', 900 ),
-		'tile-offers'       => array( '20260929_151717_4acf1572-0225-44a2-9729-dcb0670f2358', 900 ),
-		'banner-sourcing'   => array( '20260929_151717_9f61f1f6-1386-466c-a140-081df65c1e22', 1400 ),
-		'banner-export'     => array( '20260929_152023_615c4acd-661c-4941-bb68-c251bf7f19ef', 1400 ),
-		'stage-supermarket' => array( '20260929_152022_b0b9b4e0-5e02-4890-9b9e-1d65f5609084', 1200 ),
-		'stage-grocery'     => array( '20260929_152022_ef1fe385-42d0-42fa-8802-a089b00017bc', 1200 ),
-		'stage-distributor' => array( '20260929_152022_49f3362a-a00e-4c13-b1e2-2a27fb66d635', 1200 ),
-		'stage-export'      => array( '20260929_152022_d32948d1-ae66-458b-8702-a4b42aa1a7c3', 1200 ),
-		'stage-order'       => array( '20260929_152118_b8d7f118-66f6-41f0-9ee9-7aa334769d28', 1200 ),
-		'stage-pick'        => array( '20260929_152118_4e35d5ba-8791-4b34-a0e7-f30e0cee42b3', 1200 ),
-		'stage-deliver'     => array( '20260929_152118_b229dfd2-7a68-490c-834d-5643c194b062', 1200 ),
+		// الإصدار 5 (Nano Banana Pro): الواجهة، وصور الأقسام التسعة، والتوصيل في إسطنبول، وصفحة «عن بسكاتو».
+		'hero-v5'           => array( '20261001_211006_c925a0a0-ef73-4413-b5b8-629a0b2ecd25', 1800 ),
+		'about-team'        => array( '20261001_211006_16ce5fac-1654-4543-b615-7cf27f13c816', 1600 ),
+		'banner-delivery'   => array( '20261001_211006_3645c5bd-158d-4ce1-8045-da5b18a0bc0b', 1600 ),
+		'tile-cake'         => array( '20261001_211006_81df1103-6fea-4bb4-bf53-2e0161dcae8f', 900 ),
+		'tile-biscuits'     => array( '20261001_211006_4e9e5bc9-1f1c-4329-b1ec-6b443d90fc83', 900 ),
+		'tile-snacks'       => array( '20261001_211104_39ccf519-10d9-40a7-b98e-501f0ad838b7', 900 ),
+		'tile-chips'        => array( '20261001_211006_2866f8db-434c-4142-853b-a062328bbe6e', 900 ),
+		'tile-candy'        => array( '20261001_211006_26ae0322-551b-4fbc-846c-63628d5ec1a8', 900 ),
+		'tile-gum'          => array( '20261001_211006_3e325cf8-f9bc-456f-9a31-6b53289d383f', 900 ),
+		'tile-toys'         => array( '20261001_211006_d405bda8-89b0-4d2d-8ef3-67d514c721ed', 900 ),
+		'tile-drinks'       => array( '20261001_211006_3a70b91d-9326-45ab-83d6-553957b4ab5e', 900 ),
+		'tile-offers'       => array( '20261001_211006_cf9bd06a-d35b-40b5-9b5d-65d2b2af75ad', 900 ),
 	);
 	$out = array();
 	foreach ( $ids as $name => $row ) {
@@ -117,8 +89,13 @@ function zad_site_images_pending() {
  * @return string
  */
 function zad_site_image_imported_url( $name, $small = false ) {
+	static $sources = null;
+	if ( null === $sources ) {
+		$sources = zad_site_image_sources();
+	}
 	$stored = zad_site_images_stored();
-	if ( empty( $stored[ $name ] ) ) {
+	// صورة قديمة لم تعد في القائمة أو تغيّر مصدرها: تُعرض الصورة المضمّنة حتى تُجلب الجديدة.
+	if ( empty( $stored[ $name ] ) || ! isset( $sources[ $name ] ) || ( isset( $stored[ $name ]['src'] ) && $stored[ $name ]['src'] !== $sources[ $name ]['url'] ) ) {
 		return '';
 	}
 	list( , $url ) = zad_site_images_dir();
@@ -186,6 +163,9 @@ function zad_site_image_import( $name ) {
 		'src' => $sources[ $name ]['url'],
 	);
 	update_option( 'zad_site_images', $stored, false );
+	if ( function_exists( 'zad_cache_flush' ) ) {
+		zad_cache_flush();
+	}
 	return true;
 }
 
@@ -204,6 +184,62 @@ function zad_site_images_reset() {
 	}
 	delete_option( 'zad_site_images' );
 }
+
+/* -------------------------------------------------------------------------
+ * جلب تلقائي في الخلفية (بلا ضغط زر): يبدأ بعد تفعيل القالب أو تحديثه،
+ * ويجلب صورتين كل دقيقة حتى تكتمل.
+ * ---------------------------------------------------------------------- */
+
+/**
+ * جدولة الجلب إن بقيت صور.
+ */
+function zad_site_images_schedule() {
+	if ( zad_site_images_pending() && ! wp_next_scheduled( 'zad_site_images_cron' ) ) {
+		wp_schedule_event( time() + 10, 'zad_minute', 'zad_site_images_cron' );
+	}
+}
+add_action( 'after_switch_theme', 'zad_site_images_schedule' );
+add_action(
+	'admin_init',
+	static function () {
+		if ( ! wp_doing_ajax() && ! get_transient( 'zad_si_checked' ) ) {
+			set_transient( 'zad_si_checked', 1, 30 * MINUTE_IN_SECONDS );
+			zad_site_images_schedule();
+		}
+	}
+);
+add_action(
+	'zad_site_images_cron',
+	static function () {
+		if ( get_transient( 'zad_si_lock' ) ) {
+			return;
+		}
+		set_transient( 'zad_si_lock', 1, 4 * MINUTE_IN_SECONDS );
+		$failed = (array) get_option( 'zad_site_images_failed', array() );
+		$done   = 0;
+		foreach ( zad_site_images_pending() as $name ) {
+			// صورة فشلت 3 مرات تُترك للزر اليدوي حتى لا تتكرر المحاولة بلا نهاية.
+			if ( isset( $failed[ $name ] ) && $failed[ $name ] >= 3 ) {
+				continue;
+			}
+			$r = zad_site_image_import( $name );
+			if ( is_wp_error( $r ) ) {
+				$failed[ $name ] = isset( $failed[ $name ] ) ? $failed[ $name ] + 1 : 1;
+			} else {
+				unset( $failed[ $name ] );
+			}
+			if ( ++$done >= 2 ) {
+				break;
+			}
+		}
+		update_option( 'zad_site_images_failed', $failed, false );
+		delete_transient( 'zad_si_lock' );
+		$left = array_diff( zad_site_images_pending(), array_keys( array_filter( $failed, static function ( $n ) { return $n >= 3; } ) ) );
+		if ( ! $left ) {
+			wp_clear_scheduled_hook( 'zad_site_images_cron' );
+		}
+	}
+);
 
 /* -------------------------------------------------------------------------
  * لوحة التحكم: المظهر ← صور موقع بسكاتو
@@ -231,8 +267,8 @@ function zad_site_images_notice() {
 		return;
 	}
 	printf(
-		'<div class="notice notice-info"><p><strong>%1$s</strong> صور احترافية مصممة للواجهة والأقسام والصفحات، تُجلب إلى استضافتك بضغطة واحدة. <a class="button button-primary" href="%2$s" style="margin-inline-start:8px">جلب الصور الآن</a></p></div>',
-		esc_html( sprintf( 'صور موقع بسكاتو: %d صورة جاهزة للجلب.', $missing ) ),
+		'<div class="notice notice-info"><p><strong>%1$s</strong> تُجلب الصور الاحترافية للواجهة والأقسام إلى استضافتك تلقائياً في الخلفية. <a class="button" href="%2$s" style="margin-inline-start:8px">تسريع الجلب</a></p></div>',
+		esc_html( sprintf( 'صور موقع بسكاتو: بقيت %d صورة.', $missing ) ),
 		esc_url( admin_url( 'themes.php?page=zad-site-images' ) )
 	);
 }
