@@ -641,8 +641,5 @@ function zad_announce_bar() {
 	if ( 'login' === $gate && function_exists( 'wc_get_page_permalink' ) ) {
 		return array( zad_opt( 'announcement' ), add_query_arg( 'tab', 'register', wc_get_page_permalink( 'myaccount' ) ), 'افتح حساب جملة' );
 	}
-	if ( 'verify' === $gate && function_exists( 'wc_get_page_permalink' ) ) {
-		return array( zad_opt( 'announcement' ), wc_get_page_permalink( 'myaccount' ) . '#zd-verify', 'أكّد حسابك' );
-	}
 	return array( zad_opt( 'announcement' ), zad_page_url( 'quick_order' ), 'افتح قائمة الأسعار' );
 }

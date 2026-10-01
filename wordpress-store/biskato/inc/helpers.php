@@ -29,11 +29,6 @@ function zad_defaults() {
 		'retail_margin'   => 25,
 		'require_account' => true,
 		'members_prices'  => true,
-		'confirm_wa'      => true,
-		'wa_api_token'    => '',
-		'wa_api_phone'    => '',
-		'wa_api_template' => '',
-		'wa_api_lang'     => 'ar',
 		'disc_eti'        => 2,
 		'disc_ulker'      => 5,
 		'hero_kicker'     => 'جملة إسطنبول · كيك وبسكويت وشيبس',
@@ -611,7 +606,7 @@ function zad_money_plain( $amount ) {
 
 /**
  * حالة الأسعار للزائر الحالي:
- * '' ظاهرة · 'login' زائر لم يسجّل · 'verify' حساب لم يُؤكَّد عبر واتساب · 'hidden' الأسعار مخفية للجميع.
+ * '' ظاهرة (زبون مسجّل) · 'login' زائر لم يسجّل · 'hidden' الأسعار مخفية للجميع.
  *
  * @return string
  */
@@ -622,10 +617,7 @@ function zad_price_gate() {
 	if ( ! zad_opt( 'members_prices' ) ) {
 		return '';
 	}
-	if ( ! is_user_logged_in() ) {
-		return 'login';
-	}
-	return ( function_exists( 'zad_user_verified' ) && ! zad_user_verified() ) ? 'verify' : '';
+	return is_user_logged_in() ? '' : 'login';
 }
 
 /**
@@ -638,12 +630,12 @@ function zad_show_prices() {
 }
 
 /**
- * هل الأسعار مخفية حتى يسجّل الزائر دخوله أو يؤكّد حسابه؟
+ * هل الأسعار مخفية حتى يسجّل الزائر دخوله؟
  *
  * @return bool
  */
 function zad_prices_need_login() {
-	return in_array( zad_price_gate(), array( 'login', 'verify' ), true );
+	return 'login' === zad_price_gate();
 }
 
 /**
@@ -653,9 +645,6 @@ function zad_prices_need_login() {
  */
 function zad_price_cta() {
 	$account = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : home_url( '/' );
-	if ( 'verify' === zad_price_gate() ) {
-		return array( $account . '#zd-verify', 'أكّد حسابك لرؤية السعر' );
-	}
 	return array( add_query_arg( 'tab', 'register', $account ), 'سجّل لرؤية سعر الجملة' );
 }
 

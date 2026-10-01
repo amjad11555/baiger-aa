@@ -388,13 +388,12 @@ function zad_cart_control( $product, $qty = 0, $context = 'card' ) {
 	}
 	// وضع «الأسعار للأعضاء فقط»: الزائر يسجّل دخوله أولاً، ولا يصل أي سعر إلى الصفحة.
 	if ( zad_prices_need_login() ) {
-		$verify = 'verify' === zad_price_gate();
-		$label  = $verify ? 'أكّد حسابك للطلب' : 'سجّل للطلب ورؤية السعر';
+		$label = 'سجّل للطلب ورؤية السعر';
 		return sprintf(
 			'<a class="zd-login-buy zd-login-buy--%1$s" href="%2$s">%3$s</a>',
 			esc_attr( $context ),
-			esc_url( $verify ? wc_get_page_permalink( 'myaccount' ) . '#zd-verify' : add_query_arg( 'tab', 'register', wc_get_page_permalink( 'myaccount' ) ) ),
-			'row' === $context ? zad_icon( $verify ? 'whatsapp' : 'user', '', 18 ) . '<span class="screen-reader-text">' . esc_html( $label . ': ' . $name ) . '</span>' : '<span>' . esc_html( $label ) . '</span>'
+			esc_url( add_query_arg( 'tab', 'register', wc_get_page_permalink( 'myaccount' ) ) ),
+			'row' === $context ? zad_icon( 'user', '', 18 ) . '<span class="screen-reader-text">' . esc_html( $label . ': ' . $name ) . '</span>' : '<span>' . esc_html( $label ) . '</span>'
 		);
 	}
 	if ( ! $product->is_purchasable() || ! $product->is_in_stock() ) {

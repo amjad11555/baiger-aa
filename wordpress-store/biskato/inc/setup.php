@@ -379,6 +379,62 @@ function zad_migrate_v5_pages() {
 add_action( 'admin_init', 'zad_migrate_v5_pages' );
 
 /**
+ * الإصدار 5.0.1: إلغاء تأكيد الحسابات عبر واتساب. الأسعار تظهر فور التسجيل.
+ *
+ * يحذف إعدادات التأكيد وبياناته من الحسابات، ويصحح الجملة نفسها في أوصاف المنتجات
+ * والأقسام التي أضافها الإصدار 5.0.0 (استبدال حرفي لا يمس أي نص كتبه صاحب المتجر).
+ */
+function zad_migrate_no_verify() {
+	if ( get_option( 'zad_migrated_v10' ) ) {
+		return;
+	}
+	global $wpdb;
+	foreach ( array( 'confirm_wa', 'wa_api_token', 'wa_api_phone', 'wa_api_template', 'wa_api_lang' ) as $key ) {
+		remove_theme_mod( 'zad_' . $key );
+	}
+	foreach ( array( 'zad_verified', 'zad_verified_by', 'zad_verify_required', 'zad_verify_sent', 'zad_verify_token', 'zad_verify_tries', 'zad_verify_code' ) as $key ) {
+		delete_metadata( 'user', 0, $key, '', true );
+	}
+	delete_option( 'zad_wa_api_error' );
+
+	$old = 'تظهر الأسعار بعد فتح حساب جملة وتأكيده عبر واتساب';
+	$new = 'تظهر الأسعار فور فتح حساب جملة مجاني';
+	$like = '%' . $wpdb->esc_like( $old ) . '%';
+	$ids  = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'product' AND post_content LIKE %s", $like ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	if ( $ids ) {
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->posts} SET post_content = REPLACE(post_content, %s, %s) WHERE post_type = 'product' AND post_content LIKE %s", $old, $new, $like ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		foreach ( $ids as $id ) {
+			clean_post_cache( (int) $id );
+		}
+	}
+	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->term_taxonomy} SET description = REPLACE(description, %s, %s) WHERE description LIKE %s", $old, $new, $like ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->termmeta} SET meta_value = REPLACE(meta_value, %s, %s) WHERE meta_key = 'zad_seo_text' AND meta_value LIKE %s", $old, $new, $like ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	foreach ( array( 'product_cat', 'product_brand' ) as $tax ) {
+		$term_ids = taxonomy_exists( $tax ) ? get_terms(
+			array(
+				'taxonomy'   => $tax,
+				'hide_empty' => false,
+				'fields'     => 'ids',
+			)
+		) : array();
+		if ( $term_ids && ! is_wp_error( $term_ids ) ) {
+			clean_term_cache( $term_ids, $tax );
+			foreach ( $term_ids as $tid ) {
+				wp_cache_delete( $tid, 'term_meta' );
+			}
+		}
+	}
+	if ( function_exists( 'zad_refresh_default_pages' ) ) {
+		zad_refresh_default_pages();
+	}
+	if ( function_exists( 'zad_cache_flush' ) ) {
+		zad_cache_flush();
+	}
+	update_option( 'zad_migrated_v10', 1, true );
+}
+add_action( 'init', 'zad_migrate_no_verify', 3 );
+
+/**
  * ترحيل مكمّل: حالة «تم الإعداد» وصور الموقع المجلوبة في قالب «الشامي».
  * بدونه يظهر تنبيه «ابدأ الإعداد» لمتجر مُعدّ فعلاً، وتعود الواجهة إلى الصور المؤقتة.
  */

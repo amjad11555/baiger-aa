@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'ZAD_VERSION', '5.0.0' );
+define( 'ZAD_VERSION', '5.0.1' );
 define( 'ZAD_DIR', get_template_directory() );
 define( 'ZAD_URI', get_template_directory_uri() );
 
@@ -30,7 +30,6 @@ if ( class_exists( 'WooCommerce' ) ) {
 	require ZAD_DIR . '/inc/cod.php';
 	require ZAD_DIR . '/inc/delivery.php';
 	require ZAD_DIR . '/inc/customers.php';
-	require ZAD_DIR . '/inc/verify.php';
 	require ZAD_DIR . '/inc/engage.php';
 	if ( is_admin() ) {
 		require ZAD_DIR . '/inc/customers-admin.php';

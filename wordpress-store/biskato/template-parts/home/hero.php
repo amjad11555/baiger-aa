@@ -3,8 +3,7 @@
  * الواجهة الرئيسية: قسم افتتاحي واحد ثابت (بلا شرائح متحركة، أسرع وأوضح).
  *
  * النص والأزرار في جهة، والصورة في الجهة الأخرى مع شارات خصم إيتي وأولكر.
- * الأزرار تتبدل حسب حالة الزائر: زائر جديد ← افتح حساباً، حساب غير مؤكد ← أكّد عبر واتساب،
- * حساب مؤكد ← قائمة الأسعار والعروض.
+ * الأزرار تتبدل حسب حالة الزائر: زائر جديد ← افتح حساباً، زبون مسجّل ← قائمة الأسعار والعروض.
  *
  * @package Zad
  */
@@ -20,9 +19,6 @@ $zd_shop   = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink(
 
 if ( 'login' === $zd_gate ) {
 	$zd_primary = array( 'افتح حساب جملة مجاناً', add_query_arg( 'tab', 'register', $zd_acc ) );
-	$zd_second  = array( 'تصفّح الأصناف', $zd_shop );
-} elseif ( 'verify' === $zd_gate ) {
-	$zd_primary = array( 'أكّد حسابك عبر واتساب', $zd_acc . '#zd-verify' );
 	$zd_second  = array( 'تصفّح الأصناف', $zd_shop );
 } else {
 	$zd_primary = array( 'قائمة أسعار الجملة', zad_page_url( 'quick_order' ) );

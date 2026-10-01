@@ -68,7 +68,6 @@ function zad_customize_register( $wp_customize ) {
 		'zad_contact' => 'التواصل وواتساب',
 		'zad_home'    => 'الواجهة الرئيسية',
 		'zad_shop'    => 'الطلبات والأسعار',
-		'zad_verify'  => 'تأكيد الحسابات عبر واتساب',
 		'zad_social'  => 'حسابات التواصل الاجتماعي',
 	);
 	$priority = 10;
@@ -106,15 +105,9 @@ function zad_customize_register( $wp_customize ) {
 		'show_profit'     => array( 'zad_shop', 'checkbox', 'إظهار سعر البيع المقترح وربح البقال', 'يعرض على كل صنف سعر البيع للمستهلك وربح الكرتونة وهامش الربح.', 'zad_sanitize_bool' ),
 		'retail_margin'   => array( 'zad_shop', 'number', 'هامش ربح البقال الافتراضي %', 'يُقدَّر منه سعر البيع للأصناف التي لم يُكتب لها «سعر البيع المقترح» في صفحة المنتج. الهامش من سعر البيع (25 = يربح البقال ربع سعر البيع).', 'zad_sanitize_margin' ),
 		'require_account' => array( 'zad_shop', 'checkbox', 'الطلب للزبائن المسجلين فقط', 'يُطلب من الزبون إنشاء حساب (الاسم، اسم المحل، الواتساب، الموقع) قبل إتمام أول طلبية. يبقى إرسال الطلبية عبر واتساب متاحاً للجميع.', 'zad_sanitize_bool' ),
-		'members_prices'  => array( 'zad_shop', 'checkbox', 'إخفاء الأسعار عن غير المسجلين', 'يرى الزائر الأصناف دون أسعار حتى يفتح حساباً (ويؤكده عبر واتساب إن كان التأكيد مفعّلاً). يحمي أسعارك من المنافسين.', 'zad_sanitize_bool' ),
+		'members_prices'  => array( 'zad_shop', 'checkbox', 'إخفاء الأسعار عن غير المسجلين', 'يرى الزائر الأصناف دون أسعار حتى يفتح حساباً مجانياً، ثم تظهر له الأسعار فوراً. يحمي أسعارك من المنافسين.', 'zad_sanitize_bool' ),
 		'disc_eti'        => array( 'zad_shop', 'number', 'خصم دائم على أصناف إيتي %', 'يُطبَّق تلقائياً كسعر مخفّض على كل منتجات إيتي عند الحفظ. 0 = بلا خصم.', 'zad_sanitize_discount' ),
 		'disc_ulker'      => array( 'zad_shop', 'number', 'خصم دائم على أصناف أولكر %', 'يُطبَّق تلقائياً كسعر مخفّض على كل منتجات أولكر عند الحفظ. 0 = بلا خصم.', 'zad_sanitize_discount' ),
-		// تأكيد الحسابات.
-		'confirm_wa'      => array( 'zad_verify', 'checkbox', 'تأكيد الحساب الجديد عبر واتساب قبل إظهار الأسعار', 'يرسل الزبون رسالة تأكيد جاهزة من واتساب محله، فيصلك رابط تفعيل بضغطة واحدة. الحسابات القديمة مفعّلة تلقائياً.', 'zad_sanitize_bool' ),
-		'wa_api_token'    => array( 'zad_verify', 'password', 'WhatsApp Cloud API: رمز الوصول (اختياري)', 'لإرسال رمز التفعيل تلقائياً إلى واتساب الزبون. من developers.facebook.com ← تطبيقك ← WhatsApp ← API Setup. اتركه فارغاً لاستخدام التفعيل اليدوي.', 'sanitize_text_field' ),
-		'wa_api_phone'    => array( 'zad_verify', 'text', 'WhatsApp Cloud API: معرّف رقم الهاتف (Phone number ID)', '', 'sanitize_text_field' ),
-		'wa_api_template' => array( 'zad_verify', 'text', 'اسم قالب الرسالة المعتمد (Authentication)', 'قالب من نوع Authentication فيه متغيّر واحد للرمز وزر «نسخ الرمز».', 'sanitize_text_field' ),
-		'wa_api_lang'     => array( 'zad_verify', 'text', 'لغة القالب', 'مثال: ar أو tr أو en_US.', 'sanitize_text_field' ),
 		'force_rtl'       => array( 'zad_shop', 'checkbox', 'فرض الاتجاه من اليمين لليسار (عربي)', 'مفيد إذا كانت لغة لوحة التحكم غير العربية.', 'zad_sanitize_bool' ),
 		// اجتماعي.
 		'instagram'       => array( 'zad_social', 'url', 'Instagram', '', 'esc_url_raw' ),
