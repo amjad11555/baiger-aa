@@ -108,7 +108,7 @@ $zd_bar = function_exists( 'zad_announce_bar' ) ? zad_announce_bar() : ( zad_opt
 		</nav>
 
 		<div class="zd-header__icons">
-			<button type="button" class="zd-icon-btn" data-zd-open="zd-search-panel" aria-controls="zd-search-panel" aria-expanded="false" aria-label="البحث"><?php zad_the_icon( 'search', '', 22 ); ?></button>
+			<button type="button" class="zd-icon-btn zd-header__search" data-zd-open="zd-search-panel" aria-controls="zd-search-panel" aria-expanded="false" aria-label="البحث"><?php zad_the_icon( 'search', '', 22 ); ?></button>
 			<a class="zd-icon-btn zd-header__account" href="<?php echo esc_url( $zd_account ); ?>" aria-label="حسابي"><?php zad_the_icon( 'user', '', 22 ); ?></a>
 			<button type="button" class="zd-icon-btn zd-header__wish" data-zd-open="zd-wish-drawer" aria-controls="zd-wish-drawer" aria-expanded="false" aria-label="الأصناف المحفوظة"><?php zad_the_icon( 'heart', '', 22 ); ?><span class="zd-bubble" data-zd-wish-count hidden>0</span></button>
 			<?php if ( $zd_has_wc && function_exists( 'zad_notif_button' ) ) : ?>
