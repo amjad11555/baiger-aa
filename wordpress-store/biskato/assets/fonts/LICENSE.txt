@@ -1,0 +1,7 @@
+الخطوط المضمّنة في هذا القالب مرخّصة بموجب SIL Open Font License 1.1
+https://openfontlicense.org
+
+- Tajawal — Copyright 2018 Boutros International
+- Poppins — Copyright 2020 The Poppins Project Authors (Indian Type Foundry)
+
+يُسمح باستخدامها وتضمينها وإعادة توزيعها مع القالب وفق شروط الرخصة.
