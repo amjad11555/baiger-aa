@@ -2,7 +2,7 @@
 /**
  * يولّد ملف CSV متوافق مع مستورد منتجات ووكومرس من كتالوج القالب.
  *
- * الاستخدام (داخل موقع ووردبريس فيه قالب زاد مفعّل):
+ * الاستخدام (داخل موقع ووردبريس فيه قالب بسكاتو مفعّل):
  *   wp eval-file wordpress-store/tools/export-csv.php wordpress-store/products-ar.csv
  *
  * بعد تعديل الأسعار في Excel / Google Sheets:
@@ -12,7 +12,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) || ! function_exists( 'zad_seed_description' ) ) {
-	fwrite( STDERR, "شغّل الملف عبر wp eval-file مع تفعيل قالب زاد.\n" );
+	fwrite( STDERR, "شغّل الملف عبر wp eval-file مع تفعيل قالب بسكاتو.\n" );
 	return;
 }
 

@@ -1,0 +1,101 @@
+/* لوحة «الزبائن» — قالب بسكاتو */
+.zd-cus {
+	--zc-ink: #1d2327;
+	--zc-ink-2: #3c434a;
+	--zc-muted: #646970;
+	--zc-line: #dcdcde;
+	--zc-soft: #f6f7f7;
+	--zc-accent: #00809E;
+	--zc-accent-50: #E5F3F6;
+	--zc-warn: #996800;
+	--zc-r: 8px;
+	max-width: 1500px;
+	color: var(--zc-ink);
+	font-size: 14px;
+}
+.zd-cus__head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.zd-cus__head .wp-heading-inline { margin-inline-end: 4px; }
+.zd-cus__lead { flex-basis: 100%; margin: 2px 0 0; color: var(--zc-muted); font-size: 14px; }
+
+/* الأرقام السريعة */
+.zd-cus__kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+@media (max-width: 1100px) { .zd-cus__kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.zd-kpi { padding: 16px 18px; border: 1px solid var(--zc-line); border-radius: var(--zc-r); background: #fff; }
+.zd-kpi__label { margin: 0; color: var(--zc-ink-2); font-size: 13px; font-weight: 500; }
+.zd-kpi__value { margin: 4px 0 2px; font-size: 32px; font-weight: 600; line-height: 1.15; font-variant-numeric: tabular-nums; color: var(--zc-ink); }
+.zd-kpi__sub { margin: 0; color: var(--zc-muted); font-size: 12.5px; }
+.zd-kpi__sub .button-link { font-size: 12.5px; }
+
+/* البطاقات */
+.zd-card { padding: 16px 18px 18px; border: 1px solid var(--zc-line); border-radius: var(--zc-r); background: #fff; }
+.zd-card__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-bottom: 12px; }
+.zd-card__head h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.zd-card__meta { color: var(--zc-muted); font-size: 12.5px; }
+.zd-cus__grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 12px; margin-bottom: 12px; }
+@media (max-width: 960px) { .zd-cus__grid { grid-template-columns: 1fr; } }
+
+/* الخريطة */
+.zd-cus__map { height: 380px; border-radius: 6px; background: var(--zc-soft); z-index: 0; }
+.zd-cus-pin span { display: block; width: 16px; height: 16px; border-radius: 50%; background: var(--zc-accent); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .35); }
+.zd-cus-pin.is-never span { background: #fff; border: 3px solid var(--zc-accent); }
+.zd-cus-pin.is-focus span { width: 22px; height: 22px; margin: -3px; background: var(--zc-ink); }
+.zd-cus .leaflet-popup-content { margin: 12px 14px; direction: rtl; text-align: right; font: 13px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, sans-serif; }
+.zd-cus .leaflet-popup-content b { display: block; font-size: 14px; }
+.zd-cus__legend { display: flex; gap: 14px; margin: 8px 0 0; color: var(--zc-muted); font-size: 12px; }
+.zd-cus__legend i { display: inline-block; width: 10px; height: 10px; margin-inline-end: 6px; border-radius: 50%; background: var(--zc-accent); vertical-align: -1px; }
+.zd-cus__legend i.is-never { background: #fff; box-shadow: inset 0 0 0 2px var(--zc-accent); }
+
+/* المناطق: شريط أفقي واحد اللون، والقيمة مكتوبة بجانبه */
+.zd-bars { max-height: 380px; margin: 0; padding: 0; overflow-y: auto; list-style: none; }
+.zd-bars li { margin: 0; }
+.zd-bars__row { display: grid; grid-template-columns: 110px minmax(0, 1fr); align-items: center; gap: 10px; width: 100%; min-height: 32px; padding: 4px 6px; border: 0; border-radius: 6px; background: transparent; color: var(--zc-ink); font: inherit; text-align: right; cursor: pointer; }
+.zd-bars__row:hover, .zd-bars__row.is-active { background: var(--zc-soft); }
+.zd-bars__row.is-active .zd-bars__label { font-weight: 600; }
+.zd-bars__row:focus-visible { outline: 2px solid var(--zc-accent); outline-offset: 1px; }
+.zd-bars__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.zd-bars__track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.zd-bars__fill { display: block; flex: none; height: 12px; border-radius: 4px 0 0 4px; background: var(--zc-accent); }
+[dir="ltr"] .zd-bars__fill { border-radius: 0 4px 4px 0; }
+.zd-bars__value { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 13px; color: var(--zc-ink-2); }
+
+/* الجدول */
+.zd-cus__filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.zd-cus__filters input[type="search"] { flex: 1 1 260px; min-height: 34px; }
+.zd-cus__filters select { min-height: 34px; }
+.zd-cus__table-wrap { overflow-x: auto; }
+.zd-cus__table { border-radius: 6px; }
+.zd-cus__table th, .zd-cus__table td { text-align: right; vertical-align: top; }
+.zd-cus__table th { font-weight: 600; }
+.zd-cus__who strong, .zd-cus__place strong { display: block; }
+.zd-cus__who span, .zd-cus__place span, .zd-cus__muted { display: block; color: var(--zc-muted); font-size: 12.5px; }
+.zd-cus__wa { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.zd-cus__warn { color: var(--zc-warn); font-style: normal; font-size: 12.5px; }
+.zd-cus__actions { white-space: nowrap; }
+.zd-cus__actions .button + .button { margin-inline-start: 4px; }
+.zd-cus__table tr.is-focus td { background: var(--zc-accent-50); }
+.zd-cus__none { margin: 12px 0 0; color: var(--zc-muted); }
+.zd-cus__empty { max-width: 640px; margin-top: 16px; padding: 24px; border: 1px dashed var(--zc-line); border-radius: var(--zc-r); background: #fff; }
+.zd-cus__empty h2 { margin-top: 0; }
+.zd-cus__list { margin-bottom: 24px; }
+.zd-cus__place a, .zd-kpi__sub .button-link, .zd-cus__place .button-link { text-decoration: underline; text-underline-offset: 2px; }
+
+/* «العروض والإشعارات» */
+.zd-eng__form { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+.zd-eng__card { max-width: 980px; }
+.zd-eng__help { margin: -4px 0 4px; color: var(--zc-ink-2); font-size: 13.5px; line-height: 1.7; }
+.zd-eng .form-table th { width: 170px; }
+.zd-eng__state { padding: 2px 10px; border-radius: 99px; font-size: 12.5px; font-weight: 600; }
+.zd-eng__state.is-on { background: #E7F5EC; color: #0E7A43; }
+.zd-eng__state.is-wait { background: #FFF5DA; color: #7A5700; }
+.zd-eng__state.is-off { background: var(--zc-soft); color: var(--zc-muted); }
+.zd-eng__cats { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; }
+.zd-eng__sample { margin-top: 8px; padding: 12px 14px; border-radius: 6px; background: var(--zc-soft); }
+.zd-eng__sample ul { margin: 6px 0 0; }
+.zd-eng__sample del { color: var(--zc-muted); }
+.zd-eng__msgtabs { display: flex; gap: 6px; margin-bottom: 8px; }
+.zd-eng__wa textarea { font-size: 14px; line-height: 1.7; }
+.zd-eng__list { max-height: 420px; margin: 10px 0 0; padding: 0; overflow-y: auto; border: 1px solid var(--zc-line); border-radius: 6px; list-style: none; }
+.zd-eng__list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0; padding: 8px 12px; border-bottom: 1px solid #f0f0f1; }
+.zd-eng__list li:last-child { border-bottom: 0; }
+.zd-eng__list .button.is-sent { color: #0E7A43; border-color: #0E7A43; }
+.zd-eng .submit { max-width: 980px; margin: 0; padding: 0; text-align: right; }
