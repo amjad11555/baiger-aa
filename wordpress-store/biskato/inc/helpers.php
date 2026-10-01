@@ -689,19 +689,19 @@ function zad_brand_svg( $file ) {
  *
  * @param string $variant light للخلفيات الفاتحة، dark للخلفيات الداكنة.
  * @param bool   $tagline النسخة مع سطر «كيك وبسكويت وشيبس بالجملة» تحت الشعار.
- * @param bool   $compact إضافة النسخة المختصرة التي تظهر بدل الكاملة على الجوال (للترويسة).
+ * @param bool   $mobile  إضافة نسخة الجوال التي تظهر بدل نسخة الكمبيوتر (للترويسة).
  */
-function zad_logo( $variant = 'light', $tagline = false, $compact = false ) {
+function zad_logo( $variant = 'light', $tagline = false, $mobile = false ) {
 	if ( has_custom_logo() && 'light' === $variant ) {
 		the_custom_logo();
 		return;
 	}
 	$suffix = 'dark' === $variant ? '-dark' : '';
 	$file   = ( $tagline ? 'logo-tag' : 'logo' ) . $suffix . '.svg';
-	$svg    = preg_replace( '/^<svg /', '<svg class="zd-logo__svg' . ( $compact ? ' zd-logo__svg--full' : '' ) . '" aria-hidden="true" focusable="false" ', zad_brand_svg( $file ) );
-	// الترويسة على الجوال: «بسكاتو» ونقطة البسكويتة فقط، فيظهر الاسم كبيراً في المساحة الضيقة.
-	if ( $compact ) {
-		$svg .= preg_replace( '/^<svg /', '<svg class="zd-logo__svg zd-logo__svg--compact" aria-hidden="true" focusable="false" ', zad_brand_svg( 'logo-compact' . $suffix . '.svg' ) );
+	$svg    = preg_replace( '/^<svg /', '<svg class="zd-logo__svg' . ( $mobile ? ' zd-logo__svg--full' : '' ) . '" aria-hidden="true" focusable="false" ', zad_brand_svg( $file ) );
+	// الترويسة على الجوال: نفس الشعار (بسكاتو | BISKATO) بحدود ضيقة وحروف لاتينية أكبر لتبقى مقروءة.
+	if ( $mobile ) {
+		$svg .= preg_replace( '/^<svg /', '<svg class="zd-logo__svg zd-logo__svg--mobile" aria-hidden="true" focusable="false" ', zad_brand_svg( 'logo-mobile' . $suffix . '.svg' ) );
 	}
 	printf(
 		'<a class="zd-logo zd-logo--%1$s" href="%2$s" rel="home" aria-label="%3$s">%4$s</a>',

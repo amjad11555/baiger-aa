@@ -224,8 +224,16 @@ svg.zd-i[width] { width: auto; height: auto; }
 .zd-logo { display: inline-flex; align-items: center; color: var(--zd-ink); line-height: 0; }
 .zd-logo__svg { display: block; height: 34px; width: auto; }
 @media (min-width: 1024px) { .zd-logo__svg { height: 52px; } }
-.zd-logo__svg--compact { display: none; }
-@media (max-width: 1023px) { .zd-logo__svg--full { display: none; } .zd-logo__svg--compact { display: block; height: 32px; } }
+.zd-logo__svg--mobile { display: none; }
+/* الجوال: الشعار الكامل (عربي + لاتيني) بجانب زر القائمة كما في الكمبيوتر، والأيقونات في الطرف الآخر. */
+@media (max-width: 1023px) {
+	.zd-header__row { grid-template-columns: auto minmax(0, 1fr) auto; }
+	.zd-header__logo { justify-content: flex-start; }
+	.zd-logo { max-width: 100%; }
+	.zd-logo__svg--full { display: none; }
+	.zd-logo__svg--mobile { display: block; height: 30px; max-width: 100%; }
+}
+@media (min-width: 370px) and (max-width: 1023px) { .zd-logo__svg--mobile { height: 32px; } }
 .zd-logo:hover { opacity: .85; }
 .zd-logo__mark { display: block; width: auto; height: 40px; }
 .custom-logo { max-height: 44px; width: auto; }
